@@ -1,5 +1,4 @@
-;
-(function (ME) {
+;(function (ME) {
     Hash = function () {
     }
     Hash.prototype = {
@@ -19,7 +18,8 @@
         },
         has: function (k) {
             var type = typeof k;
-            if (type === 'string') {
+            console.log(type)
+            if (type === 'string' || type === 'number') {
                 return this.hasOwnProperty(k);
             } else if (type === 'function' && this.some(k)) {
                 return true;
@@ -93,7 +93,7 @@
         },
         find: function (k) {
             var type = typeof k;
-            if (type === 'string' && this.has(k)) {
+            if (type === 'string' || type === 'number' && this.has(k)) {
                 return this[k];
             } else if (type === 'function') {
                 for (var _k in this) {

@@ -180,7 +180,7 @@ ME.Group = L.FeatureGroup.extend({
                 var flag = _this.geoType == '1'
                     ? bounds.contains(layer.getLatLng())
                     : bounds.intersects(layer.getBounds());
-                if (!flag) {
+                if (!flag && !ME.changes.has(layer._leaflet_id)) {
                     _this.removeLayer(layer);
                 }
             });

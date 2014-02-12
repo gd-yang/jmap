@@ -36,6 +36,9 @@ ME.Changes = L.Class.extend({
     empty : function(){
         return this.created.empty() && this.modified.empty() && this.deleted.empty();
     },
+    has : function(id){
+        return this.created.has(id) || this.modified.has(id) || this.deleted.has(id);
+    },
     toJSON : function(){
         return JSON.stringify({
             created : this.created,
