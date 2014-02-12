@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <title>地图demo</title>
+    <link rel="stylesheet" href="/css/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/css/leaflet/leaflet.draw.css"/>
+    <script src="/js/lib/jquery-1.7.2.js"></script>
+    <!--[if lt IE 9]>
+    <script src="/js/lib/es5-shim.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script src="/js/lib/es5-sham.js"></script><![endif]-->
+    <script src="/js/lib/xhrRequest.js"></script>
+    <script src="/js/leaflet/leaflet-src.js"></script>
+    <script src="/js/leaflet/Leaflet.draw.js"></script>
+    <script src="/js/leaflet/edit/Edit.Poly.js"></script>
+    <script src="/js/leaflet/edit/Edit.SimpleShape.js"></script>
+    <script src="/js/leaflet/edit/Edit.Circle.js"></script>
+    <script src="/js/leaflet/edit/Edit.Rectangle.js"></script>
+    <script src="/js/leaflet/draw/Draw.Feature.js"></script>
+    <script src="/js/leaflet/draw/Draw.Polyline.js"></script>
+    <script src="/js/leaflet/draw/Draw.Polygon.js"></script>
+    <script src="/js/leaflet/draw/Draw.SimpleShape.js"></script>
+    <script src="/js/leaflet/draw/Draw.Rectangle.js"></script>
+    <script src="/js/leaflet/draw/Draw.Circle.js"></script>
+    <script src="/js/leaflet/draw/Draw.Marker.js"></script>
+    <script src="/js/leaflet/util/LatLngUtil.js"></script>
+    <script src="/js/leaflet/util/GeometryUtil.js"></script>
+    <script src="/js/leaflet/util/LineUtil.Intersect.js"></script>
+    <script src="/js/leaflet/util/Polyline.Intersect.js"></script>
+    <script src="/js/leaflet/util/Polygon.Intersect.js"></script>
+    <script src="/js/leaflet/Control.Draw.js"></script>
+    <script src="/js/leaflet/toolbar/Tooltip.js"></script>
+    <script src="/js/leaflet/toolbar/Toolbar.js"></script>
+    <script src="/js/leaflet/toolbar/EditToolbar.js"></script>
+    <script src="/js/leaflet/toolbar/EditToolbar.Edit.js"></script>
+    <script src="/js/leaflet/toolbar/EditToolbar.Delete.js"></script>
+    <script src="/js/leaflet/toolbar/DrawToolbar.js"></script>
+    <script src="/js/mapeditor/MapEditor.js"></script>
+    <script src="/js/mapeditor/control/DeleteControl.js"></script>
+    <script src="/js/mapeditor/control/DataControl.js"></script>
+    <script src="/js/mapeditor/util/State.js"></script>
+    <script src="/js/mapeditor/util/EntityState.js"></script>
+    <script src="/js/mapeditor/group/Group.js"></script>
+    <script src="/js/mapeditor/group/SelectLayers.js"></script>
+    <script src="/js/mapeditor/entity/Polygon.js"></script>
+    <script src="/js/mapeditor/entity/Polyline.js"></script>
+    <script src="/js/mapeditor/entity/Marker.js"></script>
+    <script src="/js/mapeditor/util/Hash.js"></script>
+    <script src="/js/mapeditor/data/Changes.js"></script>
+    <script src="/js/mapeditor/util/SelectRoad.js"></script>
+    <script src="/js/mapeditor/util/DataToLayer.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        ul, ol, li, dl, dt, dd {
+            list-style: none;
+            padding: 0;
+            margin: 0
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script>
+    var map = new ME.Map('map', {
+        center: new L.LatLng(31.20410238002499, 121.43068313598633),
+        zoom: 15
+    });
+
+    $('.leaflet-dataset-list ul li .view').on('click',function () {
+        var dataSetId = $(this).parent().attr('data-dataId'), group;
+        if (!map.openedGroup[dataSetId]) {
+            map.openedGroup[dataSetId] = new ME.Group({
+                dataSetId: dataSetId
+            });
+        }
+        map.addLayer(map.openedGroup[dataSetId]);
+        $(this).toggleClass('close open');
+    }).toggle(function () {
+                $(this).text('关闭');
+                var dataSetId = $(this).parent().attr('data-dataId');
+                map.openedGroup[dataSetId].open();
+            }, function () {
+                $(this).text('打开');
+                var dataSetId = $(this).parent().attr('data-dataId');
+                map.openedGroup[dataSetId].close();
+            });
+
+    $('.leaflet-dataset-list ul li .edit').on('click',function () {
+        var dataSetId = $(this).parent().attr('data-dataId'), group;
+
+        if (!map.openedGroup[dataSetId]) {
+            map.openedGroup[dataSetId] = new ME.Group({
+                dataSetId: dataSetId
+            });
+        }
+        map.addLayer(map.openedGroup[dataSetId]);
+        map.editingGroup = map.openedGroup[dataSetId];
+        map.openedGroup[dataSetId].on('close editDisable', function(){
+            ME.changes.clear();
+        });
+
+        $(this).toggleClass('enable disable');
+    }).toggle(function(){
+                $(this).text('禁止');
+                var dataSetId = $(this).parent().attr('data-dataId');
+                map.openedGroup[dataSetId].editAble();
+            },function(){
+                $(this).text('编辑');
+                var dataSetId = $(this).parent().attr('data-dataId');
+                map.openedGroup[dataSetId].editDisable();
+            });
+
+    var selectRoad = new ME.SelectRoad(map);
+
+</script>
+</body>
+</html>

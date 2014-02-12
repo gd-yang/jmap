@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>地图demo</title>
+    <link rel="stylesheet" href="/css/leaflet/leaflet.css"/>
+    <script src="/js/leaflet/leaflet-src.js"></script>
+    <script src="/js/leaflet/Leaflet.draw.js"></script>
+    <script src="/js/leaflet/Control.Draw.js"></script>
+    <script src="/js/leaflet/edit/Edit.Poly.js"></script>
+    <script src="/js/leaflet/edit/Edit.SimpleShape.js"></script>
+    <script src="/js/leaflet/edit/Edit.Circle.js"></script>
+    <script src="/js/leaflet/edit/Edit.Rectangle.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map', {
+        center: [39.73, -104.99],
+        zoom: 15
+    });
+
+    L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+        maxZoom: 18
+    }).addTo(map);
+
+
+    var MyCustomLayer = L.Class.extend({
+        initialize: function (latlng) {
+            // save position of the layer or any options from the constructor
+            this._latlng = latlng;
+        },
+
+        onAdd: function (map) {
+            this._map = map;
+
+            // create a DOM element and put it into one of the map panes
+            this._el = L.DomUtil.create('div', 'my-custom-layer leaflet-zoom-hide');
+            map.getPanes().overlayPane.appendChild(this._el);
+
+            // add a viewreset event listener for updating layer's position, do the latter
+            map.on('viewreset', this._reset, this);
+            this._reset();
+        },
+
+        onRemove: function (map) {
+            // remove layer's DOM elements and listeners
+            map.getPanes().overlayPane.removeChild(this._el);
+            map.off('viewreset', this._reset, this);
+        },
+
+        _reset: function () {
+            // update layer's position
+            var pos = this._map.latLngToLayerPoint(this._latlng);
+            L.DomUtil.setPosition(this._el, pos);
+        }
+    });
+
+    var c = L.circle([39.73, -104.99], 150);
+    var m = L.marker([39.73, -103.99]);
+    var g = L.featureGroup().addTo(map);
+    g.addLayer(c);
+    g.addLayer(m);
+
+    var latlng1 = [39.72887450145119, -104.98612403869629],
+            latlng2 = [39.72524383081255, -104.97299194335936],
+            latlng3 = [39.736630293648304, -104.97286319732666],
+            latlng4 = [39.73989736613711, -104.98595237731934];
+
+    var latlngs = [latlng1, latlng2, latlng3, latlng4];
+
+    var pl = L.polyline(latlngs);
+
+    g.addLayer(pl);
+
+    map.addLayer(new MyCustomLayer([39.73, -104.99]));
+
+    g.on('click', function (e) {
+        e.layer.editing.enable();
+        console.log(e.layer);
+        console.log(e.layer.getLatLngs())
+    });
+
+    map.on('click', function (e) {
+        console.log(e.latlng)
+    });
+</script>
+</body>
+</html>

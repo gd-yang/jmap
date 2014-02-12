@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>地图demo</title>
+    <link href="/css/leaflet/leaflet.css" type="text/css" rel="stylesheet"/>
+    <script src="/js/leaflet/leaflet-src.js"></script>
+    <script src="/js/leaflet/leaflet.plotter.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script>
+    var cities = new L.LayerGroup();
+
+    L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities),
+            L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.').addTo(cities),
+            L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.').addTo(cities),
+            L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.').addTo(cities);
+
+
+    var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+            cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
+
+    var minimal = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
+            midnight = L.tileLayer(cmUrl, {styleId: 999, attribution: cmAttr}),
+            motorways = L.tileLayer(cmUrl, {styleId: 46561, attribution: cmAttr});
+
+    var map = L.map('map', {
+        center: [39.73, -104.99],
+        zoom: 10,
+        layers: [minimal, motorways, cities]
+    });
+
+    var baseLayers = {
+        "Minimal": minimal,
+        "Night View": midnight
+    };
+
+    var overlays = {
+        "Motorways": motorways,
+        "Cities": cities
+    };
+
+    L.control.layers(baseLayers, overlays).addTo(map);
+
+</script>
+</body>
+</html>

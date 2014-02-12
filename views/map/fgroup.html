@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>地图demo</title>
+    <link href="/css/leaflet/leaflet.css" type="text/css" rel="stylesheet"/>
+    <script src="/js/leaflet/leaflet-src.js"></script>
+    <script src="/js/leaflet/leaflet.plotter.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map', {
+        center: [51.505, -0.09],
+        zoom: 13
+    });
+
+    L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+        maxZoom: 18
+    }).addTo(map);
+
+    var latlng1 = [51.525833847122584, -0.07810592651367188],
+            latlng2 = [51.52604744889203, -0.02918243408203125],
+            latlng3 = [51.51023821132552, -0.024204254150390625],
+            latlng4 = [51.5089561407416, -0.06900787353515625];
+
+    var cm1 = L.circleMarker(latlng1),
+            cm2 = L.circleMarker(latlng2),
+            cm3 = L.circleMarker(latlng3),
+            cm4 = L.circleMarker(latlng4);
+
+    var latlngs = [latlng1, latlng2, latlng3, latlng4];
+
+    var polyline = L.polyline(latlngs);
+
+
+    var group = L.featureGroup([cm1, cm2, cm3, polyline])
+            .setStyle({opacity: 1, fillOpacity: 0.5})
+            .addTo(map);
+
+    group.addOneTimeEventListener('click', function () {
+        this.addLayer(cm4);
+    });
+
+    group.on('layeradd', function (e) {
+        console.log(e)
+    });
+
+    group.on('mouseover', function () {
+        this.setStyle({
+            color: 'red'
+        });
+    });
+
+    group.on('mouseout', function () {
+        this.setStyle({
+            color: '#03f'
+        });
+    });
+
+    //L.DomUtil.setPosition(polyline, polyline.getBounds().getCenter(), false);
+    console.log(polyline)
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet.draw vector editing handlers</title>
+
+    <link rel="stylesheet" href="/css/leaflet/leaflet.css"/>
+    <script src="/js/leaflet/leaflet-src.js"></script>
+    <script src="/js/leaflet/Leaflet.draw.js"></script>
+    <script src="/js/leaflet/Control.Draw.js"></script>
+    <script src="/js/leaflet/edit/Edit.Poly.js"></script>
+    <script src="/js/leaflet/edit/Edit.SimpleShape.js"></script>
+    <script src="/js/leaflet/edit/Edit.Circle.js"></script>
+    <script src="/js/leaflet/edit/Edit.Rectangle.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0;
+            margin: 0
+        }
+    </style>
+</head>
+<body>
+<div id="map" style="height: 100%; border: 1px solid #ccc"></div>
+<script>
+    var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
+            cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
+            map = new L.Map('map', {drawControl: true, layers: [cloudmade], center: new L.LatLng(51.505, -0.04), zoom: 13});
+
+    var polygon = new L.Polygon([
+        [51.51, -0.1],
+        [51.5, -0.06],
+        [51.52, -0.03]
+    ]);
+
+    polygon.on('click', function (e) {
+        this.editing.enable();
+        console.log(this.getBounds().getCenter());
+    });
+
+    map.addLayer(polygon);
+
+    var polyline = new L.Polyline([
+        [51.50, -0.04],
+        [51.49, -0.02],
+        [51.51, 0],
+        [51.52, -0.02]
+    ]);
+
+    polyline.on('click', function () {
+        polyline.editing.enable();
+        console.log(this.getBounds())
+    });
+
+    map.addLayer(polyline);
+
+    var circle = L.circle([51.53, -0.06], 600);
+
+    circle.on('click', function () {
+        circle.editing.enable();
+    });
+
+    map.addLayer(circle);
+
+    var rectangle = L.rectangle([
+        [51.49, -0.1],
+        [51.48, -0.06]
+    ]);
+
+    rectangle.on('click', function () {
+        this.editing.enable();
+        console.log(this.getBounds())
+    });
+
+    map.addLayer(rectangle);
+
+    polygon.on('edit', function () {
+        console.log('Polygon was edited!');
+    });
+
+    polyline.on('edit', function () {
+        console.log('Polyline was edited!');
+    });
+
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    // Initialise the draw control and pass it the FeatureGroup of editable layers
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+</script>
+</body>
+</html>
