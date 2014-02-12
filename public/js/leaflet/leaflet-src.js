@@ -1685,21 +1685,17 @@ L.Map = L.Class.extend({
 	},
 
 	addLayer: function (layer) {
-		// TODO method is too big, refactor
-
 		var id = L.stamp(layer);
 
 		if (this._layers[id]) { return this; }
 
 		this._layers[id] = layer;
 
-		// TODO getMaxZoom, getMinZoom in ILayer (instead of options)
 		if (layer.options && (!isNaN(layer.options.maxZoom) || !isNaN(layer.options.minZoom))) {
 			this._zoomBoundLayers[id] = layer;
 			this._updateZoomLevels();
 		}
 
-		// TODO looks ugly, refactor!!!
 		if (this.options.zoomAnimation && L.TileLayer && (layer instanceof L.TileLayer)) {
 			this._tileLayersNum++;
 			this._tileLayersToLoad++;
@@ -1733,7 +1729,6 @@ L.Map = L.Class.extend({
 			this._updateZoomLevels();
 		}
 
-		// TODO looks ugly, refactor
 		if (this.options.zoomAnimation && L.TileLayer && (layer instanceof L.TileLayer)) {
 			this._tileLayersNum--;
 			this._tileLayersToLoad--;
@@ -1799,7 +1794,6 @@ L.Map = L.Class.extend({
 		});
 	},
 
-	// TODO handler.addTo
 	addHandler: function (name, HandlerClass) {
 		if (!HandlerClass) { return this; }
 
@@ -1931,10 +1925,6 @@ L.Map = L.Class.extend({
 	getContainer: function () {
 		return this._container;
 	},
-
-
-	// TODO replace with universal implementation after refactoring projections
-
 	getZoomScale: function (toZoom) {
 		var crs = this.options.crs;
 		return crs.scale(toZoom) / crs.scale(this._zoom);
@@ -2271,7 +2261,6 @@ L.Map = L.Class.extend({
 
 	_getNewTopLeftPoint: function (center, zoom) {
 		var viewHalf = this.getSize()._divideBy(2);
-		// TODO round on display, not calculation to increase precision?
 		return this.project(center, zoom)._subtract(viewHalf)._round();
 	},
 
@@ -2785,7 +2774,6 @@ L.TileLayer = L.Class.extend({
 			    nw = this._map.unproject(nwPoint),
 			    se = this._map.unproject(sePoint);
 
-			// TODO temporary hack, will be removed after refactoring projections
 			// https://github.com/Leaflet/Leaflet/issues/1618
 			if (!options.continuousWorld && !options.noWrap) {
 				nw = nw.wrap();
@@ -3225,7 +3213,6 @@ L.ImageOverlay = L.Class.extend({
 		return this;
 	},
 
-	// TODO remove bringToFront/bringToBack duplication from TileLayer/Path
 	bringToFront: function () {
 		if (this._image) {
 			this._map._panes.overlayPane.appendChild(this._image);
@@ -3261,7 +3248,6 @@ L.ImageOverlay = L.Class.extend({
 
 		this._updateOpacity();
 
-		//TODO createImage util method to remove duplication
 		L.extend(this._image, {
 			galleryimg: 'no',
 			onselectstart: L.Util.falseFn,
@@ -3688,8 +3674,6 @@ L.Marker = L.Class.extend({
 
 		if (!this.options.clickable) { return; }
 
-		// TODO refactor into something shared with Map/Path/etc. to DRY it up
-
 		var icon = this._icon,
 		    events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu'];
 
@@ -3743,7 +3727,6 @@ L.Marker = L.Class.extend({
 			latlng: this._latlng
 		});
 
-		// TODO proper custom event propagation
 		// this line will always be called if marker is in a FeatureGroup
 		if (e.type === 'contextmenu' && this.hasEventListeners(e.type)) {
 			L.DomEvent.preventDefault(e);
@@ -4714,7 +4697,6 @@ L.Path = L.Path.extend({
 		this._path.setAttribute('d', str);
 	},
 
-	// TODO remove duplication with L.Map
 	_initEvents: function () {
 		if (this.options.clickable) {
 			if (L.Browser.svg || !L.Browser.vml) {
@@ -5125,7 +5107,6 @@ L.Path = (L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? L.Path :
 
 				this._ctx[drawMethod](point.x, point.y);
 			}
-			// TODO refactor ugly hack
 			if (this instanceof L.Polygon) {
 				this._ctx.closePath();
 			}
@@ -5158,12 +5139,9 @@ L.Path = (L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? L.Path :
 
 		ctx.restore();
 
-		// TODO optimization: 1 fill/stroke for all features with equal style instead of 1 for each feature
 	},
-
 	_initEvents: function () {
 		if (this.options.clickable) {
-			// TODO dblclick
 			this._map.on('mousemove', this._onMouseMove, this);
 			this._map.on('click', this._onClick, this);
 		}
@@ -5178,7 +5156,6 @@ L.Path = (L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? L.Path :
 	_onMouseMove: function (e) {
 		if (!this._map || this._map._animatingZoom) { return; }
 
-		// TODO don't do on each move
 		if (this._containsPoint(e.layerPoint)) {
 			this._ctx.canvas.style.cursor = 'pointer';
 			this._mouseInside = true;
@@ -5227,7 +5204,6 @@ L.Map.include((L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? {} 
 		    size = vp.max.subtract(min),
 		    root = this._pathRoot;
 
-		//TODO check if this works properly on mobile webkit
 		L.DomUtil.setPosition(root, min);
 		root.width = size.x;
 		root.height = size.y;
@@ -5703,7 +5679,6 @@ L.Polygon = L.Polyline.extend({
 		L.Polyline.prototype.projectLatlngs.call(this);
 
 		// project polygon holes points
-		// TODO move this logic to Polyline to get rid of duplication
 		this._holePoints = [];
 
 		if (!this._holes) { return; }
@@ -5917,8 +5892,6 @@ L.Circle = L.Path.extend({
 		return this._mRadius;
 	},
 
-	// TODO Earth hardcoded, move into projection code!
-
 	_getLatRadius: function () {
 		return (this._mRadius / 40075017) * 360;
 	},
@@ -6034,8 +6007,6 @@ L.Polygon.include(!L.Path.CANVAS ? {} : {
 		    part, p1, p2,
 		    i, j, k,
 		    len, len2;
-
-		// TODO optimization: check if within bounds first
 
 		if (L.Polyline.prototype._containsPoint.call(this, p, true)) {
 			// click on polygon border
@@ -6813,7 +6784,6 @@ L.Map.mergeOptions({
 	inertiaThreshold: L.Browser.touch ? 32 : 18, // ms
 	easeLinearity: 0.25,
 
-	// TODO refactor, move to CRS
 	worldCopyJump: false
 });
 
@@ -6885,7 +6855,6 @@ L.Map.Drag = L.Handler.extend({
 	},
 
 	_onViewReset: function () {
-		// TODO fix hardcoded Earth values
 		var pxCenter = this._map.getSize()._divideBy(2),
 		    pxWorldCenter = this._map.latLngToLayerPoint([0, 0]);
 
@@ -6894,7 +6863,6 @@ L.Map.Drag = L.Handler.extend({
 	},
 
 	_onPreDrag: function () {
-		// TODO refactor to be able to adjust map pane position after zoom
 		var worldWidth = this._worldWidth,
 		    halfWidth = Math.round(worldWidth / 2),
 		    dx = this._initialWorldOffset,
@@ -7602,7 +7570,6 @@ L.Map.BoxZoom = L.Handler.extend({
 			this._box = L.DomUtil.create('div', 'leaflet-zoom-box', this._pane);
 			L.DomUtil.setPosition(this._box, this._startLayerPoint);
 
-			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 			this._map.fire('boxzoomstart');
 		}
@@ -7621,7 +7588,6 @@ L.Map.BoxZoom = L.Handler.extend({
 
 		this._moved = true;
 
-		// TODO refactor: remove hardcoded 4 pixels
 		box.style.width  = (Math.max(0, Math.abs(offset.x) - 4)) + 'px';
 		box.style.height = (Math.max(0, Math.abs(offset.y) - 4)) + 'px';
 	},
@@ -8449,7 +8415,6 @@ L.Control.Layers = L.Control.extend({
 			}, this);
 
 			this._map.on('click', this._collapse, this);
-			// TODO keyboard accessibility
 		} else {
 			this._expand();
 		}

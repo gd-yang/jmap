@@ -122,10 +122,8 @@ if (!Function.prototype.bind) {
         // 17. Set the attributes of the length own property of F to the values
         //   specified in 15.3.5.1.
 
-        // TODO
         // 18. Set the [[Extensible]] internal property of F to true.
 
-        // TODO
         // 19. Let thrower be the [[ThrowTypeError]] function Object (13.2.3).
         // 20. Call the [[DefineOwnProperty]] internal method of F with
         //   arguments "caller", PropertyDescriptor {[[Get]]: thrower, [[Set]]:
@@ -136,7 +134,6 @@ if (!Function.prototype.bind) {
         //   [[Set]]: thrower, [[Enumerable]]: false, [[Configurable]]: false},
         //   and false.
 
-        // TODO
         // NOTE Function objects created using Function.prototype.bind do not
         // have a prototype property or the [[Code]], [[FormalParameters]], and
         // [[Scope]] internal properties.
@@ -238,7 +235,7 @@ if (!Array.prototype.forEach) {
 
         // If no callback function or if callback is not a callable function
         if (_toString(fun) != "[object Function]") {
-            throw new TypeError(); // TODO message
+            throw new TypeError();
         }
 
         while (++i < length) {

@@ -16,7 +16,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroup: null
 	},
 
 	initialize: function (options) {
