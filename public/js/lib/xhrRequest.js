@@ -1,5 +1,4 @@
 (function () {
-    // 类型判断
     function type(t) {
         return function (o) {
             return  Object.prototype.toString.call(o) == '[object ' + t + ']';
