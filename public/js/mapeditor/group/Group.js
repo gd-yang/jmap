@@ -102,11 +102,7 @@
             this.editLayer = e.layer;
             this.editLayer.fire('focusIn', {layer: this.editLayer});
             this.editLayer.editing.enable();
-            this.editLayer.on('edit', function (e) {
-                var layer = e.target;
-                var method = /^-\d+$/g.test(layer._leaflet_id) ? 'created' : 'modified';
-                this._map.changes.fire(method, {layer: layer});
-            });
+            this.editLayer.on('edit', this._fireChanges, this);
             if (this.geoType !== '1') {
                 this.setState(this.editLayer, 'edit');
             }
@@ -115,6 +111,7 @@
             this.fire('editDisable', {group: this});
             if (this.geoType !== '1' && !!this.editLayer) {
                 this.editLayer.editing.disable();
+                this.editLayer.off('edit', this._fireChanges, this);
                 this.setState(this.editLayer, 'common');
             }
         },
