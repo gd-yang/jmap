@@ -40,6 +40,9 @@
     <script src="/js/leaflet/toolbar/EditToolbar.Delete.js"></script>
     <script src="/js/leaflet/toolbar/DrawToolbar.js"></script>
     <script src="/js/mapeditor/MapEditor.js"></script>
+    <script src="/js/mapeditor/Map.js"></script>
+    <script src="/js/mapeditor/Config.js"></script>
+    <script src="/js/mapeditor/data/Connect.js"></script>
     <script src="/js/mapeditor/control/DeleteControl.js"></script>
     <script src="/js/mapeditor/control/DataControl.js"></script>
     <script src="/js/mapeditor/util/State.js"></script>
@@ -82,10 +85,10 @@
 
     $('.leaflet-dataset-list ul li .view').on('click',function () {
         var dataSetId = $(this).parent().attr('data-dataId'), group;
-        if (!map.openedGroup[dataSetId]) {
-            map.openedGroup[dataSetId] = new ME.Group({
+        if (!map.openedGroup.has(dataSetId)) {
+            map.openedGroup.add(dataSetId,new ME.Group({
                 dataSetId: dataSetId
-            });
+            }));
         }
         map.addLayer(map.openedGroup[dataSetId]);
         $(this).toggleClass('close open');
