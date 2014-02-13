@@ -21,6 +21,6 @@ ME.DeleteControl = L.Handler.extend({
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
         this._map.editingGroup.removeLayer(layer);
-        ME.changes.fire('deleted', {layer:layer});
+        this._map.changes.fire('deleted', {layer:layer});
     }
 });

@@ -69,5 +69,3 @@ ME.Changes = L.Class.extend({
         return xml;
     }
 });
-
-ME.changes = new ME.Changes();

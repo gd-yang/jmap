@@ -80,10 +80,10 @@ ME.DataControl = L.Control.extend({
                         gbox_validate :"{eid:'134',uid:'1080',userid:'1080',uidString:'fa2985264a1645bdb7f3693e25df1e67',eidString:'b9ead9582b764605a3f30c1cea072133',userType:'1',userName:'ali',password:'KFQFDFACABKHAHDHHH',endTag: 'endTag'}",
                         encode : 'utf-8',
                         dataSetId : map.editingGroup.dataSetId,
-                        xml : ME.changes.toXML()
+                        xml : map.changes.toXML()
                     }
                 }, function(rst){
-                    ME.changes.clear();
+                    map.changes.clear();
                     console.log('rst:', rst);
                 }
             );

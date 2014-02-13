@@ -110,7 +110,7 @@
         map.addLayer(map.openedGroup[dataSetId]);
         map.editingGroup = map.openedGroup[dataSetId];
         map.openedGroup[dataSetId].on('close editDisable', function(){
-            ME.changes.clear();
+            map.changes.clear();
         });
 
         $(this).toggleClass('enable disable');

@@ -3,8 +3,7 @@ ME.Group = L.FeatureGroup.extend({
         _dfid: 0
     },
     initialize: function (options) {
-        optio
-        ns = options || {};
+        options = options || {};
         var layers = options.layers,
             dataSet = options.dataSet || {};
         L.LayerGroup.prototype.initialize.call(this, layers);
@@ -103,7 +102,7 @@ ME.Group = L.FeatureGroup.extend({
         this.editLayer.on('edit', function (e) {
             var layer = e.target;
             var method = /^-\d+$/g.test(layer._leaflet_id) ? 'created' : 'modified';
-            ME.changes.fire(method, {layer: layer});
+            this._map.changes.fire(method, {layer: layer});
         });
         if (this.geoType !== '1') {
             this.setState(this.editLayer, 'edit');
@@ -181,7 +180,7 @@ ME.Group = L.FeatureGroup.extend({
                 var flag = _this.geoType == '1'
                     ? bounds.contains(layer.getLatLng())
                     : bounds.intersects(layer.getBounds());
-                if (!flag && !ME.changes.has(layer._leaflet_id)) {
+                if (!flag && !_this._map.changes.has(layer._leaflet_id)) {
                     _this.removeLayer(layer);
                 }
             });
@@ -189,7 +188,7 @@ ME.Group = L.FeatureGroup.extend({
     },
     _fireChanges: function (e) {
         var layer = e.target;
-        ME.changes.fire(/^-\d+$/.test(layer._leaflet_id)
+        this._map.changes.fire(/^-\d+$/.test(layer._leaflet_id)
             ? 'created'
             : 'modified', {layer: layer});
     }
