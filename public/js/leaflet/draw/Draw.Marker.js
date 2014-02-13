@@ -97,14 +97,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var marker = new ME.Marker({latlng:this._marker.getLatLng(), options:{
+		var _this = this, marker = new ME.Marker({latlng:this._marker.getLatLng(), options:{
             icon: this.options.icon,
             draggable: this.options.draggable
         }});
 
-        ME.changes.fire('created',{layer:marker});
+        this._map.changes.fire('created',{layer:marker});
         marker.on('dragend', function(){
-            ME.changes.fire('created',{layer:marker});
+            _this._map.changes.fire('created',{layer:marker});
         });
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}

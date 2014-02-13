@@ -233,7 +233,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}});
 
 		this._markerGroup.addLayer(marker);
-        ME.changes.fire('created', {layer : marker});
+        this._map.changes.fire('created', {layer : marker});
 		return marker;
 	},
 
@@ -426,6 +426,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 
-        ME.changes.fire('created', {layer:poly});
+        this._map.changes.fire('created', {layer:poly});
 	}
 });
