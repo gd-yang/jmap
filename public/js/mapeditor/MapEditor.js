@@ -12,7 +12,7 @@ MapEditor.Map = L.Map.extend({
        MapEditor.Map.__super__.initialize.call(this,id, options);
 
        this.defaultGroup = new ME.Group();
-
+       this.changes = new ME.Changes();
        this.addLayer(this.defaultGroup);
        this.editingGroup = this.defaultGroup;
        this.openedGroup = {};

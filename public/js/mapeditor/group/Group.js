@@ -3,7 +3,8 @@ ME.Group = L.FeatureGroup.extend({
         _dfid: 0
     },
     initialize: function (options) {
-        options = options || {};
+        optio
+        ns = options || {};
         var layers = options.layers,
             dataSet = options.dataSet || {};
         L.LayerGroup.prototype.initialize.call(this, layers);
