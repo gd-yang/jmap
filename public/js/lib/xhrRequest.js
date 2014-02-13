@@ -262,7 +262,7 @@
             this.xhr.onerror = config.error||null;
             this.resDataType = config.resDataType || 'responseText';
             this.onLoad(cb);
-            url = method == 'get' ? url + ( url.indexOf('?') === -1 ? '?' : '&' + ObjSerialize(paras))
+            url = method == 'get' ? url + ( (url.indexOf('?') === -1 ? '?' : '&') + ObjSerialize(paras))
                 : url;
             this.open(method, url, async, username, pwd);
 

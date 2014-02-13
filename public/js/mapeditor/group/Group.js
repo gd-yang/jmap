@@ -10,6 +10,7 @@ ME.Group = L.FeatureGroup.extend({
         this.editing = false;
         this.openning = false;
         this.states = new ME.State();
+        this.selectdLayers = [];
         this.dataSetId = options.dataSetId;
         this.geoType = dataSet.geoType;
         this.dataSet = dataSet;
@@ -70,6 +71,7 @@ ME.Group = L.FeatureGroup.extend({
             return;
         }
         this.openning = true;
+        this._map.editingGroup = this;
         this.fire('open', {group: this});
         this.renderLayer();
     },
@@ -82,7 +84,7 @@ ME.Group = L.FeatureGroup.extend({
             this.editDisable();
         }
         this.fire('close', {group: this});
-        delete this._map.openedGroup[this.dataSetId];
+        this._map.openedGroup.remove(this.dataSetId);
         this._map.removeLayer(this);
         delete this;
     },
@@ -133,37 +135,7 @@ ME.Group = L.FeatureGroup.extend({
     renderLayer: function () {
         // 清除掉不在范围的图
         this.filterLayer.call(this);
-        var bouns = this._map.getBounds(),
-            ary = [bouns.getWest(), bouns.getSouth(), bouns.getEast(), bouns.getNorth()],
-            xhr = new XHR(true), status, data, dataSet, _this = this;
-
-        xhr.get(this._map.geturl, {
-            paras: {
-                dataSetId: this.dataSetId,
-                zoom: this._map.getZoom(),
-                bbox: ary.join(',')
-            }
-        }, function (result) {
-            result = JSON.parse(result);
-            status = result.status;
-            data = result.data;
-
-            if (status.msg !== 'success') {
-                return;
-            }
-            console.log('加载成功！');
-            dataSet = data.dataSet;
-            _this.geoType = dataSet.geoType;
-            // 只绘制新加载的数据
-//            var nodes = _this.dataSet ? _this.dataSet.node.filter(function(node){
-//                return _this.dataSet.node.indexOf(node) === -1;
-//            }) : dataSet.node;
-//            var ways = _this.dataSet ? _this.dataSet.way ? _this.dataSet.node.filter(function(way){
-//                return _this.dataSet.way.indexOf(way) === -1;
-//            }) : undefined : dataSet.way;
-            ME.DataToLlayer[_this.geoType](_this, dataSet.node, dataSet.way, dataSet.relation);
-            _this.updateDataSet(dataSet);
-        });
+        this._map.connect.loadData();
     },
     updateDataSet: function (dataSet) {
         this.dataSet = dataSet;
