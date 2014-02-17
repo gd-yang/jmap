@@ -6,57 +6,57 @@
     <meta content="yes" name="apple-mobile-web-app-capable"/>
     <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
     <title>地图demo</title>
-    <link rel="stylesheet" href="/css/leaflet/leaflet.css"/>
-    <link rel="stylesheet" href="/css/leaflet/leaflet.draw.css"/>
+    <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
-    <!--[if lt IE 9]> <script src="/js/mapeditor/lib/es5-shim.js"></script>
-    <script src="/js/mapeditor/lib/es5-sham.js"></script><![endif]-->
-    <script src="/js/mapeditor/lib/xhrRequest.js"></script>
-    <script src="/js/mapeditor/lib/sylvester.js"></script>
-    <script src="/js/leaflet/leaflet-src.js"></script>
-    <script src="/js/leaflet/Leaflet.draw.js"></script>
-    <script src="/js/leaflet/edit/Edit.Poly.js"></script>
-    <script src="/js/leaflet/edit/Edit.SimpleShape.js"></script>
-    <script src="/js/leaflet/edit/Edit.Circle.js"></script>
-    <script src="/js/leaflet/edit/Edit.Rectangle.js"></script>
-    <script src="/js/leaflet/draw/Draw.Feature.js"></script>
-    <script src="/js/leaflet/draw/Draw.Polyline.js"></script>
-    <script src="/js/leaflet/draw/Draw.Polygon.js"></script>
-    <script src="/js/leaflet/draw/Draw.SimpleShape.js"></script>
-    <script src="/js/leaflet/draw/Draw.Rectangle.js"></script>
-    <script src="/js/leaflet/draw/Draw.Circle.js"></script>
-    <script src="/js/leaflet/draw/Draw.Marker.js"></script>
-    <script src="/js/leaflet/util/LatLngUtil.js"></script>
-    <script src="/js/leaflet/util/GeometryUtil.js"></script>
-    <script src="/js/leaflet/util/LineUtil.Intersect.js"></script>
-    <script src="/js/leaflet/util/Polyline.Intersect.js"></script>
-    <script src="/js/leaflet/util/Polygon.Intersect.js"></script>
-    <script src="/js/leaflet/Control.Draw.js"></script>
-    <script src="/js/leaflet/toolbar/Tooltip.js"></script>
-    <script src="/js/leaflet/toolbar/Toolbar.js"></script>
-    <script src="/js/leaflet/toolbar/EditToolbar.js"></script>
-    <script src="/js/leaflet/toolbar/EditToolbar.Edit.js"></script>
-    <script src="/js/leaflet/toolbar/EditToolbar.Delete.js"></script>
-    <script src="/js/leaflet/toolbar/DrawToolbar.js"></script>
-    <script src="/js/mapeditor/MapEditor.js"></script>
-    <script src="/js/mapeditor/Map.js"></script>
-    <script src="/js/mapeditor/Handler.js"></script>
-    <script src="/js/mapeditor/handler/SelectRoad.js"></script>
-    <script src="/js/mapeditor/handler/PathDraggable.js"></script>
-    <script src="/js/mapeditor/handler/PolylineMoveable.js"></script>
-    <script src="/js/mapeditor/handler/PolylineRotateable.js"></script>
-    <script src="/js/mapeditor/handler/CircleMoveable.js"></script>
-    <script src="/js/mapeditor/Config.js"></script>
-    <script src="/js/mapeditor/data/Connect.js"></script>
-    <script src="/js/mapeditor/control/DeleteControl.js"></script>
-    <script src="/js/mapeditor/control/DataControl.js"></script>
-    <script src="/js/mapeditor/util/State.js"></script>
-    <script src="/js/mapeditor/group/Group.js"></script>
-    <script src="/js/mapeditor/entity/Polygon.js"></script>
-    <script src="/js/mapeditor/entity/Polyline.js"></script>
-    <script src="/js/mapeditor/entity/Marker.js"></script>
-    <script src="/js/mapeditor/util/Hash.js"></script>
-    <script src="/js/mapeditor/data/Changes.js"></script>
+    <!--[if lt IE 9]> <script src="/mapeditor/lib/es5-shim.js"></script>
+    <script src="/mapeditor/lib/es5-sham.js"></script><![endif]-->
+    <script src="/mapeditor/lib/xhrRequest.js"></script>
+    <script src="/mapeditor/lib/sylvester.js"></script>
+    <script src="/mapeditor/leaflet/leaflet-src.js"></script>
+    <script src="/mapeditor/leaflet/Leaflet.draw.js"></script>
+    <script src="/mapeditor/leaflet/edit/Edit.Poly.js"></script>
+    <script src="/mapeditor/leaflet/edit/Edit.SimpleShape.js"></script>
+    <script src="/mapeditor/leaflet/edit/Edit.Circle.js"></script>
+    <script src="/mapeditor/leaflet/edit/Edit.Rectangle.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Feature.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Polyline.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Polygon.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.SimpleShape.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Rectangle.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Circle.js"></script>
+    <script src="/mapeditor/leaflet/draw/Draw.Marker.js"></script>
+    <script src="/mapeditor/leaflet/util/LatLngUtil.js"></script>
+    <script src="/mapeditor/leaflet/util/GeometryUtil.js"></script>
+    <script src="/mapeditor/leaflet/util/LineUtil.Intersect.js"></script>
+    <script src="/mapeditor/leaflet/util/Polyline.Intersect.js"></script>
+    <script src="/mapeditor/leaflet/util/Polygon.Intersect.js"></script>
+    <script src="/mapeditor/leaflet/Control.Draw.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/Tooltip.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/Toolbar.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/EditToolbar.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/EditToolbar.Edit.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/EditToolbar.Delete.js"></script>
+    <script src="/mapeditor/leaflet/toolbar/DrawToolbar.js"></script>
+    <script src="/mapeditor/src/MapEditor.js"></script>
+    <script src="/mapeditor/src/Map.js"></script>
+    <script src="/mapeditor/src/Handler.js"></script>
+    <script src="/mapeditor/src/handler/SelectRoad.js"></script>
+    <script src="/mapeditor/src/handler/Delete.js"></script>
+    <script src="/mapeditor/src/handler/PathDraggable.js"></script>
+    <script src="/mapeditor/src/handler/PolylineMoveable.js"></script>
+    <script src="/mapeditor/src/handler/PolylineRotateable.js"></script>
+    <script src="/mapeditor/src/handler/CircleMoveable.js"></script>
+    <script src="/mapeditor/src/Config.js"></script>
+    <script src="/mapeditor/src/data/Connect.js"></script>
+    <script src="/mapeditor/src/control/DataControl.js"></script>
+    <script src="/mapeditor/src/util/State.js"></script>
+    <script src="/mapeditor/src/group/Group.js"></script>
+    <script src="/mapeditor/src/entity/Polygon.js"></script>
+    <script src="/mapeditor/src/entity/Polyline.js"></script>
+    <script src="/mapeditor/src/entity/Marker.js"></script>
+    <script src="/mapeditor/src/util/Hash.js"></script>
+    <script src="/mapeditor/src/data/Changes.js"></script>
     <style>
         html, body {
             padding: 0;

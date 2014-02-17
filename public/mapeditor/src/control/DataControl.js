@@ -45,7 +45,7 @@ ME.DataControl = L.Control.extend({
         this.container.appendChild(this.delete_btn);
         this.container.appendChild(this.road_btn);
         this.container.appendChild(this.menu_list);
-        this.deleteControl = new ME.Handler.DeleteControl(this._map);
+        this.deleteControl = new ME.Handler.Delete(this._map);
         //console.log(this._map)
         L.DomEvent.addListener(this.menu_btn, 'click', this.toggleShow, this);
         L.DomEvent.addListener(this.save_btn, 'click', this.saveData, this);

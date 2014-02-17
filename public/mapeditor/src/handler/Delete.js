@@ -1,11 +1,11 @@
-ME.Handler.DeleteControl = L.Handler.extend({
+ME.Handler.Delete = L.Handler.extend({
     initialize : function(map){
         L.Handler.prototype.initialize.call(this, map);
     },
     addHooks : function(){
         var _this = this;
         this._map.editingGroup.eachLayer(function(layer){
-             layer.on('contextmenu', _this._removeLayerAction, _this);
+            layer.on('contextmenu', _this._removeLayerAction, _this);
         });
     },
     removeHooks : function(){

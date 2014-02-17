@@ -3445,7 +3445,7 @@ L.Icon.Default.imagePath = (function () {
 		if (matches) {
 			path = src.split(leafletRe)[0];
 			//return (path ? path + '/' : '') + 'images';
-            return '/images';
+            return '/mapeditor/images';
 		}
 	}
 }());

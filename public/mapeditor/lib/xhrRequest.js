@@ -126,7 +126,7 @@
             return;
         }
         var id = "cross_domain_for_ie_fla";
-        swfpath = swfpath || "/swf/request.swf";
+        swfpath = swfpath || "/mapeditor/swf/request.swf";
 
         var o = '';
         o += '<object data="'+swfpath+'" type="application/x-shockwave-flash"';
@@ -203,7 +203,7 @@
 //        }
 //        else {
             createCrossXHR = _FlaCrossRequest;
-            FlashAjax.install('/swf/request.swf');
+            FlashAjax.install('/mapeditor/swf/request.swf');
             return _FlaCrossRequest();
 //        }
 //        return null;

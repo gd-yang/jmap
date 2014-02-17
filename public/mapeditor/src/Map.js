@@ -10,7 +10,6 @@
 
             this.defaultGroup = new ME.Group();
             this.changes = new ME.Changes();
-            this.connect = new ME.Connect({map : this});
             this.editingGroup = this.defaultGroup;
             this.openedGroup = new ME.Hash();
             this.addLayer(this.defaultGroup);
@@ -35,7 +34,7 @@
 
             this.on('dragend zoomend', function(){
                 this.openedGroup.each(function(group){
-                    group.renderLayer.call(group);
+                    group.loadLayers.call(group);
                 });
             });
         }
