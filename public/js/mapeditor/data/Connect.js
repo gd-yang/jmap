@@ -71,28 +71,29 @@
         includes: L.Mixin.Events,
         initialize: function (options) {
             this._map = options.map;
-            this.loadDataUrl = options.loadDataUrl;
-            this.saveDataUrl = options.saveDataUrl;
         },
         loadData: function (options) {
             options = options || {};
             var http = new XHR(true),
+                map = this._map,
+                config = ME.Config,
                 bounds = this._map.getBounds(),
                 ary = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
-                group = this._map.editingGroup,
+                group = map.editingGroup,
                 dataSetId = group.dataSetId,
-                _this = this,
+                url = config.data.loadUrl,
                 // 初始化加载参数
-                paras = options.paras || ME.Config.data.loadParas;
-                paras.zoom = _this._map.getZoom();
+                paras = options.paras || config.data.loadParas;
+                paras.zoom = map.getZoom();
                 paras.bbox = ary.join(',');
-                paras.dataSetId = dataSetId;
+                paras.dataSetId = dataSetId,
+
             // 开始加载
-            http.getJSON(this.loadDataUrl, {
+            http.get(url, {
                 paras : paras
             }, function (result) {
                 var data, status, dataSet;
-                //result = JSON.parse(result);
+                result = JSON.parse(result);
                 status = result.status;
                 data = result.data;
 
@@ -105,8 +106,23 @@
                 group.updateDataSet(dataSet);
             });
         },
-        saveData: function () {
+        saveData: function (options) {
+            options = options || {};
+            var config = ME.Config,
+                map = this._map,
+                url = config.data.saveUrl,
+                xhr = new XHR(true),
+                paras = options.paras || config.data.saveParas;
 
+            paras.dataSetId = map.editingGroup.dataSetId;
+            paras.xml = map.changes.toXML();
+            xhr.post(url, {
+                    paras : paras
+                }, function(rst){
+                    map.changes.clear();
+                    console.log('rst:', rst);
+                }
+            );
         }
     });
     ME.Connect = Connect;

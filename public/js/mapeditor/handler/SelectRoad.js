@@ -1,0 +1,77 @@
+/**
+ * 	
+ * click on map to select road
+ * @memberOf  ME.Handler
+ * @constructor
+ * @name ME/Handler/SelectRoad
+ */
+ME.Handler.SelectRoad = L.Handler.extend(
+/**
+ * @lends ME.Handler.ME/Handler/SelectRoad.prototype
+ */
+{
+	includes: L.Mixin.Events,
+	options: {
+		url: 'http://192.168.1.211:8018/gbox/gate?sid=9001',
+        repeatMode: false
+	},
+
+    addHooks : function(){
+        this._map.on('click', this._getRoads, this);
+        this.on('finish', this._drawRoads, this);
+        this._map._container.style.cursor = 'default';
+
+        this.fire('enabled');
+    },
+    removeHooks :function(){
+        this._map.off('click', this._getRoads, this);
+        this.off('finish', this._drawRoads, this);
+        this._map._container.style.cursor = '-webkit-grab';
+
+        this.fire('disabled');
+    },
+    /**
+     * click call back
+     * @private
+     * @param e  {Object} e
+     */
+    _getRoads : function(e){
+        var _this = this;
+        var url = this.options.url;
+        var xhr = new XHR(true);
+        xhr.getJSON(url,{
+            paras:{
+                sid : '9001',
+                xy: e.latlng.lng + ',' + e.latlng.lat
+            }
+        }, function(data){
+            var status = data.status;
+            var roads = data.data;
+            if (roads !== null){
+                roads = roads.map(function(road){
+	                    road = road.split(';');
+	                    road = road.map(function(latlng){
+	                        latlng = latlng.split(',');
+	                        return new L.LatLng(latlng[1], latlng[0]);
+	                    });
+	                    return road;
+                });
+
+                _this.fire('finish', {roads : roads});
+            }
+
+            _this.disable();
+            if(_this.options.repeatMode)
+                _this.enable();
+        })
+    },
+    _drawRoads : function(e){
+        var roads = e.roads, _this = this;
+        roads.forEach(function(road){
+            var path = new ME.Polyline({
+                latlngs : road
+            });
+            _this._map.editingGroup.addLayer(path);
+        })
+    }
+});

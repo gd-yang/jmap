@@ -1,51 +1,27 @@
 ;(function(ME){
     ME.Map = L.Map.extend({
-        initialize : function(id, options, draw_options, data_control_options){
-            var config = ME.Config, cloudmadeUrl = config.map.tileUrlTemplate,
-                cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 20});
-            options.layers || (options.layers = [cloudmade]);
+        initialize : function(id, options, draw_options){
+            var config = ME.Config,
+                tileLayerTemplate = config.map.tileUrlTemplate,
+                tileLayer = new L.TileLayer(tileLayerTemplate, {maxZoom: 20});
+            // 初始化地图
+            options.layers || (options.layers = [tileLayer]);
             L.Map.prototype.initialize.call(this,id, options);
 
             this.defaultGroup = new ME.Group();
             this.changes = new ME.Changes();
-            this.connect = new ME.Connect({
-                map : this,
-                loadDataUrl : config.data.loadDataUrl
-            });
-            this.addLayer(this.defaultGroup);
+            this.connect = new ME.Connect({map : this});
             this.editingGroup = this.defaultGroup;
             this.openedGroup = new ME.Hash();
-            draw_options = draw_options || {
-                position: 'topright',
-                draw: {
-                    polyline: {
-                        metric: true
-                    },
-                    polygon: {
-                        allowIntersection: false,
-                        showArea: true,
-                        drawError: {
-                            color: '#b00b00',
-                            timeout: 1000
-                        },
-                        shapeOptions: {
-                            color: '#bada55'
-                        }
-                    },
-                    circle: {
-                        shapeOptions: {
-                            color: '#662d91'
-                        }
-                    },
-                    marker: true
-                },
-                edit: {
-                    featureGroup: this.editingGroup
-                }
-            }
+            this.addLayer(this.defaultGroup);
             // 绘图工具
+            draw_options = draw_options || config.options.draw;
+            draw_options.edit = draw_options.edit || {};
+            draw_options.edit.featureGroup = this.editingGroup;
             this.drawControl = new L.Control.Draw(draw_options);
-            this.addControl(this.drawControl);
+            this.addControl(this.drawControl)
+                .addControl(L.control.scale());
+
             // 绘制到哪个Group里面
             this.on('draw:created', function (e) {
                 var type = e.layerType,
@@ -57,21 +33,11 @@
                 this.editingGroup.addLayer(layer);
             });
 
-            this.addControl(new ME.DataControl());
-
-            L.control.scale().addTo(this);
-
             this.on('dragend zoomend', function(){
                 this.openedGroup.each(function(group){
                     group.renderLayer.call(group);
                 });
             });
-        },
-        showDrowControl : function(){
-            this.addControl(this.drawControl);
-        },
-        closeDrowControl : function(){
-            this.addControl(this.drawControl);
         }
     });
 })(MapEditor);

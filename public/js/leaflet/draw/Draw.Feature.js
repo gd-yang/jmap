@@ -8,13 +8,6 @@ L.Draw.Feature = L.Handler.extend({
         this._container = map._container;
         this._overlayPane = map._panes.overlayPane;
         this._popupPane = map._panes.popupPane;
-        this._data = {
-            id: '',
-            loc: new L.LatLng(0, 0),
-            tags: {
-
-            }
-        }
 
         // Merge default shapeOptions options with custom shapeOptions
         if (options && options.shapeOptions) {
@@ -42,7 +35,7 @@ L.Draw.Feature = L.Handler.extend({
 
         L.Handler.prototype.disable.call(this);
 
-        this._map.fire('draw:drawstop', { layerType: this.type });
+        this._map.fire('draw:drawstop', { layerType : this.type });
 
         this.fire('disabled', { handler: this.type });
     },

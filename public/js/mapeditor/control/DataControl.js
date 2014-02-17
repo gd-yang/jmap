@@ -3,7 +3,8 @@ ME.DataControl = L.Control.extend({
         position: 'topleft'
     },
     initialize:function(options){
-        //L.Control.prototype.initialize.call(this, options);
+        L.Control.prototype.initialize.call(this, options);
+        this.selectRoad = new ME.Handler.SelectRoad(map);
         this.container = L.DomUtil.create('div', 'leaflet-dataset-control leaflet-bar');
         this.menu_btn = L.DomUtil.create('a', 'leaflet-dataset-control-menu');
         this.menu_btn.innerHTML = "≡";
@@ -31,17 +32,25 @@ ME.DataControl = L.Control.extend({
         this.delete_btn.innerHTML = 'x';
         this.delete_btn.href = 'javascirpt:void(0)';
         this.delete_btn.title = 'delete dataset!';
+
+        // 选路按钮
+        this.road_btn = L.DomUtil.create('a', 'leaflet-select-road-menu');
+        this.road_btn.innerHTML = '∝';
+        this.road_btn.href = 'javascirpt:void(0)';
+        this.road_btn.title = 'start select roads!';
     },
     onAdd: function () {
         this.container.appendChild(this.menu_btn);
         this.container.appendChild(this.save_btn);
         this.container.appendChild(this.delete_btn);
+        this.container.appendChild(this.road_btn);
         this.container.appendChild(this.menu_list);
-        this.deleteControl = new ME.DeleteControl(this._map);
+        this.deleteControl = new ME.Handler.DeleteControl(this._map);
         //console.log(this._map)
         L.DomEvent.addListener(this.menu_btn, 'click', this.toggleShow, this);
         L.DomEvent.addListener(this.save_btn, 'click', this.saveData, this);
         L.DomEvent.addListener(this.delete_btn, 'click', this.toggleDel, this);
+        L.DomEvent.addListener(this.road_btn, 'click', this.toggleSelect, this);
         return this.container;
     },
     onRemove : function(map){
@@ -53,11 +62,18 @@ ME.DataControl = L.Control.extend({
         this[method](e);
     },
     toggleDel : function(e){
-        console.log('toggleDel')
+        console.log('toggleDel');
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
         var mt = this.deleteControl.enabled() ? 'disable' : 'enable';
         this.deleteControl[mt]();
+    },
+    toggleSelect : function(e){
+        L.DomEvent.stopPropagation(e);
+        L.DomEvent.preventDefault(e);
+        var mt = this.selectRoad.enabled() ? 'disable' : 'enable';
+        console.log(mt)
+        this.selectRoad[mt]();
     },
     showDataMenu : function(e){
         L.DomEvent.stopPropagation(e);
@@ -70,22 +86,6 @@ ME.DataControl = L.Control.extend({
         this.menu_list.style.display = 'none';
     },
     saveData : function(){
-        var url ="http://119.90.32.30/gbox/gate",
-            xhr = new XHR(true);
-            xhr.post(url, {
-                    paras : {
-                        sid : '8001',
-                        uid : '1080',
-                        eid : '134',
-                        gbox_validate :"{eid:'134',uid:'1080',userid:'1080',uidString:'fa2985264a1645bdb7f3693e25df1e67',eidString:'b9ead9582b764605a3f30c1cea072133',userType:'1',userName:'ali',password:'KFQFDFACABKHAHDHHH',endTag: 'endTag'}",
-                        encode : 'utf-8',
-                        dataSetId : map.editingGroup.dataSetId,
-                        xml : map.changes.toXML()
-                    }
-                }, function(rst){
-                    map.changes.clear();
-                    console.log('rst:', rst);
-                }
-            );
+        map.connect.saveData();
     }
 });

@@ -9,11 +9,10 @@
     <link rel="stylesheet" href="/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/css/leaflet/leaflet.draw.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
-    <!--[if lt IE 9]>
-    <script src="/js/lib/es5-shim.js"></script><![endif]-->
-    <!--[if lt IE 9]>
-    <script src="/js/lib/es5-sham.js"></script><![endif]-->
-    <script src="/js/lib/xhrRequest.js"></script>
+    <!--[if lt IE 9]> <script src="/js/mapeditor/lib/es5-shim.js"></script>
+    <script src="/js/mapeditor/lib/es5-sham.js"></script><![endif]-->
+    <script src="/js/mapeditor/lib/xhrRequest.js"></script>
+    <script src="/js/mapeditor/lib/sylvester.js"></script>
     <script src="/js/leaflet/leaflet-src.js"></script>
     <script src="/js/leaflet/Leaflet.draw.js"></script>
     <script src="/js/leaflet/edit/Edit.Poly.js"></script>
@@ -41,21 +40,23 @@
     <script src="/js/leaflet/toolbar/DrawToolbar.js"></script>
     <script src="/js/mapeditor/MapEditor.js"></script>
     <script src="/js/mapeditor/Map.js"></script>
+    <script src="/js/mapeditor/Handler.js"></script>
+    <script src="/js/mapeditor/handler/SelectRoad.js"></script>
+    <script src="/js/mapeditor/handler/PathDraggable.js"></script>
+    <script src="/js/mapeditor/handler/PolylineMoveable.js"></script>
+    <script src="/js/mapeditor/handler/PolylineRotateable.js"></script>
+    <script src="/js/mapeditor/handler/CircleMoveable.js"></script>
     <script src="/js/mapeditor/Config.js"></script>
     <script src="/js/mapeditor/data/Connect.js"></script>
     <script src="/js/mapeditor/control/DeleteControl.js"></script>
     <script src="/js/mapeditor/control/DataControl.js"></script>
     <script src="/js/mapeditor/util/State.js"></script>
-    <script src="/js/mapeditor/util/EntityState.js"></script>
     <script src="/js/mapeditor/group/Group.js"></script>
-    <script src="/js/mapeditor/group/SelectLayers.js"></script>
     <script src="/js/mapeditor/entity/Polygon.js"></script>
     <script src="/js/mapeditor/entity/Polyline.js"></script>
     <script src="/js/mapeditor/entity/Marker.js"></script>
     <script src="/js/mapeditor/util/Hash.js"></script>
     <script src="/js/mapeditor/data/Changes.js"></script>
-    <script src="/js/mapeditor/util/SelectRoad.js"></script>
-    <script src="/js/mapeditor/util/DataToLayer.js"></script>
     <style>
         html, body {
             padding: 0;
@@ -82,6 +83,8 @@
         center: new L.LatLng(31.20410238002499, 121.43068313598633),
         zoom: 15
     });
+    // 添加数据据控制
+    map.addControl(new ME.DataControl());
 
     $('.leaflet-dataset-list ul li .view').on('click',function () {
         var dataSetId = $(this).parent().attr('data-dataId'), group;
@@ -127,7 +130,7 @@
                 map.openedGroup[dataSetId].editDisable();
             });
 
-    var selectRoad = new ME.SelectRoad(map);
+    var selectRoad = new ME.Handler.SelectRoad(map);
 
 </script>
 </body>

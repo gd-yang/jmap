@@ -87,7 +87,7 @@
             this.fire('close', {group: this});
             this._map.openedGroup.remove(this.dataSetId);
             this._map.removeLayer(this);
-            delete this;
+            //delete this;
         },
         _fireEdit: function (e) {
             this.fire('editAble', {group: this});
@@ -102,6 +102,7 @@
             this.editLayer = e.layer;
             this.editLayer.fire('focusIn', {layer: this.editLayer});
             this.editLayer.editing.enable();
+            this.editLayer.dragging.enable();
             this.editLayer.on('edit', this._fireChanges, this);
             if (this.geoType !== '1') {
                 this.setState(this.editLayer, 'edit');
