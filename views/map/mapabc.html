@@ -8,6 +8,7 @@
     <title>地图demo</title>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
+    <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
     <!--[if lt IE 9]> <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script><![endif]-->
@@ -57,6 +58,16 @@
     <script src="/mapeditor/src/entity/Marker.js"></script>
     <script src="/mapeditor/src/util/Hash.js"></script>
     <script src="/mapeditor/src/data/Changes.js"></script>
+
+
+    <script src="/mapeditor/src/mode/Mode.js"></script>
+    <script src="/mapeditor/src/mode/DrawCircle.js"></script>
+    <script src="/mapeditor/src/mode/DrawMark.js"></script>
+    <script src="/mapeditor/src/mode/DrawPolygon.js"></script>
+    <script src="/mapeditor/src/mode/DrawPolyline.js"></script>
+    <script src="/mapeditor/src/mode/DrawRectangle.js"></script>
+    <script src="/mapeditor/src/mode/SelectRoad.js"></script>
+    <script src="/mapeditor/src/control/Toolbar.js"></script>
     <style>
         html, body {
             padding: 0;
@@ -85,6 +96,7 @@
     });
     // 添加数据据控制
     map.addControl(new ME.DataControl());
+    map.addControl(new ME.Control.Toolbar());
 
     $('.leaflet-dataset-list ul li .view').on('click',function () {
         var dataSetId = $(this).parent().attr('data-dataId'), group;
