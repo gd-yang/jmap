@@ -63,20 +63,20 @@ ME.Control.Toolbar = L.Control.extend(
 				{
 					name: "pointSelectRoad",
 					title: "点选路",
-					className: "mapeditor-toolbar-draw-polyline",
+					className: "mapeditor-toolbar-road-pointroad",
 					mode: ME.Mode.SelectRoad
 				},
 				{
 					name: "areaSelectRoad",
 					//innerHTML: "画面",
 					title: "区域选路",
-					className: "mapeditor-toolbar-draw-polygon",
+					className: "mapeditor-toolbar-road-arearoad",
 					mode: ME.Mode.AreaSelectRoad
 				},
 				{
 					name: "getPolygonFromRoads",
 					title: "生成区域",
-					className: "mapeditor-toolbar-draw-marker",
+					className: "mapeditor-toolbar-road-roadstoarea",
 					handler: function(){
 						var url = "http://119.90.32.30/gbox/gate?sid=8002";
 						var latlngs=[];
@@ -89,7 +89,15 @@ ME.Control.Toolbar = L.Control.extend(
 							latlngs.push(arr.join(";"));
 						});
 						ME.roadsToArea({url:url,line:latlngs.join("-")},function(data){
-							console.log(data)
+							data = JSON.parse(data);
+							var latlngs = data.data[0].split(";");
+							var coor = [];
+							latlngs.forEach(function(latlng){
+								var arr = latlng.split(",");
+								var ll = new L.LatLng(arr[1],arr[0]);
+								coor.push(ll);
+							})
+							map.addLayer(new ME.Polygon({latlngs:coor}));
 						});
 					}
 				}

@@ -78,3 +78,14 @@
 .mapeditor-toolbar-draw-marker{
 	background-position: -122px -2px;
 }
+
+
+.mapeditor-toolbar-road-pointroad{
+	background-position: -300px -2px;
+}
+.mapeditor-toolbar-road-arearoad{
+	background-position: -327px -2px;
+}
+.mapeditor-toolbar-road-roadstoarea{
+	background-position: -272px -2px;
+}

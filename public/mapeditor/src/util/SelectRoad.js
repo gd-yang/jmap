@@ -1,3 +1,9 @@
+/**
+ * select roads by point
+ * @param  {Object}   config  [description]
+ * @param  {Function} cb      [description]
+ * @param  {Object}   context [description]
+ */
 ME.pointSelectRoad = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.getJSON(config.url,{
@@ -10,6 +16,12 @@ ME.pointSelectRoad = function(config,cb,context){
     });
 };
 
+/**
+ * select roads by area
+ * @param  {Object}   config  [description]
+ * @param  {Function} cb      [description]
+ * @param  {Object}   context [description]
+ */
 ME.areaSelectRoad = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.post(config.url,{
@@ -22,6 +34,12 @@ ME.areaSelectRoad = function(config,cb,context){
     });
 };
 
+/**
+ * generate area surrounded by roads
+ * @param  {Object}   config  [description]
+ * @param  {Function} cb      [description]
+ * @param  {Object}   context [description]
+ */
 ME.roadsToArea = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.post(config.url,{
