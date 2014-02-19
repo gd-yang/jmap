@@ -33,9 +33,7 @@ ME.Handler.PolylineRotateable = ME.Handler.PathDraggable.extend(
 		disalbe: function(){
 			ME.Handler.PathDraggable.prototype.disable.apply(this);
 			this.path._map.removeLayer(this._centerMarker);
-
-
-			this.off("dragend",this._updateCenter,this);
+			this.off("dragend", this._updateCenter,this);
 		},
 
 		_updateCenter: function(){			
@@ -112,6 +110,5 @@ L.Polyline.addInitHook(function () {
 		if (ME.Handler.PolylineRotateable && this.options.rotateable !== false) {
 			this.rotating = new ME.Handler.PolylineRotateable(this);
 		}
-
 	},this);
 });

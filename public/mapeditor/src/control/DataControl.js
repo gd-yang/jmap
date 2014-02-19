@@ -86,6 +86,6 @@ ME.DataControl = L.Control.extend({
         this.menu_list.style.display = 'none';
     },
     saveData : function(){
-        map.connect.saveData();
+        map.editingGroup.saveLayers();
     }
 });

@@ -15,7 +15,11 @@
 
             this.on('modified', function(e){
                 var layer = e.layer, id = layer._leaflet_id;
-                _this.modified.update(id, layer);
+                if (/^-\d+$/.test(id)){
+                    _this.created.update(id, layer);
+                }else{
+                    _this.modified.update(id, layer);
+                }
                 console.log(_this.toXML());
             });
 

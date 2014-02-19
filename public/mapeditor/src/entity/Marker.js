@@ -18,6 +18,9 @@ ME.Marker = L.Marker.extend({
         this.version = version || '1';
         this.changeset = changeset || '1';
     },
+    editEnable : function(){
+
+    },
     toXML: function () {
         var _node = '<node', tags = this.tags, tagstr;
         _node += ' id="' + this._leaflet_id + '"';
@@ -32,11 +35,5 @@ ME.Marker = L.Marker.extend({
         _node += tagstr.join('');
         _node += '</node>';
         return _node;
-    },
-    editAble: function () {
-
-    },
-    editDisable: function () {
-
     }
 });

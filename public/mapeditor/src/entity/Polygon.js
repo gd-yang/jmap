@@ -21,6 +21,14 @@ ME.Polygon = L.Polygon.extend({
         this.version = version||'1';
         this.changeset = changeset||'1';
     },
+    editEnable : function(){
+        this.editing.enable();
+        this.dragging.enable();
+    },
+    editDisable : function(){
+        this.editing.disable();
+        this.dragging.disable();
+    },
     toXML : function(){
         var _line, nds = this.nd.slice(),  tags = this.tags, tagstr;
         _line = '<way';

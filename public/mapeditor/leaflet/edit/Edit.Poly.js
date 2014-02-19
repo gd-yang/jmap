@@ -18,22 +18,50 @@ L.Edit.Poly = L.Handler.extend({
     },
 
     addHooks: function () {
-        if (this._poly._map) {
+        var poly = this._poly;
+        if (poly._map) {
             if (!this._markerGroup) {
                 this._initMarkers();
             }
-            this._poly._map.addLayer(this._markerGroup);
+            poly._map.addLayer(this._markerGroup);
+            poly.on('marker:remove marker:add marker:modify', this._fireChanges, this);
         }
     },
 
     removeHooks: function () {
-        if (this._poly._map) {
-            this._poly._map.removeLayer(this._markerGroup);
+        var poly = this._poly;
+        if (poly._map) {
+            poly._map.removeLayer(this._markerGroup);
+            poly.off('marker:remove marker:add marker:modify', this._fireChanges,this);
             delete this._markerGroup;
             delete this._markers;
         }
     },
-
+    _fireChanges : function(e){
+        var target = e.target,
+            evtType = e.type,
+            changes,
+            layer = e.layer,
+            markers = this._markers,
+            poly = this._poly,
+            map = poly._map;
+        if (map){
+            changes = map.changes;
+            switch (evtType) {
+                case 'marker:remove' :
+                    changes.fire('deleted', {layer : layer})
+                        .fire('modified', {layer : poly});
+                    break;
+                case 'marker:add' :
+                    changes.fire('created', {layer : layer});
+                    break;
+                case 'marker:modify' :
+                    changes.fire('modified', {layer : layer})
+                        .fire('modified', {layer : poly});
+                    break;
+            }
+        }
+    },
     updateMarkers: function () {
         this._markerGroup.clearLayers();
         this._initMarkers();
@@ -94,19 +122,16 @@ L.Edit.Poly = L.Handler.extend({
 
     _removeMarker: function (marker) {
         var i = marker._index;
-
         this._markerGroup.removeLayer(marker);
         this._markers.splice(i, 1);
         this._poly.spliceLatLngs(i, 1);
         this._poly.nd.splice(i, 1);
         this._updateIndexes(i, -1);
-
+        this._poly.fire('marker:remove', {layer : marker});
         marker
             .off('drag', this._onMarkerDrag, this)
             .off('dragend', this._fireEdit, this)
             .off('click', this._onMarkerClick, this);
-
-        this._poly._map.changes.fire('deleted', {layer: marker});
     },
 
     getMarkers: function () {
@@ -132,8 +157,8 @@ L.Edit.Poly = L.Handler.extend({
     },
     _onMarkerDragEnd: function (e) {
         var marker = e.target, method;
-        method = /^-\d+$/.test(marker._leaflet_id) ? 'created' : 'modified';
-        this._poly._map.changes.fire(method, {layer: marker});
+        method = /^-\d+$/.test(marker._leaflet_id) ? 'marker:add' : 'marker:modify';
+        this._poly.fire(method, {layer: marker});
     },
     _onMarkerClick: function (e) {
         var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
@@ -226,7 +251,7 @@ L.Edit.Poly = L.Handler.extend({
         };
 
         onClick = function () {
-            this._poly._map.changes.fire('created', {layer: marker});
+            this._poly.fire('marker:add', {layer: marker});
             onDragStart.call(this);
             onDragEnd.call(this);
             this._fireEdit();
@@ -266,7 +291,6 @@ L.Polyline.addInitHook(function () {
 
     if (L.Edit.Poly) {
         this.editing = new L.Edit.Poly(this);
-
         if (this.options.editable) {
             this.editing.enable();
         }
