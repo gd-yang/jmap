@@ -48,7 +48,7 @@ L.Circle.addInitHook(function () {
 			return;
 		}
 
-		if (ME.Handler.CircleMoveable) {
+		if (ME.Handler.CircleMoveable && this.options.draggable !== false) {
 			this.dragging = new ME.Handler.CircleMoveable(this);
 		}
 	},this);

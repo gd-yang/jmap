@@ -108,12 +108,14 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		if(this.path.editing.enabled()==false) return;
 
 		this.path.editing.disable();
+		console.log("disable")
 	},
 
 	_enableEdit:function(){
 		if(this.path.editing.enabled()) return;
 
 		this.path.editing.enable();
+		console.log("enable")
 	},
 
 	/**

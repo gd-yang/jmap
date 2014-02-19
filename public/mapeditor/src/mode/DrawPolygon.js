@@ -17,8 +17,6 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
     initialize: function(map){
         var handler = new L.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
-
-        this._map.on('draw:created',this._finish,this);
     },
 
     _finish: function(data){
@@ -32,7 +30,7 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
 
         layer.editing.enable();
 
-        layer.dragging.enable();
+        layer.rotating.enable();
     }
 
 

@@ -18,7 +18,7 @@ ME.Mode.DrawPolyline = ME.Mode.extend(
         var handler = new L.Draw.Polyline(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
 
-        this._map.on('draw:created',this._finish,this);
+        map._drawPolylineMode = this;
     },
 
     _finish: function(data){

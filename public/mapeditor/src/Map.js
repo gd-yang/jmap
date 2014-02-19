@@ -18,19 +18,19 @@
             draw_options.edit = draw_options.edit || {};
             draw_options.edit.featureGroup = this.editingGroup;
             this.drawControl = new L.Control.Draw(draw_options);
-            this.addControl(this.drawControl)
+            this//.addControl(this.drawControl)
                 .addControl(L.control.scale());
 
             // 绘制到哪个Group里面
-            this.on('draw:created', function (e) {
-                var type = e.layerType,
-                    layer = e.layer;
+            // this.on('draw:created', function (e) {
+            //     var type = e.layerType,
+            //         layer = e.layer;
 
-                if (type === 'marker') {
-                    layer.bindPopup('A popup!');
-                }
-                this.editingGroup.addLayer(layer);
-            });
+            //     if (type === 'marker') {
+            //         layer.bindPopup('A popup!');
+            //     }
+            //     this.editingGroup.addLayer(layer);
+            // });
 
             this.on('dragend zoomend', function(){
                 this.openedGroup.each(function(group){

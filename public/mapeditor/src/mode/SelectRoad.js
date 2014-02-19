@@ -18,14 +18,17 @@ ME.Mode.SelectRoad = ME.Mode.extend(
         var handler = new ME.Handler.SelectRoad(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
 
-        this._handler.on('finish',this._finish,this);
+        map._selectRoadMode = this;
     },
 
-    _finish: function(data){
-        var that = this;
-        data.latlngs.forEach(function(latlng){
-            var layer = new L.Polyline(latlng,{className: "autonavi-road"});
-            that._map.addLayer(layer);
-        });
+    _finish: function(e){
+        var roads = e.roads, _this = this;
+        if(e.type != "pointSelectRoad") return;
+        roads.forEach(function(road){
+            var path = new ME.Polyline({
+                latlngs : road
+            });
+            _this._map.editingGroup.addLayer(path);
+        })
     }
 });
