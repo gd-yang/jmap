@@ -90,7 +90,8 @@
         var dataSetId = $(this).parent().attr('data-dataId'), group;
         if (!map.openedGroup.has(dataSetId)) {
             map.openedGroup.add(dataSetId,new ME.Group({
-                dataSetId: dataSetId
+                _group_id : dataSetId,
+                connect : new ME.Connect(map)
             }));
         }
         map.addLayer(map.openedGroup[dataSetId]);
@@ -109,9 +110,10 @@
         var dataSetId = $(this).parent().attr('data-dataId'), group;
 
         if (!map.openedGroup[dataSetId]) {
-            map.openedGroup[dataSetId] = new ME.Group({
-                dataSetId: dataSetId
-            });
+            map.openedGroup.add(dataSetId,new ME.Group({
+                _group_id : dataSetId,
+                connect : new ME.Connect(map)
+            }));
         }
         map.addLayer(map.openedGroup[dataSetId]);
         map.editingGroup = map.openedGroup[dataSetId];

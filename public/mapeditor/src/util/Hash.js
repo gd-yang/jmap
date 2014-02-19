@@ -18,7 +18,6 @@
         },
         has: function (k) {
             var type = typeof k;
-            console.log(type)
             if (type === 'string' || type === 'number') {
                 return this.hasOwnProperty(k);
             } else if (type === 'function' && this.some(k)) {

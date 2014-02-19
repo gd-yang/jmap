@@ -66,16 +66,12 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		this._newPos = newPoint;
 		if (!offset.x && !offset.y) { return; };
 
-
 		L.DomEvent.preventDefault(e);
 
 		if (!this._moved) {
 			this._disableEdit();
-
 			this.fire('dragstart');
-
 			this._moved = true;
-
 			L.DomUtil.addClass(document.body, 'leaflet-dragging');
 			L.DomUtil.addClass((e.target || e.srcElement), 'leaflet-drag-target');
 		}
@@ -95,9 +91,8 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	},
 
 	_onUp: function (e) {
+        this._enableEdit();
 		L.Draggable.prototype._onUp.apply(this,[e]);
-
-		this._enableEdit();
 	},
 
 	_transform: function(){
@@ -106,13 +101,11 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 
 	_disableEdit: function(){
 		if(this.path.editing.enabled()==false) return;
-
 		this.path.editing.disable();
 	},
 
 	_enableEdit:function(){
 		if(this.path.editing.enabled()) return;
-
 		this.path.editing.enable();
 	},
 
