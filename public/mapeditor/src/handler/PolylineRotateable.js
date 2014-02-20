@@ -107,7 +107,7 @@ L.Polyline.addInitHook(function () {
 			return;
 		}
 
-		if (ME.Handler.PolylineRotateable && this.options.rotateable) {
+		if (ME.Handler.PolylineRotateable && this.options.rotateable !== false) {
 			this.rotating = new ME.Handler.PolylineRotateable(this);
 		}
 	},this);

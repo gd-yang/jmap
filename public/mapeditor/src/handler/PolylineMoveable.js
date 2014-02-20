@@ -41,7 +41,7 @@ L.Polyline.addInitHook(function () {
     }
 
 	this.on("add",function(){
-        if (ME.Handler.PolylineMoveable) {
+        if (ME.Handler.PolylineMoveable  && this.options.draggable !== false) {
             this.dragging = new ME.Handler.PolylineMoveable(this);
         }
 	},this);

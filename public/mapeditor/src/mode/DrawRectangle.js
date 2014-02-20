@@ -17,8 +17,6 @@ ME.Mode.DrawRectangle = ME.Mode.extend(
     initialize: function(map){
         var handler = new L.Draw.Rectangle(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
-
-        this._map.on('draw:created',this._finish,this);
     },
 
     _finish: function(data){

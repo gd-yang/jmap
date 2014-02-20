@@ -37,6 +37,8 @@ ME.Mode = L.Class.extend(
 
         this._handler.enable();
         this._enabled = true;
+
+        this._map.on('draw:created',this._finish,this);
     },
 
     /**
@@ -47,6 +49,8 @@ ME.Mode = L.Class.extend(
 
         this._handler.disable();
         this._enabled = false;
+
+        this._map.off('draw:created',this._finish,this);
     },
 
 
@@ -54,6 +58,7 @@ ME.Mode = L.Class.extend(
         if(!this._enabled) return;
 
         this._enabled = false;
+        this._map.off('draw:created',this._finish,this);
     },
 
     /**

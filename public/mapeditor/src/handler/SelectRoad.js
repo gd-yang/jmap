@@ -18,14 +18,14 @@ ME.Handler.SelectRoad = L.Handler.extend(
 
     addHooks : function(){
         this._map.on('click', this._getRoads, this);
-        this.on('finish', this._drawRoads, this);
+        //this._map.on('draw:created', this._drawRoads, this);
         this._map._container.style.cursor = 'default';
 
         this.fire('enabled');
     },
     removeHooks :function(){
         this._map.off('click', this._getRoads, this);
-        this.off('finish', this._drawRoads, this);
+        //this._map.off('draw:created', this._drawRoads, this);
         this._map._container.style.cursor = '-webkit-grab';
 
         this.fire('disabled');
@@ -39,12 +39,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
         var _this = this;
         var url = this.options.url;
         var xhr = new XHR(true);
-        xhr.getJSON(url,{
-            paras:{
-                sid : '9001',
-                xy: e.latlng.lng + ',' + e.latlng.lat
-            }
-        }, function(data){
+        var cb = function(data){
             var status = data.status;
             var roads = data.data;
             if (roads !== null){
@@ -57,16 +52,19 @@ ME.Handler.SelectRoad = L.Handler.extend(
 	                    return road;
                 });
 
-                _this.fire('finish', {roads : roads});
+                _this._map.fire('draw:created', {roads : roads, type:"pointSelectRoad"});
             }
 
             _this.disable();
             if(_this.options.repeatMode)
                 _this.enable();
-        })
+        };
+
+        ME.pointSelectRoad({url:this.options.url,lng:e.latlng.lng,lat:e.latlng.lat},cb,this);
     },
     _drawRoads : function(e){
         var roads = e.roads, _this = this;
+        if(e.type != "pointSelectRoad") return;
         roads.forEach(function(road){
             var path = new ME.Polyline({
                 latlngs : road
