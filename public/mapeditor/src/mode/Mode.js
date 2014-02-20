@@ -27,9 +27,11 @@ ME.Mode = L.Class.extend(
      * enable Mode, will disable other modes
      */
     enable: function(){
-        if(this._enabled) return;
-        else if(ME.Mode._activeMode)
+        if(this._enabled) {
+            return;
+        }else if(ME.Mode._activeMode){
             ME.Mode._activeMode.disable();
+        }
 
         ME.Mode._activeMode = this;
 
@@ -60,5 +62,5 @@ ME.Mode = L.Class.extend(
      */
     enabled: function(){
         return this._enabled;
-    },
+    }
 });

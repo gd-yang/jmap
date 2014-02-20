@@ -73,7 +73,7 @@ L.Edit.Poly = L.Handler.extend({
         }
         this._markers = [];
 
-        var nd = this._poly.nd,
+        var nd = this._poly.data.nd,
             latlngs = this._poly._latlngs,
             i, j, len, marker;
 
@@ -125,7 +125,7 @@ L.Edit.Poly = L.Handler.extend({
         this._markerGroup.removeLayer(marker);
         this._markers.splice(i, 1);
         this._poly.spliceLatLngs(i, 1);
-        this._poly.nd.splice(i, 1);
+        this._poly.data.nd.splice(i, 1);
         this._updateIndexes(i, -1);
         this._poly.fire('marker:remove', {layer : marker});
         marker
@@ -230,7 +230,7 @@ L.Edit.Poly = L.Handler.extend({
             latlng.lng = marker.getLatLng().lng;
             this._poly.spliceLatLngs(i, 0, latlng);
             this._markers.splice(i, 0, marker);
-            this._poly.nd.splice(i, 0, {ref: marker._leaflet_id});
+            this._poly.data.nd.splice(i, 0, {ref: marker._leaflet_id});
 
             marker.setOpacity(1);
 

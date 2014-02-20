@@ -1,39 +1,40 @@
 /**
- *  
+ *
  * @memberOf  ME.Mode
  * @constructor
  * @name ME/Mode/DrawPolygon
  * @alias ME/Mode/DrawPolygon
  */
 ME.Mode.DrawPolygon = ME.Mode.extend(
-/**
- * @lends ME.Mode.ME/Mode/DrawPolygon.prototype
- */
-{
     /**
-     * init function
-     * @param  {Map} map
+     * @lends ME.Mode.ME/Mode/DrawPolygon.prototype
      */
-    initialize: function(map){
-        var handler = new L.Draw.Polygon(map);
-        ME.Mode.prototype.initialize.apply(this,[map,handler]);
+    {
+        /**
+         * init function
+         * @param  {Map} map
+         */
+        initialize: function (map) {
+            var handler = new L.Draw.Polygon(map);
+            ME.Mode.prototype.initialize.apply(this, [map, handler]);
 
-        this._map.on('draw:created',this._finish,this);
-    },
+            this._map.on('draw:created', this._finish, this);
+        },
 
-    _finish: function(data){
-        var layer = data.layer,
-            layerType = data.layerType;
+        _finish: function (data) {
+            var layer = data.layer,
+                layerType = data.layerType;
 
-        if(layerType != "polygon") return;
+            if (layerType != "polygon") return;
 
-        L.setOptions(layer,{moveable:true,rotateable:true});
-        this.group.addLayer(layer);
+            L.setOptions(layer, {
+                moveable: true,
+                rotateable: true
+            });
+            this.group.addLayer(layer);
 
-        layer.editing.enable();
+            layer.editing.enable();
 
-        layer.dragging.enable();
-    }
-
-
-});
+            layer.dragging.enable();
+        }
+    });

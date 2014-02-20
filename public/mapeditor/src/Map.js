@@ -34,6 +34,14 @@
                     group.loadLayers.call(group);
                 });
             });
+        },
+        addGroup : function(group){
+            L.Map.prototype.addLayer.call(this, group);
+            this.openedGroup.add(group._group_id, group);
+        },
+        removeGroup : function(group){
+            L.Map.prototype.removeLayer.call(this, group);
+            this.openedGroup.remove(group._group_id);
         }
     });
 })(MapEditor);

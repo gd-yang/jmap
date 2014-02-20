@@ -227,10 +227,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_createMarker: function (latlng) {
-		var marker = new ME.Marker({latlng : latlng, options : {
-			icon: this.options.icon,
-			zIndexOffset: this.options.zIndexOffset * 2
-		}});
+		var marker = new ME.Marker({
+            latlng : latlng,
+            options : {
+                icon: this.options.icon,
+                zIndexOffset: this.options.zIndexOffset * 2
+            }
+        });
 
 		this._markerGroup.addLayer(marker);
         this._map.changes.fire('created', {layer : marker});
@@ -410,18 +413,22 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-        var entity = this.type === 'polygon' ? 'Polygon' : 'Polyline', nds, poly;
+        var entity = this.type === 'polygon' ? 'Polygon' : 'Polyline', data, nds, poly;
         nds = this._markers.map(function(marker){
            return  {ref : marker._leaflet_id };
         });
-        if (this.type === 'polygon'){
-            nds.push(nds[0]);
+
+        data = {
+            version : '1',
+            changeset : '1',
+            nd : nds,
+            tag : []
         }
 
 		poly = new ME[entity]({
             latlngs : this._poly.getLatLngs(),
-            nd : nds,
-            options : this.options.shapeOptions
+            options : this.options.shapeOptions,
+            data : data
         });
 
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);

@@ -1,25 +1,17 @@
 ME.Polygon = L.Polygon.extend({
     initialize : function(options){
-        var id, latlngs, styleOptions,tags,nd,markers,version,changeset;
+        var id, latlngs, styleOptions,data;
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
             styleOptions = options.options;
-            tags = options.tags;
-            version = options.version;
-            changeset = options.changeset;
-            nd = options.nd;
+            data = options.data;
         }
-        if (!!nd && nd.length > 0){
-            nd.pop();
-        }
-        this.nd = nd || [];
+
         L.Polygon.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
-        this.tags = tags||[];
+        this.data = data;
         this.type = 'area';
-        this.version = version||'1';
-        this.changeset = changeset||'1';
     },
     editEnable : function(){
         this.editing.enable();
@@ -30,14 +22,12 @@ ME.Polygon = L.Polygon.extend({
         this.dragging.disable();
     },
     toXML : function(){
-        var _line, nds = this.nd.slice(),  tags = this.tags, tagstr;
+        var data = this.data, _line, nds = data.nd||[],
+            tags = data.tag || [], tagstr;
         _line = '<way';
         _line += ' id="' + this._leaflet_id + '"';
-        _line += ' version="' + this.version + '"';
-        _line += ' changeset="' + this.changeset + '">';
-        if (nds.length > 0){
-            nds.push(nds[0]);
-        }
+        _line += ' version="' + data.version + '"';
+        _line += ' changeset="' + data.changeset + '">';
         nds = nds.map(function(nd){
             return '<nd ref="' + nd.ref +'" />'
         });

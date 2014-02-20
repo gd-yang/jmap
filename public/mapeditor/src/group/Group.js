@@ -31,7 +31,7 @@
         editAble: function () {
             var _this = this, map = this._map;
             if (this.editing) {
-                return;
+                return this;
             }
 
             this.editing = true;
@@ -44,16 +44,17 @@
                     layer.dragging.enable();
                     layer.on('dragend', _this._fireChanges, _this);
                 });
-                return;
+                return this;
             }
             this.on('click', this._fireEdit);
             this.on('mouseover', this.overState);
             this.on('mouseout', this.commonState);
+            return this;
         },
         editDisable: function () {
             var _this = this, map = this._map;
             if (!this.editing) {
-                return;
+                return this;
             }
             this.editing = false;
             if (map.openedGroup.empty()){
@@ -65,17 +66,18 @@
                     layer.dragging.disable();
                     layer.off('dragend', _this._fireChanges, _this);
                 });
-                return;
+                return this;
             }
             this._offEdit.call(_this);
             this.off('click', this._fireEdit);
             this.off('mouseover', this.overState);
             this.off('mouseout', this.commonState);
+            return this;
         },
         open: function () {
             var map = this._map;
             if (this.openning) {
-                return;
+                return this;
             }
 
             this.openning = true;
@@ -87,11 +89,12 @@
                 .on('datasave:success', function(e){
                     map.changes.clear();
                 }, this);
+            return this;
         },
         close: function () {
             var map = this._map;
             if (!this.openning) {
-                return;
+                return this;
             }
             this.openning = false;
             if (this.editing) {
@@ -102,6 +105,7 @@
             this.connect.off('dataload:success', this._renderLayers, this);
             map.openedGroup.remove(this._group_id, this);
             map.removeLayer(this);
+            return this;
         },
         _fireEdit: function (e) {
             var _this = this;
@@ -152,17 +156,17 @@
             // 清除掉不在范围的图
             this.filterLayer.call(this);
             this.connect.loadData(this._group_id, this);
+            return this;
         },
         saveLayers : function(){
             this.connect.saveData(this._map.changes, this._group_id, this);
+            return this;
         },
         _renderLayers: function (e) {
             var dataSet = e.data && e.data.dataSet,
-                geoType = dataSet.geoType,
-                nodes = dataSet.node,
-                ways = dataSet.way;
+                geoType = dataSet.geoType;
             this.on('renderLayer', this._renderLayer, this);
-            this.dataToLayer(geoType, nodes, ways);
+            this.dataToLayer(geoType, dataSet);
             this.geoType = geoType;
             this.updateDataSet(dataSet);
         },
@@ -170,28 +174,26 @@
             var layer = e.layer;
             this.addLayer(layer);
         },
-        dataToLayer: function (geoType, nodes, ways) {
+        dataToLayer: function (geoType, dataset) {
             var _this = this,
                 done = {
-                    '1': function (nodes) {
-                        nodes = nodes || [];
+                    '1': function (dataset) {
+                        var nodes = dataset.node || [];
                         var layer;
                         nodes.forEach(function (node) {
                             layer = new ME.Marker({
                                 id: node.id,
                                 latlng: [node.lat, node.lon],
-                                tags: node.tag,
-                                changeset: node.changeset,
-                                version: node.version
+                                data : node
                             });
 
                             _this.fire('renderLayer', {layer: layer}, _this);
                         });
                     },
-                    '2': function (nodes, ways) {
-                        nodes = nodes || [];
-                        ways = ways || [];
-                        var layer, latlngs = [];
+                    '2': function (dataset) {
+                        var nodes = dataset.node || [],
+                            ways = dataset.way || [],
+                            layer, latlngs = [];
 
                         ways.forEach(function (way) {
                             latlngs = way.nd.map(function (n) {
@@ -204,19 +206,16 @@
                             layer = new ME.Polyline({
                                 id: way.id,
                                 latlngs: latlngs,
-                                tags: way.tag,
-                                nd: way.nd,
-                                changeset: way.changeset,
-                                version: way.version
+                                data : way
                             });
                             _this.fire('renderLayer', {layer: layer}, _this);
                         });
                     },
-                    '3': function (nodes, ways) {
-                        nodes = nodes || [];
-                        nodes = nodes || [];
-                        ways = ways || [];
-                        var layer, latlngs = [];
+                    '3': function (dataset) {
+                        var nodes = dataset.node || [],
+                            ways = dataset.way || [],
+                            layer,
+                            latlngs = [];
 
                         ways.forEach(function (way) {
                             latlngs = way.nd.map(function (n) {
@@ -229,16 +228,13 @@
                             layer = new ME.Polygon({
                                 id: way.id,
                                 latlngs: latlngs,
-                                tags: way.tag,
-                                nd: way.nd,
-                                changeset: way.changeset,
-                                version: way.version
+                                data : way
                             });
                             _this.fire('renderLayer', {layer: layer}, _this);
                         });
                     }
                 }
-            done[geoType](nodes, ways);
+            done[geoType](dataset);
         },
         updateDataSet: function (dataSet) {
             this.dataSet = dataSet;
@@ -276,6 +272,7 @@
         },
         setConnect : function(connect){
             this.connect = connect;
+            return this;
         },
         getConnect : function(){
             return this.connect;
