@@ -101,6 +101,48 @@ ME.Control.Toolbar = L.Control.extend(
 						});
 					}
 				}
+			],
+
+			actions:[
+				{
+					name: "save",
+					title: "保存",
+					className: "mapeditor-toolbar-actions-save",
+					handler: function(){
+						var layer = map._currentpath;
+						if(layer){
+							layer.dragging.disable();
+							layer.editing.disable();
+							layer._originalCoord =  L.LatLngUtil.cloneLatLngs(layer.getLatLngs());
+						}
+					}
+				},
+				{
+					name: "cancel",
+					title: "取消",
+					className: "mapeditor-toolbar-actions-cancel",
+					handler: function(){
+						var layer = map._currentpath;
+						if(layer){
+							layer.dragging.disable();
+							layer.editing.disable();
+							layer.setLatLngs(layer._originalCoord);
+						}
+					}
+				},
+				{
+					name: "delete",
+					title: "删除",
+					className: "mapeditor-toolbar-actions-delete",
+					handler: function(){
+						var layer = map._currentpath;
+						if(layer){
+							layer.dragging.disable();
+							layer.editing.disable();
+							map.removeLayer(layer);
+						}
+					}
+				}
 			]
 		}
 	},
@@ -112,7 +154,7 @@ ME.Control.Toolbar = L.Control.extend(
 		L.DomUtil.addClass(container,this.options.direction);
 
 		this._buttons = {};
-		this._groups = {};		
+		this._groups = {};
 	},
 
 	onAdd: function(map){
@@ -126,6 +168,7 @@ ME.Control.Toolbar = L.Control.extend(
 		else if(group == "all"){
 			this.addGroup("draw");
 			this.addGroup("selectRoad");
+			this.addGroup("actions")
 		}
 
 		this.addGroup("default");
@@ -195,6 +238,18 @@ ME.Control.Toolbar = L.Control.extend(
 		this._createButton(options, group);
 	},
 
+	disableButton: function(name){
+		var button = this._buttons[name];
+
+		this._offEvent(button);
+	},
+
+	enableButton: function(name){
+		var button = this._buttons[name];
+
+		this._bindEvent(button);
+	},
+
 	/**
 	 * remove button from toolbar 
 	 * @param  {String} name [description]
@@ -249,41 +304,60 @@ ME.Control.Toolbar = L.Control.extend(
 
 		button._group = group;
 
+		if(options.handler){
+			button._handler = options.handler;	
+		}
+		else{
+			button._mode = mode;
+		}
+
+		this._bindEvent(button);
+
+		this._buttons[options.name] = button;
+		this._groups[group].buttons[options.name] = button;
+	},
+
+	_bindEvent: function(button){
+		var handler = button._handler;
+		var mode = button._mode;
+
 		L.DomEvent
 			.on(button, 'click', L.DomEvent.stopPropagation)
 			.on(button, 'mousedown', L.DomEvent.stopPropagation)
 			.on(button, 'dblclick', L.DomEvent.stopPropagation)
 			.on(button, 'click', L.DomEvent.preventDefault);
 
-		if(options.handler){
-			button._handler = options.handler;	
-			L.DomEvent.on(button, 'click', options.handler);	
+		if(handler){
+			L.DomEvent.on(button, 'click', handler);	
 		}
-		else{
-			button._mode = mode;
+		else if(mode){
 			L.DomEvent.on(button, 'click', mode.enable, mode);
-		}			
-
-		this._buttons[options.name] = button;
-		this._groups[group].buttons[options.name] = button;
+		}
 	},
 
-	_disposeButton: function(button){
+	_offEvent: function(button){		
+		var handler = button._handler;
 		var mode = button._mode;
+
 		L.DomEvent
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
 			.off(button, 'click', L.DomEvent.preventDefault);
 
-		if(options.handler){
-			L.DomEvent.off(button, 'click', options.handler);	
+		if(handler){
+			L.DomEvent.off(button, 'click', handler);	
 		}
-		else{
-			L.DomEvent.off(button, 'click', mode.enable);
-		}		
+		else if(mode){
+			L.DomEvent.off(button, 'click', mode.enable, mode);
+		}
+	},
 
+	_disposeButton: function(button){
+		this._offEvent(button);
 		button._mode = null;
+		button._handler = null;
+		button.remove();
 	},
 
 	_getConfigByName: function(name){
