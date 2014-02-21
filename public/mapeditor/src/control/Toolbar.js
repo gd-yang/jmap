@@ -91,7 +91,9 @@ ME.Control.Toolbar = L.Control.extend(
 						var url = "http://119.90.32.30/gbox/gate?sid=8002";
 						var latlngs=[];
 						var map = this._map;
-						map._drawPolylineMode.group.eachLayer(function(layer){
+						var group = map.editingGroup;
+						group.selectedLayers.forEach(function(layerid){
+							var layer = group.getLayer(layerid);
 							var ll = layer.getLatLngs();
 							var arr = [];
 							ll.forEach(function(latlng){
@@ -108,7 +110,9 @@ ME.Control.Toolbar = L.Control.extend(
 								var ll = new L.LatLng(arr[1],arr[0]);
 								coor.push(ll);
 							})
-							map.addLayer(new ME.Polygon({latlngs:coor}));
+							//map.addLayer(new ME.Polygon({latlngs:coor}));
+							group.clearSelectedLayers();
+							group.addLayer(new ME.Polygon({latlngs:coor}));
 						});
 					}
 				},

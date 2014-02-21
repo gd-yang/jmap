@@ -149,6 +149,24 @@
                 });
             }
         },
+        
+        clearSelectedLayers: function(focusout){
+            var _this = this;
+
+            this.selectedLayers.forEach(function(_leaflet_id){
+                var layer = _this.getLayer(_leaflet_id);
+                layer.editDisable();
+                layer.off('edit', _this._fireChanges, _this);
+                layer.dragging.off('dragend', _this._fireDragEnd, _this);
+                if (_this.geoType !== '1') {
+                    _this.setState(layer, 'common');
+                }
+                if(focusout)
+                    layer.fire('focusOut', {layer: layer});
+            });
+
+            this.selectedLayers = [];
+        },
         setState: function (layer, state) {
             layer.setStyle(this.states[state]);
         },

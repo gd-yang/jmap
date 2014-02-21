@@ -18,14 +18,12 @@ ME.Handler.SelectRoad = L.Handler.extend(
 
     addHooks : function(){
         this._map.on('click', this._getRoads, this);
-        //this._map.on('draw:created', this._drawRoads, this);
         this._map._container.style.cursor = 'default';
 
         this.fire('enabled');
     },
     removeHooks :function(){
         this._map.off('click', this._getRoads, this);
-        //this._map.off('draw:created', this._drawRoads, this);
         this._map._container.style.cursor = '-webkit-grab';
 
         this.fire('disabled');
@@ -61,15 +59,5 @@ ME.Handler.SelectRoad = L.Handler.extend(
         };
 
         ME.pointSelectRoad({url:this.options.url,lng:e.latlng.lng,lat:e.latlng.lat},cb,this);
-    },
-    _drawRoads : function(e){
-        var roads = e.roads, _this = this;
-        if(e.type != "pointSelectRoad") return;
-        roads.forEach(function(road){
-            var path = new ME.Polyline({
-                latlngs : road
-            });
-            _this._map.editingGroup.addLayer(path);
-        })
     }
 });
