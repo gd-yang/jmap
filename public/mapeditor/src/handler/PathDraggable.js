@@ -93,6 +93,7 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	_onUp: function (e) {
         this._enableEdit();
 		L.Draggable.prototype._onUp.apply(this,[e]);
+		this.path.fire("dragend");
 	},
 
 	_transform: function(){

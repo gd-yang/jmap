@@ -78,14 +78,23 @@
 .mapeditor-toolbar-draw-marker{
 	background-position: -122px -2px;
 }
+.mapeditor-toolbar-actions-save{
+	background-position: -152px -2px;
+}
+.mapeditor-toolbar-actions-delete{
+	background-position: -182px -2px;
+}
+.mapeditor-toolbar-actions-cancel{
+	background-position: -362px -2px;
+}
 
 
 .mapeditor-toolbar-road-pointroad{
-	background-position: -300px -2px;
+	background-position: -272px -2px;
 }
 .mapeditor-toolbar-road-arearoad{
-	background-position: -327px -2px;
+	background-position: -332px -2px;
 }
 .mapeditor-toolbar-road-roadstoarea{
-	background-position: -272px -2px;
+	background-position: -302px -2px;
 }

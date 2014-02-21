@@ -30,7 +30,7 @@ ME.Handler.PolylineRotateable = ME.Handler.PathDraggable.extend(
 		 * disable handler
 		 * @return {[type]} [description]
 		 */
-		disalbe: function(){
+		disable: function(){
 			ME.Handler.PathDraggable.prototype.disable.apply(this);
 			this.path._map.removeLayer(this._centerMarker);
 			this.off("dragend", this._updateCenter,this);

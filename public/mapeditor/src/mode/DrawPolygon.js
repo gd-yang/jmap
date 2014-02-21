@@ -22,10 +22,16 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
     _finish: function(data){
         var layer = data.layer,
             layerType = data.layerType;
+
         if(layerType != "polygon") return;
+
         L.setOptions(layer,{moveable:true,rotateable:true});
         this.group.addLayer(layer);
-//        layer.editing.enable();
-//        layer.rotating.enable();
+
+        layer.editing.enable();
+
+        layer.rotating.enable();
     }
+
+
 });
