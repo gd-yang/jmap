@@ -38,7 +38,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
     _getRoads : function(e){
         var _this = this;
         var url = this.options.url;
-        var xhr = new XHR(true);
+        
         var cb = function(data){
             var status = data.status;
             var roads = data.data;
@@ -52,7 +52,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
 	                    return road;
                 });
 
-                _this._map.fire('draw:created', {roads : roads, type:"pointSelectRoad"});
+                _this._map.fire('draw:created', {roads : roads, pathtype:"pointSelectRoad"});
             }
 
             _this.disable();

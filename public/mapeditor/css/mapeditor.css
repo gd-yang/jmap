@@ -1,26 +1,13 @@
 /* toolbar */
-.mapeditor-toolbar-group{
+.mapeditor-toolbar-bar{
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
     border-radius: 4px;
 }
-.mapeditor-toolbar.h{
+.mapeditor-toolbar-bar.h{
 	font-size: 0px;/* white space after inline-block */
 }
 
-.mapeditor-toolbar.h .mapeditor-toolbar-group{
-	margin-left: 15px;
-	display:inline-block;
-}
-
-.mapeditor-toolbar.v .mapeditor-toolbar-group{
-	margin-top: 15px;
-	display: block;
-}
-.mapeditor-toolbar .mapeditor-toolbar-group.first{
-	margin-left: 0px;
-	margin-top:0px;
-}
-.mapeditor-toolbar-group a{
+.mapeditor-toolbar-bar a{
 	background-color: #fff;
 	background-image: url('/mapeditor/images/spritesheet.png');
     background-repeat: no-repeat;
@@ -32,35 +19,35 @@
     text-decoration: none;
     color: black;
 }
-.mapeditor-toolbar.v a{
+.mapeditor-toolbar-bar.v a{
 	display: block;
     border-bottom: 1px solid #ccc;
 }
-.mapeditor-toolbar.v a.first{
+.mapeditor-toolbar-bar.v a.first{
 	border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
-.mapeditor-toolbar.v a.last{
+.mapeditor-toolbar-bar.v a.last{
 	 border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     border-bottom: none;
 }
 
-.mapeditor-toolbar.h a{
+.mapeditor-toolbar-bar.h a{
 	display: inline-block;
     border-right: 1px solid #ccc;
 }
 
-.mapeditor-toolbar.h a.first{
+.mapeditor-toolbar-bar.h a.first{
 	border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.mapeditor-toolbar.h a.last{
+.mapeditor-toolbar-bar.h a.last{
 	 border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     border-bottom: none;
 }
-.mapeditor-toolbar-group a:hover{
+.mapeditor-toolbar-bar a:hover{
 	background-color: #f4f4f4;
 }
 .mapeditor-toolbar-draw-polyline{

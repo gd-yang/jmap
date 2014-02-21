@@ -100,7 +100,9 @@
     });
     // 添加数据据控制
     map.addControl(new ME.DataControl());
-    map.addControl(new ME.Control.Toolbar());
+    map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]})); 
+    map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
+    map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
 
     $('.leaflet-dataset-list ul li .view').on('click',function () {
         var dataSetId = $(this).parent().attr('data-dataId'), group;

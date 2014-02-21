@@ -14,6 +14,12 @@
             this.editingGroup = this.defaultGroup;
             this.openedGroup = new ME.Hash();
             this.addLayer(this.defaultGroup);
+            this._drawPolylineMode = new ME.Mode.DrawPolyline(this);
+            this._drawPolygonMode = new ME.Mode.DrawPolygon(this);
+            this._drawMarkerMode = new ME.Mode.DrawMark(this);
+            this._selectRoadMode = new ME.Mode.SelectRoad(this);
+            this._areaSelectRoadMode = new ME.Mode.AreaSelectRoad(this);
+
             // draw_options = draw_options || config.options.draw;
             // draw_options.edit = draw_options.edit || {};
             // draw_options.edit.featureGroup = this.editingGroup;
