@@ -150,12 +150,15 @@ ME.Control.Toolbar = L.Control.extend(
 					className: "mapeditor-toolbar-actions-delete",
 					handler: function(){
 						var map = this._map;
-						var layer = map._currentpath;
-						if(layer){
-							layer.dragging.disable();
-							layer.editing.disable();
-							map.removeLayer(layer);
-						}
+						var layers = map.editingGroup.selectedLayers;
+						layers.forEach(function(layer){
+                            if(layer){
+                                layer.dragging.disable();
+                                layer.editing.disable();
+                                map.removeLayer(layer);
+                                map.changes.fire('deleted', {layer : layer});
+                            }
+                        })
 					}
 				}
 			]

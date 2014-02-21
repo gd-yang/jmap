@@ -2,13 +2,18 @@ define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
     var Sorting = L.Class.extend({
         initialize: function () {
+            var _this = this;
             this.map = new ME.Map('map', {
                 center: new L.LatLng(31.20410238002499, 121.43068313598633),
                 zoom: 15
             });
-            this.map.addControl(new ME.Control.Toolbar());
+            this.map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]}));
+            this.map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
+            //this.map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
+            this.map.addControl(new ME.Control.Toolbar({buttons:["delete"]}));
             this.connect = new Connect(this.map);
             this.connect.on('datasave:success', function(){
+                _this.map.changes.clear();
                 console.log('保存成功！')
             });
             this.connect.on('dataload:error', function(){
