@@ -28,7 +28,8 @@ ME.Mode.SelectRoad = ME.Mode.extend(
             var path = new ME.Polyline({
                 latlngs : road
             });
-            _this._map.editingGroup.addLayer(path);
-        })
+            _this.group.addLayer(path);
+            path.editing.updateMarkers();
+        });
     }
 });

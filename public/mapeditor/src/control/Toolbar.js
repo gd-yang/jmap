@@ -1,11 +1,11 @@
 ME.Control = ME.Control || {};
 /**
- * 	
+ *
  * toolbar control
  * @memberOf  ME.Control
  * @constructor
  * @name ME/Control/Toolbar
- * @class 
+ * @class
  */
 ME.Control.Toolbar = L.Control.extend(
 /**

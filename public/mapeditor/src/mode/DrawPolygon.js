@@ -30,23 +30,7 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
 
         layer.editing.enable();
 
-        layer.dragging.enable();
-
-        var map = this._map;
-        layer._originalCoord =  L.LatLngUtil.cloneLatLngs(layer.getLatLngs());
-        var cb = function(){
-            if(map._currentpath)
-                map._currentpath._path.setAttribute("stroke",map._currentpath.options.color);
-            map._currentpath = layer;layer._path.setAttribute("stroke","#0ff");
-            layer.dragging.enable();
-             layer.editing.enable();
-        };
-
-        layer.on("click",cb);
-        layer.on("edit",cb);
-
-        layer.on("dragend",cb);
-
+        layer.rotating.enable();
     }
 
 

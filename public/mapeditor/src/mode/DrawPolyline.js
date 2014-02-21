@@ -27,10 +27,10 @@ ME.Mode.DrawPolyline = ME.Mode.extend(
             
         if(layerType != "polyline") return;
 
-        L.setOptions(layer,{moveable:true,rotateable:true});
+        //L.setOptions(layer,{moveable:true,rotateable:true});
         this.group.addLayer(layer);
 
-        layer.editing.enable();
-        layer.dragging.enable();
+        //layer.editing.enable();
+        //layer.dragging.enable();
     }
 });

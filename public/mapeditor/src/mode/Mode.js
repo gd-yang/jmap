@@ -1,4 +1,3 @@
-
 /**
  * 
  * @memberOf  ME
@@ -16,8 +15,9 @@ ME.Mode = L.Class.extend(
         this._map = map;
         this._handler = handler;
         this._enabled = false;
-        this.group = new L.LayerGroup();
-        this.group.addTo(map);
+        //this.group = new L.LayerGroup();
+        this.group = this._map.editingGroup;
+        //this.group.addTo(map);
 
         if(this._handler.on)
             this._handler.on("disabled",this._disable,this);
@@ -27,15 +27,17 @@ ME.Mode = L.Class.extend(
      * enable Mode, will disable other modes
      */
     enable: function(){
-        if(this._enabled) return;
-        else if(ME.Mode._activeMode)
+        if(this._enabled) {
+            return;
+        }else if(ME.Mode._activeMode){
             ME.Mode._activeMode.disable();
+        }
 
         ME.Mode._activeMode = this;
 
         this._handler.enable();
         this._enabled = true;
-
+        this.group = this._map.editingGroup;
         this._map.on('draw:created',this._finish,this);
     },
 
@@ -47,11 +49,9 @@ ME.Mode = L.Class.extend(
 
         this._handler.disable();
         this._enabled = false;
-
+        delete this.group;
         this._map.off('draw:created',this._finish,this);
     },
-
-
     _disable: function(){
         if(!this._enabled) return;
 
@@ -65,5 +65,5 @@ ME.Mode = L.Class.extend(
      */
     enabled: function(){
         return this._enabled;
-    },
+    }
 });

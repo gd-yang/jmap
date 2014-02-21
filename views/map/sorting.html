@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
     <!--[if lt IE 9]> <script src="/mapeditor/lib/es5-shim.js"></script>
-    <script src="/mapeditor/lib/es5-sham.js"></script><![endif]-->
+<script src="/mapeditor/lib/es5-sham.js"></script><![endif]-->
     <script src="/mapeditor/lib/xhrRequest.js"></script>
     <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/leaflet/leaflet-src.js"></script>
@@ -68,6 +68,7 @@
     <script src="/mapeditor/src/mode/AreaSelectRoad.js"></script>
     <script src="/mapeditor/src/control/Toolbar.js"></script>
     <script src="/mapeditor/src/util/SelectRoad.js"></script>
+    <script src="/sorting/lib/modular.js"></script>
     <style>
         html, body {
             padding: 0;
@@ -75,79 +76,85 @@
             height: 100%;
         }
 
-        ul, ol, li, dl, dt, dd {
-            list-style: none;
+        .header {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            background: #eeeeee;
+            border-bottom: 1px solid #ccc
+        }
+
+        .polygonCode {
+            margin: 0;
             padding: 0;
-            margin: 0
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            min-width:200px;
+            height: 24px;
+            line-height: 24px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            background: #fff;
+            margin-left: 20px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .button {
+            display: inline-block;
+            vertical-align: middle;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 5px;
+            background: #aaa;
+            color: #fff;
+            text-align: center;
+            font-family: '微软雅黑';
+            cursor: pointer;
+            padding: 0 15px;
+            font-size: 12px;
+        }
+
+        .button:hover {
+            background: #bbb;
         }
 
         #map {
-            height: 100%;
+            width: 100%;
         }
     </style>
+
 </head>
-
 <body>
-<div id="map"></div>
 <script>
-    var map = new ME.Map('map', {
-        center: new L.LatLng(31.20410238002499, 121.43068313598633),
-        zoom: 15
+    Modular.use('/sorting/Sorting.js', function (Sorting) {
+        var sorting = new Sorting();
+        $('.editor').click($.proxy(sorting.editOneData, sorting));
+        //$('.create').click($.proxy(sorting.createOneData, sorting));
+        $('.save').click($.proxy(sorting.saveData, sorting));
     });
-    // 添加数据据控制
-    map.addControl(new ME.DataControl());
-    map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]})); 
-    map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
-    map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
-
-    $('.leaflet-dataset-list ul li .view').on('click',function () {
-        var dataSetId = $(this).parent().attr('data-dataId'), group;
-        if (!map.openedGroup.has(dataSetId)) {
-            map.openedGroup.add(dataSetId,new ME.Group({
-                _group_id : dataSetId,
-                connect : new ME.Connect(map)
-            }));
+    $(document).ready(function () {
+//        var xhr = new XHR(true);
+//        xhr.get('http://192.168.1.210:8090/sorting_web/gate?sid=2005&polygonCode=51c4085e-385d-4580-9cf2-6e884239d548&clientKey=aa1352ff-e2c3-490f-9dad-ec85a13eee99',
+//                function(data){
+//            console.log(data)
+//        });
+        function resizeHeight() {
+            var h = $('body').innerHeight();
+            $('#map').height(h - 51);
         }
-        map.addLayer(map.openedGroup[dataSetId]);
-        $(this).toggleClass('close open');
-    }).toggle(function () {
-                $(this).text('关闭');
-                var dataSetId = $(this).parent().attr('data-dataId');
-                map.openedGroup[dataSetId].open();
-            }, function () {
-                $(this).text('打开');
-                var dataSetId = $(this).parent().attr('data-dataId');
-                map.openedGroup[dataSetId].close();
-            });
 
-    $('.leaflet-dataset-list ul li .edit').on('click',function () {
-        var dataSetId = $(this).parent().attr('data-dataId'), group;
-
-        if (!map.openedGroup[dataSetId]) {
-            map.openedGroup.add(dataSetId,new ME.Group({
-                _group_id : dataSetId,
-                connect : new ME.Connect(map)
-            }));
-        }
-        map.addLayer(map.openedGroup[dataSetId]);
-        map.editingGroup = map.openedGroup[dataSetId];
-        map.openedGroup[dataSetId].on('close editDisable', function(){
-            map.changes.clear();
-        });
-
-        $(this).toggleClass('enable disable');
-    }).toggle(function(){
-                $(this).text('禁止');
-                var dataSetId = $(this).parent().attr('data-dataId');
-                map.openedGroup[dataSetId].editAble();
-            },function(){
-                $(this).text('编辑');
-                var dataSetId = $(this).parent().attr('data-dataId');
-                map.openedGroup[dataSetId].editDisable();
-            });
-
-    var selectRoad = new ME.Handler.SelectRoad(map);
-
+        resizeHeight();
+        $(window).on('resize', resizeHeight);
+    });
 </script>
+<div class="header">
+    <p class="polygonCode" contenteditable="true"></p>
+    <span class="editor button">编辑</span>
+    <!--<span class="create button">创建新区域</span>-->
+    <span class="save button">保存编辑</span>
+</div>
+<div id="map"></div>
 </body>
 </html>
