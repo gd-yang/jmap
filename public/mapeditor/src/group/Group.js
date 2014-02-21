@@ -1,5 +1,4 @@
-;
-(function (ME) {
+;(function (ME) {
     var Group = L.FeatureGroup.extend({
         initialize: function (options) {
             options = options || {};
@@ -12,7 +11,7 @@
             this.states = new ME.State();
             this.selectedLayers = [];
             this.connect = options.connect;
-            this._group_id = groupid;
+            this._group_id = groupid || L.stamp(this);
 
             this.on('layeradd', function (e) {
                 e.layer.on('focusIn', function (e) {
@@ -36,9 +35,7 @@
 
             this.editing = true;
             map.editingGroup = this;
-            if (!this.openning) {
-                this.open();
-            }
+
             if (this.geoType == '1') {
                 this.eachLayer(function (layer) {
                     layer.dragging.enable();
@@ -110,31 +107,46 @@
         _fireEdit: function (e) {
             var _this = this;
             this.fire('editAble', {group: this});
-            if (this.editLayer) {
-                this.editLayer.editing.disable();
-                var oldLayer = this.editLayer;
-                if (this.geoType !== '1') {
-                    this.setState(this.editLayer, 'common');
-                }
-                this.editLayer.fire('focusOut', {layer: oldLayer});
+            if (!e.originalEvent.shiftKey) {
+                this.selectedLayers.forEach(function(_leaflet_id){
+                    var layer = _this.getLayer(_leaflet_id);
+                    layer.editing.disable();
+                    layer.off('edit', this._fireChanges, this);
+                    layer.dragging.off('dragend', this._fireDragEnd, this);
+                    if (_this.geoType !== '1') {
+                        _this.setState(layer, 'common');
+                    }
+                    layer.fire('focusOut', {layer: layer});
+                });
             }
-            this.editLayer = e.layer;
-            this.editLayer.fire('focusIn', {layer: this.editLayer});
-            this.editLayer.editEnable();
-            this.editLayer.on('edit', this._fireChanges, this);
-            this.editLayer.dragging.on('dragend', this._fireDragEnd, this);
+            var targetLayer = e.layer;
+            var _leaflet_id = targetLayer._leaflet_id;
+            if (this.selectedLayers.indexOf(_leaflet_id) == -1){
+                if (!e.originalEvent.shiftKey){
+                    this.selectedLayers.length = 0;
+                }
+                this.selectedLayers.push(_leaflet_id);
+            }
+
+            targetLayer.fire('focusIn', {layer: targetLayer});
+            targetLayer.editEnable();
+            targetLayer.on('edit', this._fireChanges, this);
+            targetLayer.dragging.on('dragend', this._fireDragEnd, this);
             if (this.geoType !== '1') {
-                this.setState(this.editLayer, 'edit');
+                this.setState(targetLayer, 'edit');
             }
         },
         _offEdit: function (e) {
             var _this = this;
             this.fire('editDisable', {group: this});
-            if (this.geoType !== '1' && !!this.editLayer) {
-                this.editLayer.editDisable();
-                this.editLayer.off('edit', this._fireChanges, this);
-                this.editLayer.dragging.off('dragend', this._fireDragEnd, this);
-                this.setState(this.editLayer, 'common');
+            if (this.geoType !== '1') {
+                this.selectedLayers.forEach(function(_leaflet_id){
+                    var layer = _this.getLayer(_leaflet_id);
+                    layer.editDisable();
+                    layer.off('edit', this._fireChanges, this);
+                    layer.dragging.off('dragend', this._fireDragEnd, this);
+                    this.setState(layer, 'common');
+                });
             }
         },
         setState: function (layer, state) {

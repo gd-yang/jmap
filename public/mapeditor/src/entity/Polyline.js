@@ -20,6 +20,12 @@ ME.Polyline = L.Polyline.extend({
         this.editing.disable();
         this.dragging.disable();
     },
+    setData : function(data){
+       this.data = data;
+    },
+    getData : function(){
+        return this.data;
+    },
     toXML: function () {
         var data = this.data, _line,
             nds = data.nd, tags = data.tag, tagstr;

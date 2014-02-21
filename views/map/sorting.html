@@ -10,11 +10,8 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
-
-    <!--[if lt IE 9]>
-    <script src="/mapeditor/lib/es5-shim.js"></script>
-    <script src="/mapeditor/lib/es5-sham.js"></script>
-    <![endif]-->
+    <!--[if lt IE 9]> <script src="/mapeditor/lib/es5-shim.js"></script>
+<script src="/mapeditor/lib/es5-sham.js"></script><![endif]-->
     <script src="/mapeditor/lib/xhrRequest.js"></script>
     <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/leaflet/leaflet-src.js"></script>
@@ -68,7 +65,9 @@
     <script src="/mapeditor/src/mode/DrawPolyline.js"></script>
     <script src="/mapeditor/src/mode/DrawRectangle.js"></script>
     <script src="/mapeditor/src/mode/SelectRoad.js"></script>
+    <script src="/mapeditor/src/mode/AreaSelectRoad.js"></script>
     <script src="/mapeditor/src/control/Toolbar.js"></script>
+    <script src="/mapeditor/src/util/SelectRoad.js"></script>
     <script src="/sorting/lib/modular.js"></script>
     <style>
         html, body {
@@ -94,14 +93,17 @@
             min-width:200px;
             height: 24px;
             line-height: 24px;
+            overflow: hidden;
             border: 1px solid #ddd;
             background: #fff;
             margin-left: 20px;
             font-size: 14px;
+            vertical-align: middle;
         }
 
         .button {
             display: inline-block;
+            vertical-align: middle;
             height: 24px;
             line-height: 24px;
             border-radius: 5px;
@@ -111,6 +113,7 @@
             font-family: '微软雅黑';
             cursor: pointer;
             padding: 0 15px;
+            font-size: 12px;
         }
 
         .button:hover {
@@ -128,10 +131,15 @@
     Modular.use('/sorting/Sorting.js', function (Sorting) {
         var sorting = new Sorting();
         $('.editor').click($.proxy(sorting.editOneData, sorting));
-        $('.create').click($.proxy(sorting.createOneData, sorting));
+        //$('.create').click($.proxy(sorting.createOneData, sorting));
         $('.save').click($.proxy(sorting.saveData, sorting));
     });
     $(document).ready(function () {
+//        var xhr = new XHR(true);
+//        xhr.get('http://192.168.1.210:8090/sorting_web/gate?sid=2005&polygonCode=51c4085e-385d-4580-9cf2-6e884239d548&clientKey=aa1352ff-e2c3-490f-9dad-ec85a13eee99',
+//                function(data){
+//            console.log(data)
+//        });
         function resizeHeight() {
             var h = $('body').innerHeight();
             $('#map').height(h - 51);
@@ -144,7 +152,7 @@
 <div class="header">
     <p class="polygonCode" contenteditable="true"></p>
     <span class="editor button">编辑</span>
-    <span class="create button">创建新区域</span>
+    <!--<span class="create button">创建新区域</span>-->
     <span class="save button">保存编辑</span>
 </div>
 <div id="map"></div>

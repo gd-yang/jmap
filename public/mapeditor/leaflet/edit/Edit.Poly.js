@@ -56,8 +56,7 @@ L.Edit.Poly = L.Handler.extend({
                     changes.fire('created', {layer : layer});
                     break;
                 case 'marker:modify' :
-                    changes.fire('modified', {layer : layer})
-                        .fire('modified', {layer : poly});
+                    changes.fire('modified', {layer : layer});
                     break;
             }
         }
@@ -67,21 +66,40 @@ L.Edit.Poly = L.Handler.extend({
         this._initMarkers();
     },
 
-    _initMarkers: function () {
+    _initMarkers : function () {
         if (!this._markerGroup) {
             this._markerGroup = new L.LayerGroup();
         }
         this._markers = [];
 
-        var nd = this._poly.data.nd,
+        var data = this._poly.data,
+            nd=[],
             latlngs = this._poly._latlngs,
             i, j, len, marker;
 
+        if (!!data){
+            nd = data.nd;
+        }
         //  refactor holes implementation in Polygon to support it here
         for (i = 0, len = latlngs.length; i < len; i++) {
-            marker = this._createMarker(latlngs[i], i, nd[i] && nd[i].ref);
+            marker = this._createMarker(latlngs[i], i, nd[i] && nd[i].ref || null);
+            if (!nd[i]){
+                nd[i] = {
+                    ref : marker._leaflet_id
+                }
+            }
             marker.on('click', this._onMarkerClick, this);
             this._markers.push(marker);
+        }
+
+        if (!data){
+            this._poly.setData({
+               nd : nd,
+               id : this._poly._leaflet_id,
+               version : '1',
+               changeset:'1',
+               tag : []
+            });
         }
 
         var markerLeft, markerRight;

@@ -17,7 +17,7 @@ ME.DataControl = L.Control.extend({
             '<i class="view close">打开</i> <i class="edit disable">编辑</i></li>';
         str += '<li data-dataId="412" data-geotype="2" class="leaflet-dataset-list-line"><span>线数据</span> ' +
             '<i class="view close">打开</i> <i class="edit disable">编辑</i></li>';
-        str += '<li data-dataId="414" data-geotype="3" class="leaflet-dataset-list-area"><span>面数据</span> ' +
+        str += '<li data-dataId="405" data-geotype="3" class="leaflet-dataset-list-area"><span>面数据</span> ' +
             '<i class="view close">打开</i> <i class="edit disable">编辑</i></li>';
         str += '</ul>';
         this.menu_list.innerHTML = str;

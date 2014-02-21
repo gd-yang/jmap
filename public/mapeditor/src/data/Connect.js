@@ -33,6 +33,7 @@
                     return;
                 }
                 dataSet = data.dataSet;
+
                 _this.fire('dataload:success',{data : data});
             });
         },
@@ -55,7 +56,6 @@
                         return;
                     }
                     _this.fire('datasave:success', {rst : rst}, _this);
-                    console.log('rst:', rst);
                 });
         },
         abort : function(){

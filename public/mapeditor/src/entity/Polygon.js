@@ -11,6 +11,12 @@ ME.Polygon = L.Polygon.extend({
         L.Polygon.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.data = data;
+        if (!!data && data.nd.length > 0){
+            var nd = data.nd, len = data.nd.length;
+            if (nd[0].ref === nd[len-1].ref){
+                data.nd.pop();
+            }
+        }
         this.type = 'area';
     },
     editEnable : function(){
@@ -31,6 +37,9 @@ ME.Polygon = L.Polygon.extend({
         nds = nds.map(function(nd){
             return '<nd ref="' + nd.ref +'" />'
         });
+        if (nds.length > 0){
+            nds.push(nds[0]);
+        }
         _line += nds.join('');
         tagstr = tags.map(function(tag){
             var v = tag.v||'', k =tag.k;

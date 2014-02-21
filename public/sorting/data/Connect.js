@@ -2,10 +2,10 @@ define(function (require, exports, module) {
     console.log(L)
     var Connect= L.Class.extend({
         includes : L.Mixin.Events,
-        initialize : function(map){
+        initialize : function(){
             this.http = new XHR(true);
         },
-        loadData: function (groupid, group) {
+        loadData: function (groupid) {
             var url = 'http://192.168.1.210:8090/sorting_web/gate',
                 polygonCode = groupid || null,
                 _this = this;
@@ -16,16 +16,16 @@ define(function (require, exports, module) {
                     clientKey : 'aa1352ff-e2c3-490f-9dad-ec85a13eee99'
                 }
             }, function(result){
-                var data, status;
+                console.log(result);
+                var data;
                 result = JSON.parse(result);
-                status = result.status;
                 data = result.data;
 
-                if (status.msg !== 'success') {
+                if (!data) {
                     _this.fire('dataload:error',{data:data});
                     return;
                 }
-                _this.fire('dataload:success',{data : data});
+                _this.fire('dataload:success',{data : data.data});
             })
         },
         saveData: function (changes, groupid) {
@@ -41,12 +41,12 @@ define(function (require, exports, module) {
             }, function(result){
                 var _this = this;
                 result = JSON.parse(result);
-                var status = result.status;
-                if (status.msg !== 'success'){
-                    _this.fire('datasave:error', {result : result}, _this);
+                var data = result.data;
+                if (!data){
+                    _this.fire('datasave:error', {data : data}, _this);
                     return;
                 }
-                _this.fire('datasave:success', {result : result}, _this);
+                _this.fire('datasave:success', {data : data}, _this);
                 console.log('result:', result);
             })
         }
