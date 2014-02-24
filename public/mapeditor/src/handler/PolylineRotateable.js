@@ -18,12 +18,12 @@ ME.Handler.PolylineRotateable = ME.Handler.PathDraggable.extend(
 		enable: function(){
 			ME.Handler.PathDraggable.prototype.enable.apply(this);
 
-			var latlngBounds = this.path.getBounds();
-			var dragMarker = this._centerMarker = L.circleMarker(latlngBounds.getCenter(),{radius:5});
-			this.path._map.addLayer(dragMarker);
+			//var latlngBounds = this.path.getBounds();
+			//var dragMarker = this._centerMarker = L.circleMarker(latlngBounds.getCenter(),{radius:5});
+			//this.path._map.addLayer(dragMarker);
 
 
-			this.on("dragend",this._updateCenter,this);
+			//this.on("dragend",this._updateCenter,this);
 		},
 
 		/**
@@ -32,13 +32,13 @@ ME.Handler.PolylineRotateable = ME.Handler.PathDraggable.extend(
 		 */
 		disable: function(){
 			ME.Handler.PathDraggable.prototype.disable.apply(this);
-			this.path._map.removeLayer(this._centerMarker);
-			this.off("dragend", this._updateCenter,this);
+			//this.path._map.removeLayer(this._centerMarker);
+			//this.off("dragend", this._updateCenter,this);
 		},
 
 		_updateCenter: function(){			
-			var latlngBounds = this.path.getBounds();
-			this._centerMarker.setLatLng(latlngBounds.getCenter());
+			//var latlngBounds = this.path.getBounds();
+			//this._centerMarker.setLatLng(latlngBounds.getCenter());
 		},
 
 		_getOriginalPoints: function(){

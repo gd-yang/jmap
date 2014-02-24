@@ -11,6 +11,7 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
  */
 {
     options:{
+        //url:"http://119.90.32.30/gbox/gate?sid=3001&encode=utf-8"
         url:"http://192.168.1.210:8090/sorting_web/gate?sid=3001&encode=utf-8"//&region=
     },
     /**
@@ -40,7 +41,10 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
             flatlatlngs.push(latlng.lng+","+latlng.lat);
         });
 
-        ME.areaSelectRoad({url:this.options.url,latlngs:flatlatlngs.join(";")},function(data){console.log(data);},this);
+        //make sure the first point same with the last point, so backend api can recognize it as a polygon
+        flatlatlngs.push(flatlatlngs[0]);
+
+        ME.util.areaSelectRoad({url:this.options.url,latlngs:flatlatlngs.join(";")},function(data){console.log(data);},this);
         
     }
 });
