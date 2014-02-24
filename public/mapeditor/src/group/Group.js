@@ -111,8 +111,8 @@
                 this.selectedLayers.forEach(function(_leaflet_id){
                     var layer = _this.getLayer(_leaflet_id);
                     layer.editing.disable();
-                    layer.off('edit', this._fireChanges, this);
-                    layer.dragging.off('dragend', this._fireDragEnd, this);
+                    layer.off('edit', _this._fireChanges, _this);
+                    layer.dragging.off('dragend', _this._fireDragEnd, _this);
                     if (_this.geoType !== '1') {
                         _this.setState(layer, 'common');
                     }
@@ -143,9 +143,9 @@
                 this.selectedLayers.forEach(function(_leaflet_id){
                     var layer = _this.getLayer(_leaflet_id);
                     layer.editDisable();
-                    layer.off('edit', this._fireChanges, this);
-                    layer.dragging.off('dragend', this._fireDragEnd, this);
-                    this.setState(layer, 'common');
+                    layer.off('edit', _this._fireChanges, _this);
+                    layer.dragging.off('dragend', _this._fireDragEnd, _this);
+                    _this.setState(layer, 'common');
                 });
             }
         },
