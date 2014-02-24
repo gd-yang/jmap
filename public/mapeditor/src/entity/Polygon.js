@@ -19,6 +19,12 @@ ME.Polygon = L.Polygon.extend({
         }
         this.type = 'area';
     },
+    setData : function(data){
+        this.data = data;
+    },
+    getData : function(){
+        return this.data;
+    },
     editEnable : function(){
         this.editing.enable();
         this.dragging.enable();

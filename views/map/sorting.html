@@ -131,15 +131,10 @@
     Modular.use('/sorting/Sorting.js', function (Sorting) {
         var sorting = new Sorting();
         $('.editor').click($.proxy(sorting.editOneData, sorting));
-        //$('.create').click($.proxy(sorting.createOneData, sorting));
+        $('.create').click($.proxy(sorting.createOneData, sorting));
         $('.save').click($.proxy(sorting.saveData, sorting));
     });
     $(document).ready(function () {
-//        var xhr = new XHR(true);
-//        xhr.get('http://192.168.1.210:8090/sorting_web/gate?sid=2005&polygonCode=51c4085e-385d-4580-9cf2-6e884239d548&clientKey=aa1352ff-e2c3-490f-9dad-ec85a13eee99',
-//                function(data){
-//            console.log(data)
-//        });
         function resizeHeight() {
             var h = $('body').innerHeight();
             $('#map').height(h - 51);
@@ -152,7 +147,7 @@
 <div class="header">
     <p class="polygonCode" contenteditable="true"></p>
     <span class="editor button">编辑</span>
-    <!--<span class="create button">创建新区域</span>-->
+    <span class="create button">创建新区域</span>
     <span class="save button">保存编辑</span>
 </div>
 <div id="map"></div>

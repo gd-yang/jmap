@@ -24,14 +24,9 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
             layerType = data.layerType;
 
         if(layerType != "polygon") return;
-
         L.setOptions(layer,{moveable:true,rotateable:true});
         this.group.addLayer(layer);
-
-        layer.editing.enable();
-
-        layer.rotating.enable();
+//        layer.editing.enable();
+//        layer.rotating.enable();
     }
-
-
 });

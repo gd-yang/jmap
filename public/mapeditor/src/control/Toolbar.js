@@ -109,7 +109,7 @@ ME.Control.Toolbar = L.Control.extend(
 								var arr = latlng.split(",");
 								var ll = new L.LatLng(arr[1],arr[0]);
 								coor.push(ll);
-							})
+							});
 							//map.addLayer(new ME.Polygon({latlngs:coor}));
 							group.clearSelectedLayers();
 							group.addLayer(new ME.Polygon({latlngs:coor}));
@@ -148,10 +148,11 @@ ME.Control.Toolbar = L.Control.extend(
 					name: "delete",
 					title: "删除",
 					className: "mapeditor-toolbar-actions-delete",
-					handler: function(){
+					handler : function(){
 						var map = this._map;
 						var layers = map.editingGroup.selectedLayers;
-						layers.forEach(function(layer){
+						layers.forEach(function(id){
+                            var layer = map.editingGroup.getLayer(id);
                             if(layer){
                                 layer.dragging.disable();
                                 layer.editing.disable();
@@ -231,13 +232,10 @@ ME.Control.Toolbar = L.Control.extend(
 
 	disableButton: function(name){
 		var button = this._buttons[name];
-
 		this._offEvent(button);
 	},
-
 	enableButton: function(name){
 		var button = this._buttons[name];
-
 		this._bindEvent(button);
 	},
 
