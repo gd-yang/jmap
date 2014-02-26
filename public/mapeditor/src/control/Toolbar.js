@@ -136,18 +136,21 @@ ME.Control.Button = L.Class.extend({
 	},
 
 	initialize: function(map,options){
+		var temp = {};
 		if(typeof options == "string")
 			options = this._getFromPresetByName(options);
 		if(!options) return;
 		if(!options.name) return;
 		if(!options.handler) return;
 
-		options.handler = options.handler.bind(this);
+		L.extend(temp,options);
 
-		this.name = options.name;
+		temp.handler = options.handler.bind(this);
+
+		this.name = temp.name;
 		this._map = map;
 
-		L.setOptions(this,options);
+		L.setOptions(this,temp);
 		this._createButton(this.options);
 	},
 
@@ -192,7 +195,7 @@ ME.Control.Button = L.Class.extend({
 	},
 
 	disposeButton: function(){
-		this.removeEvent();
+		this._removeEvent();
 		this._map = null;
 		this.el.remove();
 	},

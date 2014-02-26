@@ -99,7 +99,8 @@
     });
     // 添加数据据控制
     map.addControl(new ME.DataControl());
-    map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]})); 
+    var drawcontrol = new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]});
+    map.addControl(drawcontrol); 
     map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
     map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
 
