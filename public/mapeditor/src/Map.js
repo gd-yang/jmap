@@ -9,6 +9,7 @@
             options.layers || (options.layers = [tileLayer]);
             L.Map.prototype.initialize.call(this,id, options);
             this.changes = new ME.Changes();
+            this.toolbars = new ME.Hash();
             this.openedGroup = new ME.Hash();
             this.defaultGroup = new ME.Group();
             this.addLayer(this.defaultGroup);
@@ -36,6 +37,30 @@
         removeGroup : function(group){
             L.Map.prototype.removeLayer.call(this, group);
             this.openedGroup.remove(group._group_id);
+        },
+        addToolbar : function(name, control){
+            L.Map.prototype.addControl.call(this, control);
+            this.toolbars.add(name, control);
+        },
+        removeToolbar : function(name){
+            if (!name){
+                return;
+            }
+            var control = this.getToolbar(name);
+            if (!control){
+                return;
+            }
+            L.Map.prototype.removeControl.call(this, control);
+            this.toolbars.remove(name);
+        },
+        getToolbar : function(name){
+            return this.toolbars.find(name);
+        },
+        getChanges : function(){
+            return this.changes;
+        },
+        clearChanges : function(){
+            this.changes.clear();
         }
     });
 })(MapEditor);

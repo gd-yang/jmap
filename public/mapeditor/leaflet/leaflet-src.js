@@ -7942,18 +7942,15 @@ L.control = function (options) {
 
 
 // adds control-related methods to L.Map
-
 L.Map.include({
 	addControl: function (control) {
 		control.addTo(this);
 		return this;
 	},
-
 	removeControl: function (control) {
 		control.removeFrom(this);
 		return this;
 	},
-
 	_initControlPos: function () {
 		var corners = this._controlCorners = {},
 		    l = 'leaflet-',
@@ -7976,7 +7973,6 @@ L.Map.include({
 		this._container.removeChild(this._controlContainer);
 	}
 });
-
 
 /*
  * L.Control.Zoom is used for the default zoom buttons on the map.

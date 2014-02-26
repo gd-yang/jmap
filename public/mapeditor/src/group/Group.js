@@ -11,7 +11,7 @@
             this.states = new ME.State();
             this.selectedLayers = [];
             this.connect = options.connect;
-            this._group_id = groupid || L.stamp(this);
+            this._group_id = groupid || '';
 
             this.on('layeradd', function (e) {
                 e.layer.on('focusIn', function (e) {
@@ -183,18 +183,22 @@
             }
         },
         loadLayers: function () {
+            var _this = this;
             // 清除掉不在范围的图
             this.filterLayer.call(this);
-            this.connect.loadData(this._group_id, this);
+            this.connect.loadData(function(dataSet){
+                _this._renderLayers.call(_this, dataSet);
+            });
             return this;
         },
         saveLayers : function(){
-            this.connect.saveData(this._map.changes, this._group_id, this);
+            this.connect.saveData();
             return this;
         },
-        _renderLayers: function (e) {
-            var dataSet = e.data && e.data.dataSet,
-                geoType = dataSet.geoType;
+        _renderLayers : function (dataSet) {
+            console.log('this:', this);
+            console.log('dataset:', dataSet);
+            var geoType = dataSet.geoType;
             this.on('renderLayer', this._renderLayer, this);
             this.dataToLayer(geoType, dataSet);
             this.geoType = geoType;
