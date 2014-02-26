@@ -79,8 +79,9 @@ ME.Control.Toolbar = L.Control.extend(
 
 		if(!button.el) return;
 
-		if(isfirst)
+		if(isfirst){
 			L.DomUtil.addClass(button.el,"first");
+		}
 
 		Object.keys(buttons).forEach(function(key){
 			L.DomUtil.removeClass(buttons[key].el,"last");
@@ -104,13 +105,13 @@ ME.Control.Toolbar = L.Control.extend(
 	disableButton: function(name){
 		var button = this._buttons[name];
 
-		button.removeEvent();
+		button.disable();
 	},
 
 	enableButton: function(name){
 		var button = this._buttons[name];
 
-		button.bindEvent();
+		button.enable();
 	},
 
 	/**
@@ -150,7 +151,17 @@ ME.Control.Button = L.Class.extend({
 		this._createButton(this.options);
 	},
 
-	bindEvent: function(){
+	enable: function(){
+		this._bindEvent();
+		L.DomUtil.removeClass(this.el,"disabled");
+	},
+
+	disable: function(){
+		this._removeEvent();
+		L.DomUtil.addClass(this.el,"disabled");
+	},
+
+	_bindEvent: function(){
 		var handler = this.options.handler;
 		var button = this.el;
 
@@ -165,7 +176,7 @@ ME.Control.Button = L.Class.extend({
 		}
 	},
 
-	removeEvent: function(){
+	_removeEvent: function(){
 		var handler = this.options.handler;
 		var button = this.el;
 
@@ -194,7 +205,7 @@ ME.Control.Button = L.Class.extend({
 
 		this.el = button;
 
-		this.bindEvent();
+		this.enable();
 	},
 
 	_getFromPresetByName: function(name){

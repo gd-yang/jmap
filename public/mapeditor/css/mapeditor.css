@@ -19,6 +19,9 @@
     text-decoration: none;
     color: black;
 }
+.mapeditor-toolbar-bar a.disabled{
+	background-image: url('/mapeditor/images/spritesheet-disabled.png');
+}
 .mapeditor-toolbar-bar.v a{
 	display: block;
     border-bottom: 1px solid #ccc;
@@ -49,6 +52,10 @@
 }
 .mapeditor-toolbar-bar a:hover{
 	background-color: #f4f4f4;
+}
+
+.mapeditor-toolbar-bar a.disabled:hover{
+	background-color: #fff;
 }
 .mapeditor-toolbar-draw-polyline{
 	background-position: -2px -2px;
