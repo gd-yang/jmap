@@ -17,7 +17,7 @@ L.Edit.Poly = L.Handler.extend({
         L.setOptions(this, options);
     },
 
-    addHooks: function () {
+    addHooks : function () {
         var poly = this._poly;
         if (poly._map) {
             if (!this._markerGroup) {
@@ -56,7 +56,8 @@ L.Edit.Poly = L.Handler.extend({
                     changes.fire('created', {layer : layer});
                     break;
                 case 'marker:modify' :
-                    changes.fire('modified', {layer : layer});
+                    changes.fire('modified', {layer : layer})
+                        .fire('modified', {layer : poly});
                     break;
             }
         }
@@ -83,24 +84,10 @@ L.Edit.Poly = L.Handler.extend({
         //  refactor holes implementation in Polygon to support it here
         for (i = 0, len = latlngs.length; i < len; i++) {
             marker = this._createMarker(latlngs[i], i, nd[i] && nd[i].ref || null);
-            if (!nd[i]){
-                nd[i] = {
-                    ref : marker._leaflet_id
-                }
-            }
             marker.on('click', this._onMarkerClick, this);
             this._markers.push(marker);
         }
 
-        if (!data){
-            this._poly.setData({
-               nd : nd,
-               id : this._poly._leaflet_id,
-               version : '1',
-               changeset:'1',
-               tag : []
-            });
-        }
 
         var markerLeft, markerRight;
 
@@ -119,7 +106,7 @@ L.Edit.Poly = L.Handler.extend({
 
     _createMarker: function (latlng, index, id) {
         var marker = new ME.Marker({
-            latlng: latlng,
+            latlng : latlng,
             id: id,
             options: {
                 draggable: true,

@@ -24,10 +24,24 @@
             });
 
             this.on('deleted', function(e){
-                var layer = e.layer,id = layer._leaflet_id;
+                var layer = e.layer,
+                    id = layer._leaflet_id,
+                    data = layer.data;
                 if (/^-\d+$/.test(id)){
+                    if (layer.type !== 'marker'){
+                        data.nd.forEach(function(nd){
+                            _this.created.remove(nd.ref);
+                        });
+                    }
                     _this.created.remove(id);
                 }else{
+                    if (layer.type !== 'marker'){
+                        data.nd.forEach(function(nd){
+                            _this.created.remove(nd.ref);
+                            _this.modified.remove(nd.ref);
+                        });
+                    }
+                    _this.modified.remove(id);
                     _this.deleted.update(id, layer);
                 }
                 console.log(_this.toXML());
@@ -37,6 +51,12 @@
             this.created.clear();
             this.modified.clear();
             this.deleted.clear();
+        },
+        remove : function(id){
+            this.created.remove(id);
+            this.modified.remove(id);
+            this.deleted.remove(id);
+            console.log(this.toXML());
         },
         empty : function(){
             return this.created.empty() && this.modified.empty() && this.deleted.empty();

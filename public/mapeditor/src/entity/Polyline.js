@@ -1,6 +1,7 @@
 ME.Polyline = L.Polyline.extend({
+    includes : ME.Entity.CommonShape,
     initialize: function (options) {
-        var id, latlngs, styleOptions, data;
+        var id, latlngs, styleOptions, data, nd=[];
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
@@ -9,22 +10,27 @@ ME.Polyline = L.Polyline.extend({
         }
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
-        this.data = data;
+        this.states = new ME.State();
+        this.selected = false;
+        this.editing = false;
+        if (!!data){
+            this.data = data;
+        }else{
+            latlngs.forEach(function(latlng){
+                nd.push({
+                    ref : new ME.Marker({latlng:latlng})._leaflet_id
+                })
+            });
+            this.data = {
+                id : this._leaflet_id,
+                version : '1',
+                changeset : '1',
+                nd : nd,
+                tag : []
+            }
+        }
+
         this.type = 'line';
-    },
-    editEnable: function () {
-        this.editing.enable();
-        this.dragging.enable();
-    },
-    editDisable: function () {
-        this.editing.disable();
-        this.dragging.disable();
-    },
-    setData : function(data){
-       this.data = data;
-    },
-    getData : function(){
-        return this.data;
     },
     toXML: function () {
         var data = this.data, _line,

@@ -40,6 +40,10 @@
     <script src="/mapeditor/leaflet/toolbar/EditToolbar.Delete.js"></script>
     <script src="/mapeditor/leaflet/toolbar/DrawToolbar.js"></script>
     <script src="/mapeditor/src/MapEditor.js"></script>
+    <script src="/mapeditor/src/Draw.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polyline.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polygon.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Marker.js"></script>
     <script src="/mapeditor/src/Map.js"></script>
     <script src="/mapeditor/src/Handler.js"></script>
     <script src="/mapeditor/src/handler/SelectRoad.js"></script>
@@ -53,10 +57,16 @@
     <script src="/mapeditor/src/control/DataControl.js"></script>
     <script src="/mapeditor/src/util/State.js"></script>
     <script src="/mapeditor/src/group/Group.js"></script>
+    <script src="/mapeditor/src/Entity.js"></script>
+    <script src="/mapeditor/src/entity/CommonShape.js"></script>
     <script src="/mapeditor/src/entity/Polygon.js"></script>
     <script src="/mapeditor/src/entity/Polyline.js"></script>
     <script src="/mapeditor/src/entity/Marker.js"></script>
     <script src="/mapeditor/src/util/Hash.js"></script>
+    <script src="/mapeditor/src/Data.js"></script>
+    <script src="/mapeditor/src/data/CommonData.js"></script>
+    <script src="/mapeditor/src/data/MarkerData.js"></script>
+    <script src="/mapeditor/src/data/PolyData.js"></script>
     <script src="/mapeditor/src/data/Changes.js"></script>
     <script src="/mapeditor/src/mode/Mode.js"></script>
     <script src="/mapeditor/src/mode/DrawCircle.js"></script>
@@ -104,8 +114,7 @@
         var dataSetId = $(this).parent().attr('data-dataId'), group;
         if (!map.openedGroup.has(dataSetId)) {
             map.openedGroup.add(dataSetId,new ME.Group({
-                _group_id : dataSetId,
-                connect : new ME.Connect(map)
+                connect : new ME.Connect(map, dataSetId)
             }));
         }
         map.addLayer(map.openedGroup[dataSetId]);
@@ -113,7 +122,7 @@
     }).toggle(function () {
                 $(this).text('关闭');
                 var dataSetId = $(this).parent().attr('data-dataId');
-                map.openedGroup[dataSetId].open();
+                    map.openedGroup[dataSetId].open().loadLayers();
             }, function () {
                 $(this).text('打开');
                 var dataSetId = $(this).parent().attr('data-dataId');
@@ -121,15 +130,14 @@
             });
 
     $('.leaflet-dataset-list ul li .edit').on('click',function () {
-        var dataSetId = $(this).parent().attr('data-dataId'), group;
+        var dataSetId = $(this).parent().attr('data-dataId');
 
         if (!map.openedGroup[dataSetId]) {
             map.openedGroup.add(dataSetId,new ME.Group({
-                _group_id : dataSetId,
-                connect : new ME.Connect(map)
+                connect : new ME.Connect(map, dataSetId)
             }));
+            map.addLayer(map.openedGroup[dataSetId]);
         }
-        map.addLayer(map.openedGroup[dataSetId]);
         map.editingGroup = map.openedGroup[dataSetId];
         map.openedGroup[dataSetId].on('close editDisable', function(){
             map.changes.clear();

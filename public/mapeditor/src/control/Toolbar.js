@@ -12,7 +12,6 @@ ME.Control.Toolbar = L.Control.extend(
  * @lends ME/Control/Toolbar.prototype
  */
 {
-
 	options: {
 		className:"",
 		toolbarClassName: "mapeditor-toolbar-bar",
@@ -135,20 +134,24 @@ ME.Control.Button = L.Class.extend({
 	},
 
 	initialize: function(map,options){
-		if(typeof options == "string")
-			options = this._getFromPresetByName(options);
-		if(!options) return;
-		if(!options.name) return;
-		if(!options.handler) return;
+        var temp = {};
+        if(typeof options == "string")
+            options = this._getFromPresetByName(options);
+        if(!options) return;
+        if(!options.name) return;
+        if(!options.handler) return;
 
-		options.handler = options.handler.bind(this);
+        L.extend(temp,options);
 
-		this.name = options.name;
-		this._map = map;
+        temp.handler = options.handler.bind(this);
 
-		L.setOptions(this,options);
-		this._createButton(this.options);
-	},
+        this.name = temp.name;
+        this._map = map;
+
+        L.setOptions(this,temp);
+        this._createButton(this.options);
+
+    },
 
 	bindEvent: function(){
 		var handler = this.options.handler;
@@ -183,7 +186,8 @@ ME.Control.Button = L.Class.extend({
 	disposeButton: function(){
 		this.removeEvent();
 		this._map = null;
-		this.el.remove();
+		//this.el.remove();
+        this.el.parentNode.removeChild(this.el);
 	},
 
 	_createButton: function(options){
@@ -207,8 +211,6 @@ ME.Control.Button = L.Class.extend({
 
 		return btn;
 	}
-
-
 });
 
 ME.Control.Button.presets = [
@@ -307,10 +309,17 @@ ME.Control.Button.presets = [
 					var arr = latlng.split(",");
 					var ll = new L.LatLng(arr[1],arr[0]);
 					coor.push(ll);
-				})
-				//map.addLayer(new ME.Polygon({latlngs:coor}));
-				group.clearSelectedLayers();
-				group.addLayer(new ME.Polygon({latlngs:coor}));
+				});
+
+                var layer = new ME.Polygon({latlngs:coor});
+                group.clearSelectedLayers();
+				group.addLayer(layer);
+                layer.editEnable();
+                layer.editing._markers.forEach(function(marker){
+                    console.log('created marker:',marker._leaflet_id);
+                    map.changes.fire('created', {layer:marker});
+                });
+                map.changes.fire('created', {layer:layer});
 			});
 		}
 	},
@@ -347,13 +356,31 @@ ME.Control.Button.presets = [
 		title: "删除",
 		className: "mapeditor-toolbar-actions-delete",
 		handler: function(){
-			var map = this._map;
-			var layer = map._currentpath;
-			if(layer){
-				layer.dragging.disable();
-				layer.editing.disable();
-				map.removeLayer(layer);
-			}
+			var map = this._map,
+                group = map.editingGroup;
+            console.log(group.selectedLayers)
+            group.selectedLayers.forEach(function (layerId) {
+                var layer = group.getLayer(layerId), data, markergroup;
+                if (layer) {
+                    map.changes.fire('deleted', {layer: layer});
+
+                    data = layer.data;
+                    markergroup = layer.editing._markerGroup;
+                    data.nd.forEach(function (nd, i) {
+                        if (!(/^-\d+$/.test(nd.ref))) {
+                            var marker = markergroup.getLayer(nd.ref);
+                            map.changes.fire('deleted', {layer: marker});
+                        }else{
+                            data.nd.splice(i,1);
+                        }
+                    });
+
+                    layer.dragging.disable();
+                    layer.editing.disable();
+                    group.removeLayer(layer);
+                }
+            });
+            group.selectedLayers = [];
 		}
 	}
 ];

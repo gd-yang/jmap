@@ -1,5 +1,9 @@
 define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
+
+    var buttons = ["drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
+        toolbar = new ME.Control.Toolbar({buttons : buttons});
+
     var Sorting = L.Class.extend({
         initialize: function () {
             var _this = this;
@@ -7,15 +11,11 @@ define(function (require, exports, module) {
                 center: new L.LatLng(31.20410238002499, 121.43068313598633),
                 zoom: 15
             });
-            this.map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]}));
-            //this.map.addToolbar('draw', new ME.Control.Toolbar({buttons:["drawPolygon"]}));
-            this.map.addToolbar('road', new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
-            //this.map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
-            this.map.addToolbar('operater', new ME.Control.Toolbar({buttons:["delete"]}));
+
             this.connect = new Connect(this.map);
-            this.connect.on('datasave:success', function(){
-                _this.map.changes.clear();
-                console.log('_this.map.changes')
+            this.connect.on('datasave:success', function(e){
+                var data = e.data;
+                $('.polygonCode').text(data.polygonCode);
                 console.log('保存成功！')
             });
             this.connect.on('dataload:error', function(){
@@ -30,38 +30,50 @@ define(function (require, exports, module) {
             var map = this.map;
             var polygonCode = $.trim($('.polygonCode').text());
             if (polygonCode === '') {
+                alert('请输入要编辑的区域码！');
                 return;
             }
 
             if (!!this.group) {
-                this.group.close().editDisable();
-                map.removeGroup(this.group);
-                delete this.group;
+                this.clearOldGroup.call(this);
             }
             this.connect.polygonCode = polygonCode;
-            this.group = new ME.Group();
-            map.editingGroup = this.group;
-            map.addGroup(this.group);
-            this.group.setConnect(this.connect).open().editAble();
+            this.createNewGroup.call(this);
+            this.group.loadLayers()
         },
         createOneData: function () {
-            var map = this.map;
-
+            console.log(this)
             if (!!this.group) {
-                this.group.close().editDisable();
-                map.removeGroup(this.group);
-                delete this.group;
+                this.clearOldGroup.call(this);
             }
             this.connect.polygonCode = '';
-            this.group = new ME.Group();
-            map.addGroup(this.group);
-            this.group.setConnect(this.connect).editAble();
-            alert('创建编辑层成功！');
+            this.createNewGroup.call(this);
         },
         saveData : function(){
-            this.group.saveLayers();
+            this.group.saveLayers.call(this.group);
+        },
+        clearOldGroup : function(){
+            this.group.close();
+            this.group.off('editAble', this._fireEdit, this)
+                .off('editDisable', this._offEdit, this);
+            delete this.group;
+        },
+        createNewGroup : function(){
+            var map = this.map;
+            this.group = new ME.Group();
+            this.group.on('editAble', this._fireEdit, this)
+                .on('editDisable', this._offEdit, this);
+            map.editingGroup = this.group;
+            map.addDataGroup(this.group);
+            this.group.setConnect(this.connect).open().editAble();
+        },
+        _fireEdit : function(){
+            this.map.addToolbar('EditToolbar', toolbar);
+        },
+        _offEdit : function(){
+            this.map.removeToolbar('EditToolbar');
         }
     });
 
-    return Sorting;
+    module.exports = Sorting;
 });

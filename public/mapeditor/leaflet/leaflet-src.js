@@ -4353,7 +4353,7 @@ L.LayerGroup = L.Class.extend({
 		return this.invoke('setZIndex', zIndex);
 	},
 
-	getLayerId: function (layer) {
+	getLayerId : function (layer) {
 		return L.stamp(layer);
 	}
 });

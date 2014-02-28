@@ -29,7 +29,7 @@ ME.Mode.SelectRoad = ME.Mode.extend(
                 latlngs : road
             });
             _this.group.addLayer(path);
-            path.editing.updateMarkers();
+            path.editing.enable();
         });
     }
 });

@@ -6,7 +6,6 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	options: {
 		icon: new L.Icon.Default(),
 		repeatMode: false,
-        draggable : true,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
@@ -97,15 +96,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var _this = this, marker = new ME.Marker({latlng:this._marker.getLatLng(), options:{
-            icon: this.options.icon,
-            draggable: this.options.draggable
-        }});
-
-        this._map.changes.fire('created',{layer:marker});
-        marker.on('dragend', function(){
-            _this._map.changes.fire('created',{layer:marker});
-        });
+		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });

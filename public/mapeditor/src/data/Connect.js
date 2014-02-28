@@ -1,11 +1,12 @@
 ;(function(ME){
     var Connect = L.Class.extend({
         includes: L.Mixin.Events,
-        initialize: function (map) {
+        initialize: function (map, datasetId) {
             this._map = map;
+            this.datasetId = datasetId;
             this.http = new XHR(true);
         },
-        loadData: function (groupid, group) {
+        loadData: function (callback) {
             var _this = this,
                 map = this._map,
                 config = ME.Config,
@@ -16,7 +17,7 @@
                 paras = config.data.loadParas;
                 paras.zoom = map.getZoom();
                 paras.bbox = ary.join(',');
-                paras.dataSetId = groupid;
+                paras.dataSetId = this.datasetId;
 
             //this.abort();
             // 开始加载
@@ -28,34 +29,38 @@
                 status = result.status;
                 data = result.data;
 
-                if (status.msg !== 'success') {
+                if (!data) {
                     _this.fire('dataload:error',{data:data});
                     return;
                 }
                 dataSet = data.dataSet;
-
-                _this.fire('dataload:success',{data : data});
+                if (!!callback && typeof callback === 'function') {
+                    callback(dataSet);
+                }
             });
         },
-        saveData: function (changes, groupid, group) {
+        saveData: function (callback) {
             var _this = this,
                 config = ME.Config,
                 url = config.data.saveUrl,
                 xhr = new XHR(true),
                 paras = config.data.saveParas;
 
-            paras.dataSetId = groupid;
-            paras.xml = changes.toXML();
+            paras.dataSetId = this.datasetId;
+            paras.xml = this._map.changes.toXML();
             xhr.post(url, {
                     paras : paras
                 }, function(rst){
                     rst = JSON.parse(rst);
-                    var status = rst.status;
-                    if (status.msg !== 'success'){
+                    var status = rst.status,
+                        data = rst.data;
+                    if (!data){
                         _this.fire('datasave:error', {rst : rst}, _this);
                         return;
                     }
-                    _this.fire('datasave:success', {rst : rst}, _this);
+                    if (!!callback && typeof callback === 'function') {
+                        callback(data);
+                    }
                 });
         },
         abort : function(){

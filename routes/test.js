@@ -1,4 +1,16 @@
 module.exports = function (app) {
+    app.get('/test/main.html', function (req, res) {
+        res.render('./test/main.html');
+    });
+
+    app.get('/test/a.html', function (req, res) {
+        res.render('./test/a.html');
+    });
+
+    app.get('/test/b.html', function (req, res) {
+        res.render('./test/b.html');
+    });
+
     app.get('/test/demo.html', function (req, res) {
         res.render('./test/demo.html');
     });

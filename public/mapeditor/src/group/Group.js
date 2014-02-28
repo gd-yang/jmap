@@ -2,16 +2,13 @@
     var Group = L.FeatureGroup.extend({
         initialize: function (options) {
             options = options || {};
-            var layers = options.layers,
-                groupid = options._group_id;
+            var layers = options.layers;
 
             L.LayerGroup.prototype.initialize.call(this, layers);
             this.editing = false;
             this.openning = false;
-            this.states = new ME.State();
             this.selectedLayers = [];
             this.connect = options.connect;
-            this._group_id = groupid || '';
 
             this.on('layeradd', function (e) {
                 e.layer.on('focusIn', function (e) {
@@ -29,23 +26,20 @@
         },
         editAble: function () {
             var _this = this, map = this._map;
-            if (this.editing) {
+            if (this.editing || !this.openning) {
                 return this;
             }
 
             this.editing = true;
             map.editingGroup = this;
-
-            if (this.geoType == '1') {
-                this.eachLayer(function (layer) {
-                    layer.dragging.enable();
-                    layer.on('dragend', _this._fireChanges, _this);
-                });
-                return this;
-            }
-            this.on('click', this._fireEdit);
-            this.on('mouseover', this.overState);
-            this.on('mouseout', this.commonState);
+            // 处理选中层
+            this.on('click', this._fireSelect, this);
+            this.eachLayer(function (layer) {
+                layer.editEnable();
+            });
+            // 触发后添加层的编辑状态
+            this.on('layeradd', this._layerEdit);
+            this.fire('editAble', {group: this});
             return this;
         },
         editDisable: function () {
@@ -54,134 +48,90 @@
                 return this;
             }
             this.editing = false;
-            if (map.openedGroup.empty()){
-                map.editingGroup = map.defaultGroup;
-            }
+            delete map.editingGroup;
+            this.off('click', this._fireSelect, this);
+            this.eachLayer(function (layer) {
+                layer.editDisable();
+            });
 
-            if (this.geoType == '1') {
-                this.eachLayer(function (layer) {
-                    layer.dragging.disable();
-                    layer.off('dragend', _this._fireChanges, _this);
-                });
-                return this;
-            }
-            this._offEdit.call(_this);
-            this.off('click', this._fireEdit);
-            this.off('mouseover', this.overState);
-            this.off('mouseout', this.commonState);
+            this._offSelect.call(this);
+            this.off('layeradd', this._layerEdit);
+            this.fire('editDisable', {group: this});
             return this;
         },
+        _layerEdit : function(e){
+            var layer = e.layer;
+            layer.editEnable();
+        },
         open: function () {
-            var map = this._map;
-            if (this.openning) {
+            if (this.openning || !this._map) {
                 return this;
             }
-
             this.openning = true;
             this.fire('open', {group: this});
-            this.loadLayers();
-            this.connect.on('dataload:success', this._renderLayers, this)
-                .on('dataload:error', function(e){}, this)
-                .on('datasave:error', function(e){}, this)
-                .on('datasave:success', function(e){
-                    map.changes.clear();
-                }, this);
             return this;
         },
         close: function () {
             var map = this._map;
-            if (!this.openning) {
+            if (!this.openning || !map) {
                 return this;
             }
-            this.openning = false;
-            if (this.editing) {
+            if (this.editing){
                 this.editDisable();
             }
+            this.openning = false;
             this.fire('close', {group: this});
             this.off('renderLayer', this._renderLayer, this);
-            this.connect.off('dataload:success', this._renderLayers, this);
-            map.openedGroup.remove(this._group_id, this);
-            map.removeLayer(this);
+            map.removeDataGroup(this);
+            map.changes.clear();
             return this;
         },
-        _fireEdit: function (e) {
-            var _this = this;
-            this.fire('editAble', {group: this});
+        _fireSelect: function (e) {
+            var _this = this,
+                targetLayer = e.layer,
+                _leaflet_id = targetLayer._leaflet_id;
+
             if (!e.originalEvent.shiftKey) {
                 this.selectedLayers.forEach(function(_leaflet_id){
                     var layer = _this.getLayer(_leaflet_id);
-                    layer.editing.disable();
-                    layer.off('edit', _this._fireChanges, _this);
-                    layer.dragging.off('dragend', _this._fireDragEnd, _this);
-                    if (_this.geoType !== '1') {
-                        _this.setState(layer, 'common');
+                    if (layer !== targetLayer){
+                        layer.fire('selectOut');
                     }
-                    layer.fire('focusOut', {layer: layer});
                 });
             }
-            var targetLayer = e.layer;
-            var _leaflet_id = targetLayer._leaflet_id;
+
             if (this.selectedLayers.indexOf(_leaflet_id) == -1){
                 if (!e.originalEvent.shiftKey){
                     this.selectedLayers.length = 0;
                 }
                 this.selectedLayers.push(_leaflet_id);
             }
-
-            targetLayer.fire('focusIn', {layer: targetLayer});
-            targetLayer.editEnable();
-            targetLayer.on('edit', this._fireChanges, this);
-            targetLayer.dragging.on('dragend', this._fireDragEnd, this);
-            if (this.geoType !== '1') {
-                this.setState(targetLayer, 'edit');
+            if (this.focusLayer && this.focusLayer !== targetLayer){
+                this.focusLayer.fire('focusOut');
             }
+            this.focusLayer = targetLayer;
+            this.focusLayer.fire('focusIn');
         },
-        _offEdit: function (e) {
+        _offSelect: function (e) {
             var _this = this;
-            this.fire('editDisable', {group: this});
-            if (this.geoType !== '1') {
-                this.selectedLayers.forEach(function(_leaflet_id){
-                    var layer = _this.getLayer(_leaflet_id);
-                    layer.editDisable();
-                    layer.off('edit', _this._fireChanges, _this);
-                    layer.dragging.off('dragend', _this._fireDragEnd, _this);
-                    _this.setState(layer, 'common');
-                });
-            }
+            this.selectedLayers.forEach(function (_leaflet_id) {
+                var layer = _this.getLayer(_leaflet_id);
+                layer.setState('common');
+            });
+            this.selectedLayers = [];
         },
         
-        clearSelectedLayers: function(focusout){
+        clearSelectedLayers: function(){
             var _this = this;
-
             this.selectedLayers.forEach(function(_leaflet_id){
                 var layer = _this.getLayer(_leaflet_id);
                 layer.editDisable();
-                layer.off('edit', _this._fireChanges, _this);
-                layer.dragging.off('dragend', _this._fireDragEnd, _this);
-                if (_this.geoType !== '1') {
-                    _this.setState(layer, 'common');
-                }
-                if(focusout)
-                    layer.fire('focusOut', {layer: layer});
+                _this.removeLayer(layer);
             });
 
             this.selectedLayers = [];
         },
-        setState: function (layer, state) {
-            layer.setStyle(this.states[state]);
-        },
-        commonState: function (e) {
-            var layer = e.layer;
-            if (layer !== this.editLayer && this.geoType !== '1') {
-                this.setState(layer, 'common');
-            }
-        },
-        overState: function (e) {
-            var layer = e.layer;
-            if (layer !== this.editLayer && this.geoType !== '1') {
-                this.setState(layer, 'over');
-            }
-        },
+
         loadLayers: function () {
             var _this = this;
             // 清除掉不在范围的图
@@ -192,12 +142,34 @@
             return this;
         },
         saveLayers : function(){
-            this.connect.saveData();
+            var _this = this;
+            this.connect.saveData(function(data){
+                console.log('保存执行回调！！')
+                var nodes, ways;
+                _this._map.clearChanges();
+                _this.clearSelectedLayers();
+                _this.clearLayers();
+                _this.loadLayers();
+//                console.log('data：',data);
+//                if (!!data){
+//                   nodes = data.node||[];
+//                   ways = data.way||[];
+//                }
+//                ways.forEach(function(way){
+//                    var oldId = way.oldId,
+//                        newId = way.newId,
+//                        newVersion = way.newVersion,
+//                        layer = _this.getLayer(oldId);
+//                    console.log(layer);
+//                    layer._leaflet_id = newId;
+//                    layer.version = newVersion;
+//                    console.log(_this.getLayer(newId));
+//                    console.log(_this.getLayer(oldId));
+//                });
+            });
             return this;
         },
         _renderLayers : function (dataSet) {
-            console.log('this:', this);
-            console.log('dataset:', dataSet);
             var geoType = dataSet.geoType;
             this.on('renderLayer', this._renderLayer, this);
             this.dataToLayer(geoType, dataSet);
@@ -261,7 +233,7 @@
 
                             layer = new ME.Polygon({
                                 id: way.id,
-                                latlngs: latlngs,
+                                latlngs : latlngs,
                                 data : way
                             });
                             _this.fire('renderLayer', {layer: layer}, _this);
@@ -287,22 +259,6 @@
                     }
                 });
             }
-        },
-        _fireDragEnd : function(e){
-            var _this = this, layer = e.target.path, editing = layer.editing, markers;
-            layer.fire('edit');
-            markers = editing._markers;
-            markers.forEach(function(marker){
-                _this._map.changes.fire(/^-\d+$/.test(marker._leaflet_id)
-                    ? 'created'
-                    : 'modified', {layer: marker});
-            });
-        },
-        _fireChanges: function (e) {
-            var layer = e.target, type = e.type;
-            this._map.changes.fire(/^-\d+$/.test(layer._leaflet_id)
-                ? 'created'
-                : 'modified', {layer: layer});
         },
         setConnect : function(connect){
             this.connect = connect;

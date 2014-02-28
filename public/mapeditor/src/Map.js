@@ -1,6 +1,6 @@
 ;(function(ME){
     ME.Map = L.Map.extend({
-        initialize : function(id, options, draw_options){
+        initialize : function(id, options, tileOptions){
             var config = ME.Config,
             // 绘图工具
                 tileLayerTemplate = config.map.tileUrlTemplate,
@@ -11,8 +11,6 @@
             this.changes = new ME.Changes();
             this.toolbars = new ME.Hash();
             this.openedGroup = new ME.Hash();
-            this.defaultGroup = new ME.Group();
-            this.addLayer(this.defaultGroup);
 
             this._drawPolylineMode = new ME.Mode.DrawPolyline(this);
             this._drawPolygonMode = new ME.Mode.DrawPolygon(this);
@@ -21,8 +19,10 @@
             this._areaSelectRoadMode = new ME.Mode.AreaSelectRoad(this);
             
             this.addControl(L.control.scale());
-
-            this.on('dragend zoomend', function(){
+            this.on('contextmenu', function(e){
+                console.log(e);
+            })
+            this.on('dragend zoomend moveend', function(){
                 this.openedGroup.each(function(group){
                     if (group.geotype !== 'undefined'){
                         group.loadLayers.call(group);
@@ -30,15 +30,16 @@
                 });
             });
         },
-        addGroup : function(group){
+        addDataGroup : function(group){
             L.Map.prototype.addLayer.call(this, group);
             this.openedGroup.add(group._group_id, group);
         },
-        removeGroup : function(group){
+        removeDataGroup : function(group){
             L.Map.prototype.removeLayer.call(this, group);
             this.openedGroup.remove(group._group_id);
         },
         addToolbar : function(name, control){
+            console.log('addtoolbar!')
             L.Map.prototype.addControl.call(this, control);
             this.toolbars.add(name, control);
         },
@@ -50,6 +51,7 @@
             if (!control){
                 return;
             }
+            console.log('removetoolbar!')
             L.Map.prototype.removeControl.call(this, control);
             this.toolbars.remove(name);
         },

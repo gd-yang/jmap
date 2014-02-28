@@ -40,6 +40,11 @@
     <script src="/mapeditor/leaflet/toolbar/EditToolbar.Delete.js"></script>
     <script src="/mapeditor/leaflet/toolbar/DrawToolbar.js"></script>
     <script src="/mapeditor/src/MapEditor.js"></script>
+    <script src="/mapeditor/src/util/Hash.js"></script>
+    <script src="/mapeditor/src/Draw.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polyline.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polygon.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Marker.js"></script>
     <script src="/mapeditor/src/Map.js"></script>
     <script src="/mapeditor/src/Handler.js"></script>
     <script src="/mapeditor/src/handler/SelectRoad.js"></script>
@@ -50,14 +55,15 @@
     <script src="/mapeditor/src/handler/CircleMoveable.js"></script>
     <script src="/mapeditor/src/Config.js"></script>
     <script src="/mapeditor/src/data/Connect.js"></script>
+    <script src="/mapeditor/src/data/Changes.js"></script>
     <script src="/mapeditor/src/control/DataControl.js"></script>
     <script src="/mapeditor/src/util/State.js"></script>
     <script src="/mapeditor/src/group/Group.js"></script>
+    <script src="/mapeditor/src/Entity.js"></script>
+    <script src="/mapeditor/src/entity/CommonShape.js"></script>
     <script src="/mapeditor/src/entity/Polygon.js"></script>
     <script src="/mapeditor/src/entity/Polyline.js"></script>
     <script src="/mapeditor/src/entity/Marker.js"></script>
-    <script src="/mapeditor/src/util/Hash.js"></script>
-    <script src="/mapeditor/src/data/Changes.js"></script>
     <script src="/mapeditor/src/mode/Mode.js"></script>
     <script src="/mapeditor/src/mode/DrawCircle.js"></script>
     <script src="/mapeditor/src/mode/DrawMark.js"></script>
@@ -79,26 +85,30 @@
         .header {
             width: 100%;
             height: 50px;
-            line-height: 50px;
             background: #eeeeee;
-            border-bottom: 1px solid #ccc
+            border-bottom: 1px solid #ccc;
+            font:normal 12px/50px arial;
         }
 
-        .polygonCode {
+        .input {
             margin: 0;
             padding: 0;
             display: inline-block;
             *display: inline;
             *zoom: 1;
-            min-width:200px;
             height: 24px;
             line-height: 24px;
             overflow: hidden;
             border: 1px solid #ddd;
             background: #fff;
-            margin-left: 20px;
+            margin-left: 12px;
             font-size: 14px;
             vertical-align: middle;
+            white-space: nowrap;
+        }
+        .polygonCode,.clientKey{
+            width: 150px;
+            overflow: hidden;
         }
 
         .button {
@@ -118,6 +128,13 @@
 
         .button:hover {
             background: #bbb;
+        }
+        .label{
+            display: inline-block;
+            vertical-align: middle;
+            height: 24px;
+            line-height: 24px;
+            padding-left: 15px;
         }
 
         #map {
@@ -142,10 +159,17 @@
 
         resizeHeight();
         $(window).on('resize', resizeHeight);
+
+        $('.input').attr('title', function(){
+            return $(this).text();
+        });
     });
 </script>
 <div class="header">
-    <p class="polygonCode" contenteditable="true"></p>
+    <span class="label">polygonCode</span>
+    <p class="input polygonCode" contenteditable="true">ec51f623-9690-4781-a61c-e0e8d26f4ae8</p>
+    <span class="label">clientKey</span>
+    <p class="input clientKey" contenteditable="true">aa1352ff-e2c3-490f-9dad-ec85a13eee99</p>
     <span class="editor button">编辑</span>
     <span class="create button">创建新区域</span>
     <span class="save button">保存编辑</span>

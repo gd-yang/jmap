@@ -264,6 +264,7 @@
             this.onLoad(cb);
             url = method == 'get' ? url + ( (url.indexOf('?') === -1 ? '?' : '&') + ObjSerialize(paras))
                 : url;
+
             this.open(method, url, async, username, pwd);
 
             if (isXDomain){

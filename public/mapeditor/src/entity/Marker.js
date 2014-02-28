@@ -1,4 +1,5 @@
 ME.Marker = L.Marker.extend({
+    includes : ME.Entity.CommonShape,
     initialize: function (options) {
         var id, latlng, styleOptions, data;
         if (options) {
@@ -10,6 +11,9 @@ ME.Marker = L.Marker.extend({
         L.Marker.prototype.initialize.call(this, latlng, styleOptions);
 
         this._leaflet_id = id || L.stamp(this);
+        this.states = new ME.State();
+        this.selected = false;
+        this.editing = false;
         this.data = data || {
             id : this._leaflet_id,
             lat : latlng.lat,
@@ -20,8 +24,10 @@ ME.Marker = L.Marker.extend({
         };
         this.type = 'marker';
     },
-    editEnable: function () {
-
+    _fireDragEnd : function(){
+        this._map.changes.fire(/^-\d+$/.test(this._leaflet_id)
+            ? 'created'
+            : 'modified', {layer: this});
     },
     toXML: function () {
         var data = this.data,
