@@ -52,5 +52,14 @@ ME.Polyline = L.Polyline.extend({
         });
         _line += tagstr.join('');
         return _line + '</way>';
+    },
+
+    _getPathPartStr: function(points){
+        var str = L.Polyline.prototype._getPathPartStr.call(this,points);
+
+        if(this.options.closable === true)
+            str  = str + (L.Browser.svg ? 'z' : 'x');
+
+        return str;
     }
 });

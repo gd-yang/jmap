@@ -52,6 +52,9 @@
     <script src="/mapeditor/src/handler/PolylineMoveable.js"></script>
     <script src="/mapeditor/src/handler/PolylineRotateable.js"></script>
     <script src="/mapeditor/src/handler/CircleMoveable.js"></script>
+
+    <script src="/mapeditor/src/draw/Polyline.js"></script>
+    
     <script src="/mapeditor/src/Config.js"></script>
     <script src="/mapeditor/src/data/Connect.js"></script>
     <script src="/mapeditor/src/control/DataControl.js"></script>
@@ -106,7 +109,8 @@
     });
     // 添加数据据控制
     map.addControl(new ME.DataControl());
-    map.addControl(new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]})); 
+    var drawcontrol = new ME.Control.Toolbar({buttons:["drawPolyline","drawPolygon","drawMarker"]});
+    map.addControl(drawcontrol); 
     map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
     map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
 
