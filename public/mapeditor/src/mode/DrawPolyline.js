@@ -30,7 +30,7 @@ ME.Mode.DrawPolyline = ME.Mode.extend(
         //L.setOptions(layer,{moveable:true,rotateable:true});
         this.group.addLayer(layer);
 
-        //layer.editing.enable();
+       // layer.editing.enable();
         //layer.dragging.enable();
     }
 });

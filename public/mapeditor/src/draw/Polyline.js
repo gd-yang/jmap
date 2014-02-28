@@ -24,8 +24,6 @@ ME.Draw.Polyline = L.Draw.Polyline.extend({
 
 		if (markerCount > 2) {
 			this._markers[0].on('click', this._closePolyline, this);
-			L.setOptions(this._poly,{closable: this.options.closable});
-			this.options.shapeOptions.closable = this.options.closable;
 		}
 		else{
 			this._markers[0].off('click', this._closePolyline, this);
@@ -39,7 +37,11 @@ ME.Draw.Polyline = L.Draw.Polyline.extend({
 		var latlng = this._markers[0].getLatLng();
 		latlng = L.latLng(latlng.lat, latlng.lng);
 
+		L.setOptions(this._poly,{closable: this.options.closable});
+		this.options.shapeOptions.closable = true;
+
 		this._poly.redraw();
+
 
 		this._finishShape();
 	},
