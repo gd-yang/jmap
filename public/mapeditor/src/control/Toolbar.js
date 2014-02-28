@@ -103,13 +103,13 @@ ME.Control.Toolbar = L.Control.extend(
 	disableButton: function(name){
 		var button = this._buttons[name];
 
-		button.removeEvent();
+		button.disable();
 	},
 
 	enableButton: function(name){
 		var button = this._buttons[name];
 
-		button.bindEvent();
+		button.enable();
 	},
 
 	/**
@@ -122,7 +122,7 @@ ME.Control.Toolbar = L.Control.extend(
 
 		delete this._buttons[name];
 
-		button.disposeButton();
+		button.dispose();
 	}
 });
 
@@ -153,7 +153,17 @@ ME.Control.Button = L.Class.extend({
 
     },
 
-	bindEvent: function(){
+    disable: function(){
+    	this._removeEvent();
+    	L.DomUtil.addClass(this.el, "disabled");
+    },
+
+    enable: function(){
+    	this._bindEvent();
+    	L.DomUtil.removeClass(this.el, "disabled");
+    },
+
+	_bindEvent: function(){
 		var handler = this.options.handler;
 		var button = this.el;
 
@@ -168,7 +178,7 @@ ME.Control.Button = L.Class.extend({
 		}
 	},
 
-	removeEvent: function(){
+	_removeEvent: function(){
 		var handler = this.options.handler;
 		var button = this.el;
 
@@ -183,8 +193,8 @@ ME.Control.Button = L.Class.extend({
 		}
 	},
 
-	disposeButton: function(){
-		this.removeEvent();
+	dispose: function(){
+		this._removeEvent();
 		this._map = null;
 		//this.el.remove();
         this.el.parentNode.removeChild(this.el);
@@ -198,7 +208,7 @@ ME.Control.Button = L.Class.extend({
 
 		this.el = button;
 
-		this.bindEvent();
+		this._bindEvent();
 	},
 
 	_getFromPresetByName: function(name){
@@ -214,6 +224,16 @@ ME.Control.Button = L.Class.extend({
 });
 
 ME.Control.Button.presets = [
+	{
+		name: "panMap",
+		//innerHTML: "画线",
+		title: "移动地图",
+		className: "mapeditor-toolbar-pan-map",
+		handler: function(){
+			if(ME.Mode._activeMode)
+            	ME.Mode._activeMode.disable();
+		}
+	},
 	{
 		name: "drawPolyline",
 		//innerHTML: "画线",

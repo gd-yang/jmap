@@ -58,6 +58,6 @@ ME.Handler.SelectRoad = L.Handler.extend(
                 _this.enable();
         };
 
-        ME.util.pointSelectRoad({url:this.options.url,lng:e.latlng.lng,lat:e.latlng.lat},cb,this);
+        ME.Util.pointSelectRoad({url:this.options.url,lng:e.latlng.lng,lat:e.latlng.lat},cb,this);
     }
 });

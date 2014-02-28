@@ -1,11 +1,11 @@
-ME.util = ME.util || {};
+ME.Util = ME.Util || {};
 /**
  * select roads by point
  * @param  {Object}   config  [description]
  * @param  {Function} cb      [description]
  * @param  {Object}   context [description]
  */
-ME.util.pointSelectRoad = function(config,cb,context){
+ME.Util.pointSelectRoad = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.getJSON(config.url,{
         paras:{
@@ -23,7 +23,7 @@ ME.util.pointSelectRoad = function(config,cb,context){
  * @param  {Function} cb      [description]
  * @param  {Object}   context [description]
  */
-ME.util.areaSelectRoad = function(config,cb,context){
+ME.Util.areaSelectRoad = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.post(config.url,{
         paras:{
@@ -41,7 +41,7 @@ ME.util.areaSelectRoad = function(config,cb,context){
  * @param  {Function} cb      [description]
  * @param  {Object}   context [description]
  */
-ME.util.roadsToArea = function(config,cb,context){
+ME.Util.roadsToArea = function(config,cb,context){
 	var xhr = new XHR(true);
     xhr.post(config.url,{
         paras:{

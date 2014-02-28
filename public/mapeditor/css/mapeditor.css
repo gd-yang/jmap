@@ -18,9 +18,11 @@
     text-align: center;
     text-decoration: none;
     color: black;
+    cursor:pointer;
 }
 .mapeditor-toolbar-bar a.disabled{
 	background-image: url('/mapeditor/images/spritesheet-disabled.png');
+	cursor: default;
 }
 .mapeditor-toolbar-bar.v a{
 	display: block;
@@ -91,4 +93,7 @@
 }
 .mapeditor-toolbar-road-roadstoarea{
 	background-position: -302px -2px;
+}
+.mapeditor-toolbar-pan-map{
+	background-position: -392px -2px;
 }

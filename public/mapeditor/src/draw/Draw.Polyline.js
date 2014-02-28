@@ -3,6 +3,9 @@
         statics: {
             TYPE: 'polyline'
         },
+        options:{
+            closable: true
+        },
 
         Poly: L.Polyline,
 
@@ -102,6 +105,45 @@
             L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 
             this._map.changes.fire('created', {layer:poly});
+        },
+
+        _vertexChanged: function (latlng, added) {
+            L.Draw.Polyline.prototype._vertexChanged.call(this, latlng, added);
+            if(this.options.closable)
+                this._updateClosableHandler();
+        },
+
+        _updateClosableHandler: function(){
+            var markerCount = this._markers.length;
+
+            if (markerCount > 2) {
+                this._markers[0].on('click', this._closePolyline, this);
+            }
+            else{
+                this._markers[0].off('click', this._closePolyline, this);
+                L.setOptions(this._poly,{closable: false});
+                this.options.shapeOptions.closable = false;
+            }
+                
+        },
+
+        _closePolyline: function(){
+            var latlng = this._markers[0].getLatLng();
+            latlng = L.latLng(latlng.lat, latlng.lng);
+
+            L.setOptions(this._poly,{closable: this.options.closable});
+            this.options.shapeOptions.closable = true;
+
+            this._poly.redraw();
+
+
+            this._finishShape();
+        },
+
+        _cleanUpShape: function () {
+            L.Draw.Polyline.prototype._cleanUpShape.call(this);
+            if(this._markers.length)
+                this._markers[0].off('click', this._closePolyline, this);
         }
     });
 })(MapEditor);
