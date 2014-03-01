@@ -17,6 +17,7 @@
             this._drawMarkerMode = new ME.Mode.DrawMark(this);
             this._selectRoadMode = new ME.Mode.SelectRoad(this);
             this._areaSelectRoadMode = new ME.Mode.AreaSelectRoad(this);
+            this._areaSelectLayersMode = new ME.Mode.AreaSelectLayers(this);
             
             this.addControl(L.control.scale());
             this.on('contextmenu', function(e){

@@ -321,7 +321,7 @@ ME.Control.Button.presets = [
 				});
 				latlngs.push(arr.join(";"));
 			});
-			ME.util.roadsToArea({url:url,line:latlngs.join("-")},function(data){
+			ME.Util.roadsToArea({url:url,line:latlngs.join("-")},function(data){
 				data = JSON.parse(data);
 				var latlngs = data.data[0].split(";");
 				var coor = [];
@@ -341,6 +341,15 @@ ME.Control.Button.presets = [
                 });
                 map.changes.fire('created', {layer:layer});
 			});
+		}
+	},
+	{
+		name: "areaSelectLayers",
+		title: "区域选图层",
+		className: "mapeditor-toolbar-draw-rectangle",
+		handler: function(){
+			var map = this._map;
+			map._areaSelectLayersMode.enable();
 		}
 	},
 	{
