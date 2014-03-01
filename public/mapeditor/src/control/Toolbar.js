@@ -44,7 +44,7 @@ ME.Control.Toolbar = L.Control.extend(
 	onRemove: function(){
 		for(var key in this._buttons){
 			if(this._buttons.hasOwnProperty(key)){
-				this._buttons[key].disposeButton();
+				this._buttons[key].dispose();
 			}
 		}
 		this._buttons = {};
