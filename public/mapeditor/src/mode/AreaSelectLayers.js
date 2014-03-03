@@ -30,10 +30,12 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
             var id = layer._leaflet_id;
             var intersect = that._intersect(bounds,layer);
             var index = that.group.selectedLayers.indexOf(id);
+            // if intersect, select it
             if(intersect && index<0){
                 that.group.selectedLayers.push(id);
                 layer.setState('select');
             }
+            // if non intersect, unselect it
             else if (!intersect && index>=0){
                 that.group.selectedLayers.splice(index,1);
                 layer.setState('common');
@@ -50,7 +52,13 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
             points.push(that._map.latLngToContainerPoint(latlng));
         });
 
-        //points = L.LineUtil.simplify(points, 0);
+        // console.log("begin----------------------");
+        // console.log(points.length);
+
+        // points = L.LineUtil.simplify(points, 20);
+
+        // console.log(points.length);
+        // console.log("end----------------------");
 
         for(var i=0,l=points.length-1;i<l;i++){
             segmentBounds = L.bounds(points[i],points[i+1]);

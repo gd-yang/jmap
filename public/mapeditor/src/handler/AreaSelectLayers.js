@@ -18,6 +18,7 @@ ME.Handler.AreaSelectLayers = L.Handler.extend(
 
     addHooks : function(){
         var mask = this.mask =  L.DomUtil.create('div', this.options.className,this._map.getContainer());
+
         L.DomEvent
             .on(mask, 'click', L.DomEvent.stopPropagation)
             .on(mask, 'mousedown', L.DomEvent.stopPropagation)

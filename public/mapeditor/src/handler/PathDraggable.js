@@ -30,6 +30,8 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		this._originalPoints = this._getOriginalPoints();
 		this.pathCenter = path._map.latLngToLayerPoint(latlngBounds.getCenter());
 
+		path._map.dragging.disable();
+
 		this._moved = false;
 
 		if (e.shiftKey || ((e.which !== 1) && (e.button !== 1) && !e.touches)) { return; }
@@ -94,6 +96,7 @@ ME.Handler.PathDraggable = L.Draggable.extend(
         this._enableEdit();
 		L.Draggable.prototype._onUp.apply(this,[e]);
 		this.path.fire("dragend");
+		this.path._map.dragging.enable();
 	},
 
 	_transform: function(){
@@ -108,6 +111,10 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	_enableEdit:function(){
 		if(this.path.editing.enabled()) return;
 		this.path.editing.enable();
+	},
+
+	moved: function(){
+		return this._moved;
 	},
 
 	/**
