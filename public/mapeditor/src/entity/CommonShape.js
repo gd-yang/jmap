@@ -74,7 +74,7 @@ ME.Entity.CommonShape = {
     _fireDragEnd : function(){
         var _this = this,
             editing = this.editing, markers;
-        this.fire('edit');
+        //this.fire('edit');
         markers = editing._markers;
         markers.forEach(function(marker){
             _this._map.changes.fire(/^-\d+$/.test(marker._leaflet_id)
