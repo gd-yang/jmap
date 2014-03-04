@@ -139,7 +139,7 @@ ME.Control.Button = L.Class.extend({
             options = this._getFromPresetByName(options);
         if(!options) return;
         if(!options.name) return;
-        if(!options.handler) return;
+        if(!options.handler && !options.mode) return;
 
         L.extend(temp,options);
 

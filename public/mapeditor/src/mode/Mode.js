@@ -36,8 +36,8 @@ ME.Mode = L.Class.extend(
 
         ME.Mode._activeMode = this;
 
-        this._handler.enable();
         this._enabled = true;
+        this._handler.enable();
         this.group = this._map.editingGroup;
         this._map.on('draw:created',this._finish,this);
     },
