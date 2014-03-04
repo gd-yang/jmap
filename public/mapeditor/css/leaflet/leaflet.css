@@ -36,7 +36,7 @@
     display: block;
 }
 .leaflet-marker-icon{
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 /* map is broken in FF if you have max-width: 100% on tiles */
