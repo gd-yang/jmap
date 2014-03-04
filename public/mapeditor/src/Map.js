@@ -1,10 +1,14 @@
 ;(function(ME){
     ME.Map = L.Map.extend({
-        initialize : function(id, options, tileOptions){
+        initialize : function(id, options){
+            var tileOptions = options.tileOptions || {};
+            tileOptions = L.extend({minZoom: 1, maxZoom: 18, subdomains: '123'}, tileOptions);
             var config = ME.Config,
+                _this = this,
             // 绘图工具
                 tileLayerTemplate = config.map.tileUrlTemplate,
-                tileLayer = new L.TileLayer(tileLayerTemplate, {maxZoom: 20});
+                tileLayer = new L.TileLayer(tileLayerTemplate,
+                    {minZoom: 1, maxZoom: 18, subdomains: '123'});
             // 初始化地图
             options.layers || (options.layers = [tileLayer]);
             L.Map.prototype.initialize.call(this,id, options);
@@ -18,14 +22,12 @@
             this._selectRoadMode = new ME.Mode.SelectRoad(this);
             this._areaSelectRoadMode = new ME.Mode.AreaSelectRoad(this);
             this._areaSelectLayersMode = new ME.Mode.AreaSelectLayers(this);
-            
+
             this.addControl(L.control.scale());
-            this.on('contextmenu', function(e){
-                console.log(e);
-            })
-            this.on('dragend zoomend moveend', function(){
-                this.openedGroup.each(function(group){
-                    if (group.geotype !== 'undefined'){
+
+            this.on('dragend zoomend', function(){
+                _this.openedGroup.each(function(group){
+                    if (group.geoType !== 'undefined'){
                         group.loadLayers.call(group);
                     }
                 });
@@ -33,14 +35,13 @@
         },
         addDataGroup : function(group){
             L.Map.prototype.addLayer.call(this, group);
-            this.openedGroup.add(group._group_id, group);
+            this.openedGroup.add(group._leaflet_id, group);
         },
         removeDataGroup : function(group){
             L.Map.prototype.removeLayer.call(this, group);
-            this.openedGroup.remove(group._group_id);
+            this.openedGroup.remove(group._leaflet_id);
         },
         addToolbar : function(name, control){
-            console.log('addtoolbar!')
             L.Map.prototype.addControl.call(this, control);
             this.toolbars.add(name, control);
         },
@@ -52,7 +53,7 @@
             if (!control){
                 return;
             }
-            console.log('removetoolbar!')
+
             L.Map.prototype.removeControl.call(this, control);
             this.toolbars.remove(name);
         },
