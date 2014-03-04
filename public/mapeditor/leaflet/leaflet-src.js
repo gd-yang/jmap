@@ -2417,7 +2417,7 @@ L.TileLayer = L.Class.extend({
 		minZoom: 0,
 		maxZoom: 18,
 		tileSize: 256,
-		subdomains: '123',
+		subdomains: 'abc',
 		errorTileUrl: '',
 		attribution: '',
 		zoomOffset: 0,
