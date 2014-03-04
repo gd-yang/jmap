@@ -27,20 +27,10 @@
                 var layer = e.layer,
                     id = layer._leaflet_id,
                     data = layer.data;
+
                 if (/^-\d+$/.test(id)){
-                    if (layer.type !== 'marker'){
-                        data.nd.forEach(function(nd){
-                            _this.created.remove(nd.ref);
-                        });
-                    }
                     _this.created.remove(id);
-                }else{
-                    if (layer.type !== 'marker'){
-                        data.nd.forEach(function(nd){
-                            _this.created.remove(nd.ref);
-                            _this.modified.remove(nd.ref);
-                        });
-                    }
+                } else{
                     _this.modified.remove(id);
                     _this.deleted.update(id, layer);
                 }
