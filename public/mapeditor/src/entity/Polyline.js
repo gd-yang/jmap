@@ -1,31 +1,41 @@
 ME.Polyline = L.Polyline.extend({
     includes : ME.Entity.CommonShape,
+    options: {
+        stroke: true,
+        color: '#0033ff',
+        dashArray: null,
+        lineCap: null,
+        lineJoin: null,
+        weight: 3,
+        opacity: 0.5,
+
+        fill: false,
+        fillColor: null, //same as color by default
+        fillOpacity: 0.2,
+
+        clickable: true
+    },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd=[];
+        var id, latlngs, styleOptions, data, nd=[], marker;
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
             styleOptions = options.options;
             data = options.data;
         }
+
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
-        this.editing = false;
         if (!!data){
             this.data = data;
         }else{
-            latlngs.forEach(function(latlng){
-                nd.push({
-                    ref : new ME.Marker({latlng:latlng})._leaflet_id
-                })
-            });
             this.data = {
                 id : this._leaflet_id,
                 version : '1',
                 changeset : '1',
-                nd : nd,
+                nd : [],
                 tag : []
             }
         }
@@ -34,7 +44,7 @@ ME.Polyline = L.Polyline.extend({
     },
     toXML: function () {
         var data = this.data, _line,
-            nds = data.nd, tags = data.tag, tagstr;
+            nds = data.nd[0][0], tags = data.tag, tagstr;
 
         _line = '<way';
         _line += ' id="' + this._leaflet_id + '"';
