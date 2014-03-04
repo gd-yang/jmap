@@ -20,7 +20,8 @@ ME.Mode.SelectRoad = ME.Mode.extend(
     },
 
     _finish: function(e){
-        var roads = e.roads, _this = this;
+        var roads = e.roads,
+            _this = this;
         if(e.pathtype != "pointSelectRoad") return;
         roads.forEach(function(road){
             var path = new ME.Polyline({
