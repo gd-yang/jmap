@@ -4,6 +4,17 @@ define(function (require, exports, module) {
         initialize : function(map){
             this.http = new XHR(true);
             this.map = map;
+            this.on('dataload:error', function(){
+                alert('数据加载失败！');
+            });
+
+            this.on('datasave:error', function(){
+                alert('数据保存失败！');
+            });
+
+            this.on('datasave:success', function(){
+                alert('数据保存成功！');
+            });
         },
         loadData: function (callback) {
             var url = 'http://192.168.1.210:8090/sorting_web/gate',
@@ -56,6 +67,6 @@ define(function (require, exports, module) {
             })
         }
     });
-    console.log(Connect)
+
     module.exports = Connect;
 });

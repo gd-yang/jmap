@@ -13,7 +13,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
 	includes: L.Mixin.Events,
 	options: {
 		url: 'http://119.90.32.30/gbox/gate?sid=9001',
-        repeatMode: false
+        repeatMode: true
 	},
 
     addHooks : function(){
