@@ -6,14 +6,14 @@ ME.Entity.CommonShape = {
         return this.data;
     },
     editEnable : function(){
+        this.on('click', function(){
+            console.log(111)
+        });
         if (this.editing){
             this.editing.enable();
         }
         this.dragging.enable();
-        this.on('contextmenu', function(e){
-            console.log(e)
-        });
-        this.on('click', this._fireSelect, this)
+        this.on('selectIn', this._fireSelect, this)
             .on('mouseover', this._fireOver, this)
             .on('mouseout', this._fireOut, this)
             .on('selectOut', this._fireSelectOut, this)
@@ -30,7 +30,7 @@ ME.Entity.CommonShape = {
             this.editing.disable();
         }
         this.dragging.disable();
-        this.off('click', this._fireSelect, this)
+        this.off('selectIn', this._fireSelect, this)
             .off('mouseover', this._fireOver, this)
             .off('mouseout', this._fireOut, this)
             .off('selectOut', this._fireSelectOut, this)
@@ -60,7 +60,6 @@ ME.Entity.CommonShape = {
     _fireSelect : function(){
         this.setState('select');
         this.selected = true;
-        this.fire('selected');
     },
     _fireSelectOut : function(){
         this.setState('common');

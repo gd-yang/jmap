@@ -15,10 +15,8 @@ ME.Mode = L.Class.extend(
         this._map = map;
         this._handler = handler;
         this._enabled = false;
-        //this.group = new L.LayerGroup();
         this.group = this._map.editingGroup;
-        //this.group.addTo(map);
-
+        
         if(this._handler.on){
             this._handler.on("disabled",this._disable,this);
             this._handler.on("enabled",this._enable,this);

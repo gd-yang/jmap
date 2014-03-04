@@ -89,7 +89,6 @@
             });
 
             this._markerGroup.addLayer(marker);
-            this._map.changes.fire('created', {layer : marker});
             return marker;
         },
 

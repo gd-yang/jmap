@@ -113,10 +113,6 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		this.path.editing.enable();
 	},
 
-	moved: function(){
-		return this._moved;
-	},
-
 	/**
 	 * get handler's enable state
 	 * @return {Boolen}

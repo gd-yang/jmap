@@ -1,5 +1,9 @@
 ME.Polygon = L.Polygon.extend({
     includes : ME.Entity.CommonShape,
+    options: {
+        weight: 3,
+        fill: true,
+    },
     initialize : function(options){
         var id, latlngs, styleOptions,data, nd =[], latlngLen;
         if (!!options) {
@@ -16,17 +20,13 @@ ME.Polygon = L.Polygon.extend({
         // 初始化数据,如果无数据，则初始化
         if (!!data){
             this.data = data;
-            nd = data.nd;
+            nd = data.nd[0][0];
         } else{
             latlngLen = latlngs.length;
             if (latlngLen > 0 && latlngs[0].equals(latlngs[latlngLen-1])){
                 latlngs.pop();
             }
-            latlngs.forEach(function(latlng){
-                nd.push({
-                    ref : new ME.Marker({latlng:latlng})._leaflet_id
-                })
-            });
+
             this.data = {
                 id : this._leaflet_id,
                 version : '1',
@@ -39,7 +39,7 @@ ME.Polygon = L.Polygon.extend({
         if (nd.length > 0){
             var len = nd.length;
             if (nd[0].ref === nd[len-1].ref){
-                data.nd.pop();
+                nd.pop();
             }
         }
         this.type = 'area';
@@ -61,7 +61,7 @@ ME.Polygon = L.Polygon.extend({
     },
 
     toXML : function(){
-        var data = this.data, _line, nds = data.nd||[],
+        var data = this.data, _line, nds = data.nd[0][0]||[],
             tags = data.tag || [], tagstr;
         _line = '<way';
         _line += ' id="' + this._leaflet_id + '"';

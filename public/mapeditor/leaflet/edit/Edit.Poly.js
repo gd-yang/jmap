@@ -20,11 +20,11 @@ L.Edit.Poly = L.Handler.extend({
     addHooks : function () {
         var poly = this._poly;
         if (poly._map) {
+            poly.on('marker:remove marker:add marker:modify', this._fireChanges, this);
             if (!this._markerGroup) {
                 this._initMarkers();
             }
             poly._map.addLayer(this._markerGroup);
-            poly.on('marker:remove marker:add marker:modify', this._fireChanges, this);
         }
     },
 
@@ -68,6 +68,7 @@ L.Edit.Poly = L.Handler.extend({
     },
 
     _initMarkers : function () {
+        var poly = this._poly,map = poly._map;
         if (!this._markerGroup) {
             this._markerGroup = new L.LayerGroup();
         }
@@ -76,18 +77,26 @@ L.Edit.Poly = L.Handler.extend({
         var data = this._poly.data,
             nd=[],
             latlngs = this._poly._latlngs,
-            i, j, len, marker;
+            i, j, len, marker, initFlag = false;
 
-        if (!!data){
-            nd = data.nd;
+        if (!!data && !!data.nd[0]){
+            initFlag = true;
+        }else{
+            data.nd = [[[]]];
         }
+        nd = data.nd[0][0];
         //  refactor holes implementation in Polygon to support it here
         for (i = 0, len = latlngs.length; i < len; i++) {
             marker = this._createMarker(latlngs[i], i, nd[i] && nd[i].ref || null);
             marker.on('click', this._onMarkerClick, this);
             this._markers.push(marker);
+            if (!initFlag){
+                nd.push({
+                    ref : marker._leaflet_id
+                });
+                poly.fire('marker:add', {layer:marker});
+            }
         }
-
 
         var markerLeft, markerRight;
 
@@ -130,7 +139,7 @@ L.Edit.Poly = L.Handler.extend({
         this._markerGroup.removeLayer(marker);
         this._markers.splice(i, 1);
         this._poly.spliceLatLngs(i, 1);
-        this._poly.data.nd.splice(i, 1);
+        this._poly.data.nd[0][0].splice(i, 1);
         this._updateIndexes(i, -1);
         this._poly.fire('marker:remove', {layer : marker});
         marker
@@ -235,7 +244,7 @@ L.Edit.Poly = L.Handler.extend({
             latlng.lng = marker.getLatLng().lng;
             this._poly.spliceLatLngs(i, 0, latlng);
             this._markers.splice(i, 0, marker);
-            this._poly.data.nd.splice(i, 0, {ref: marker._leaflet_id});
+            this._poly.data.nd[0][0].splice(i, 0, {ref: marker._leaflet_id});
 
             marker.setOpacity(1);
 
