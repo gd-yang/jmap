@@ -10,18 +10,8 @@
             this.selectedLayers = [];
             this.connect = options.connect;
 
-            this.on('layeradd', function (e) {
-                e.layer.on('focusIn', function (e) {
-                    console.log(e.layer);
-                });
-
-                e.layer.on('focusOut', function (e) {
-                    console.log(e.layer);
-                });
-            });
-
             this.on('click', function (e) {
-                console.log(e.layer.toGeoJSON());
+                console.log('click:', e.layer);
             });
         },
         editAble: function () {
@@ -32,13 +22,16 @@
 
             this.editing = true;
             map.editingGroup = this;
+            this.on('datalayer:add datalayer:remove', this._fireChanges, this);
+            this.on('layeradd', this._fireLayerAdd, this);
+            this.on('layerremove', this._fireLayerRemove, this);
             // 处理选中层
             this.on('click', this._fireSelect, this);
             this.eachLayer(function (layer) {
                 layer.editEnable();
             });
             // 触发后添加层的编辑状态
-            this.on('layeradd', this._layerEdit);
+
             this.fire('editAble', {group: this});
             return this;
         },
@@ -48,20 +41,26 @@
                 return this;
             }
             this.editing = false;
-            delete map.editingGroup;
+            map.editingGroup = null;
             this.off('click', this._fireSelect, this);
+
             this.eachLayer(function (layer) {
                 layer.editDisable();
             });
-
+            this.off('datalayer:add datalayer:remove', this._fireChanges, this);
+            this.off('layeradd', this._fireLayerAdd, this);
+            this.off('layerremove', this._fireLayerRemove, this);
             this._offSelect.call(this);
-            this.off('layeradd', this._layerEdit);
             this.fire('editDisable', {group: this});
             return this;
         },
-        _layerEdit : function(e){
+        _fireLayerAdd : function(e){
             var layer = e.layer;
             layer.editEnable();
+        },
+        _fireLayerRemove : function(e){
+            var layer = e.layer;
+            layer.editDisable();
         },
         open: function () {
             if (this.openning || !this._map) {
@@ -81,7 +80,6 @@
             }
             this.openning = false;
             this.fire('close', {group: this});
-            this.off('renderLayer', this._renderLayer, this);
             map.removeDataGroup(this);
             map.changes.clear();
             return this;
@@ -89,49 +87,86 @@
         _fireSelect: function (e) {
             var _this = this,
                 targetLayer = e.layer,
-                _leaflet_id = targetLayer._leaflet_id;
+                _leaflet_id = targetLayer._leaflet_id,
+                index;
 
             if (!e.originalEvent.shiftKey) {
-                this.selectedLayers.forEach(function(_leaflet_id){
-                    var layer = _this.getLayer(_leaflet_id);
-                    if (layer !== targetLayer){
-                        layer.fire('selectOut');
-                    }
-                });
-            }
-
-            if (this.selectedLayers.indexOf(_leaflet_id) == -1){
-                if (!e.originalEvent.shiftKey){
+                if (this.selectedLayers.indexOf(_leaflet_id) == -1){
+                    this.selectedLayers.forEach(function(_leaflet_id){
+                        _this.getLayer(_leaflet_id).fire('selectOut');
+                    });
                     this.selectedLayers.length = 0;
+                    this.selectedLayers.push(_leaflet_id);
+                    targetLayer.fire('selectIn');
+                }else{
+                    this.selectedLayers.forEach(function(_leaflet_id){
+                        var layer = _this.getLayer(_leaflet_id);
+                        if (layer !== targetLayer){
+                            layer.fire('selectOut');
+                        }
+                    });
+                    this.selectedLayers = [_leaflet_id];
                 }
-                this.selectedLayers.push(_leaflet_id);
+            }else{
+                if (this.selectedLayers.indexOf(_leaflet_id) == -1){
+                    this.selectedLayers.push(_leaflet_id);
+                    targetLayer.fire('selectIn');
+                }else{
+                    index = this.selectedLayers.indexOf(_leaflet_id);
+                    this.selectedLayers.splice(index, 1);
+                    targetLayer.fire('selectOut');
+                }
             }
-            if (this.focusLayer && this.focusLayer !== targetLayer){
-                this.focusLayer.fire('focusOut');
-            }
-            this.focusLayer = targetLayer;
-            this.focusLayer.fire('focusIn');
         },
         _offSelect: function (e) {
             var _this = this;
             this.selectedLayers.forEach(function (_leaflet_id) {
                 var layer = _this.getLayer(_leaflet_id);
-                layer.setState('common');
+                layer.fire('selectOut');
             });
-            this.selectedLayers = [];
+            //this.selectedLayers = [];
         },
-        
-        clearSelectedLayers: function(){
-            var _this = this;
+        clearSelectedLayers : function(options){
+            options = options || {};
+            var remove = options.remove,
+                _this = this;
             this.selectedLayers.forEach(function(_leaflet_id){
                 var layer = _this.getLayer(_leaflet_id);
-                layer.editDisable();
-                _this.removeLayer(layer);
+                layer.fire('selectOut');
+                if (!!remove){
+                    _this.removeDataLayer(layer);
+                }
             });
 
             this.selectedLayers = [];
         },
+        addDataLayer : function(layer){
+            if (!this.editing){
+                return;
+            }
+            L.FeatureGroup.prototype.addLayer.call(this, layer);
+            this.fire('datalayer:add', {layer: layer});
+        },
+        removeDataLayer : function(layer){
+            var _this =this, markers;
+            if (!this.editing){
+                return;
+            }
 
+            if (typeof layer === 'string') {
+                layer = this.getLayer(layer);
+            }
+            // 删除polyline或者polygon需要删除线上的点
+            if (this.geoType !== '1'){
+                markers = layer.editing._markers;
+                markers.forEach(function(marker){
+                    _this.fire('datalayer:remove', {layer:marker}, _this);
+                });
+            }
+            layer.editDisable();
+            this.fire('datalayer:remove', {layer : layer});
+            L.FeatureGroup.prototype.removeLayer.call(this, layer);
+        },
         loadLayers: function () {
             var _this = this;
             // 清除掉不在范围的图
@@ -150,97 +185,21 @@
                 _this.clearSelectedLayers();
                 _this.clearLayers();
                 _this.loadLayers();
-//                console.log('data：',data);
-//                if (!!data){
-//                   nodes = data.node||[];
-//                   ways = data.way||[];
-//                }
-//                ways.forEach(function(way){
-//                    var oldId = way.oldId,
-//                        newId = way.newId,
-//                        newVersion = way.newVersion,
-//                        layer = _this.getLayer(oldId);
-//                    console.log(layer);
-//                    layer._leaflet_id = newId;
-//                    layer.version = newVersion;
-//                    console.log(_this.getLayer(newId));
-//                    console.log(_this.getLayer(oldId));
-//                });
             });
             return this;
         },
         _renderLayers : function (dataSet) {
-            var geoType = dataSet.geoType;
-            this.on('renderLayer', this._renderLayer, this);
-            this.dataToLayer(geoType, dataSet);
+            var geoType = dataSet.geoType, _this=this, map = this._map;
             this.geoType = geoType;
             this.updateDataSet(dataSet);
-        },
-        _renderLayer: function (e) {
-            var layer = e.layer;
-            this.addLayer(layer);
-        },
-        dataToLayer: function (geoType, dataset) {
-            var _this = this,
-                done = {
-                    '1': function (dataset) {
-                        var nodes = dataset.node || [];
-                        var layer;
-                        nodes.forEach(function (node) {
-                            layer = new ME.Marker({
-                                id: node.id,
-                                latlng: [node.lat, node.lon],
-                                data : node
-                            });
-
-                            _this.fire('renderLayer', {layer: layer}, _this);
-                        });
-                    },
-                    '2': function (dataset) {
-                        var nodes = dataset.node || [],
-                            ways = dataset.way || [],
-                            layer, latlngs = [];
-
-                        ways.forEach(function (way) {
-                            latlngs = way.nd.map(function (n) {
-                                var _node = nodes.filter(function (node) {
-                                    return node.id == n.ref;
-                                })[0];
-                                return [_node.lat, _node.lon];
-                            });
-
-                            layer = new ME.Polyline({
-                                id: way.id,
-                                latlngs: latlngs,
-                                data : way
-                            });
-                            _this.fire('renderLayer', {layer: layer}, _this);
-                        });
-                    },
-                    '3': function (dataset) {
-                        var nodes = dataset.node || [],
-                            ways = dataset.way || [],
-                            layer,
-                            latlngs = [];
-
-                        ways.forEach(function (way) {
-                            latlngs = way.nd.map(function (n) {
-                                var _node = nodes.filter(function (node) {
-                                    return node.id == n.ref;
-                                })[0];
-                                return [_node.lat, _node.lon];
-                            });
-
-                            layer = new ME.Polygon({
-                                id: way.id,
-                                latlngs : latlngs,
-                                data : way
-                            });
-                            _this.fire('renderLayer', {layer: layer}, _this);
-                        });
-                    }
+            ME.Util.DataToLayers(geoType, dataSet, function(layer){
+                var _leaflet_id = layer._leaflet_id;
+                // 已经删除的不需要渲染
+                if (map.changes.deleted.has(_leaflet_id)){
+                    return;
                 }
-            done[geoType](dataset);
+                _this.addLayer(layer);
+            });
         },
         updateDataSet: function (dataSet) {
             this.dataSet = dataSet;
@@ -251,9 +210,9 @@
                 bounds = this._map.getBounds();
                 layers = this.getLayers() || [];
                 layers.forEach(function (layer) {
-                    var flag = _this.geoType == '1'
+                    var flag = _this.geoType && (_this.geoType == '1'
                         ? bounds.contains(layer.getLatLng())
-                        : bounds.intersects(layer.getBounds());
+                        : bounds.intersects(layer.getBounds()));
                     if (!flag && !_this._map.changes.has(layer._leaflet_id)) {
                         _this.removeLayer(layer);
                     }
@@ -266,6 +225,20 @@
         },
         getConnect : function(){
             return this.connect;
+        },
+        _fireChanges : function(e){
+            var type = e.type,
+                layer = e.layer,
+                map = this._map;
+
+            switch (type){
+                case 'datalayer:add':
+                    map.changes.fire('created', {layer:layer});
+                    break;
+                case 'datalayer:remove' :
+                    map.changes.fire('deleted', {layer:layer});
+                    break;
+            }
         }
     });
 
