@@ -18,6 +18,7 @@ ME.Handler.AreaSelectLayers = L.Handler.extend(
 
     addHooks : function(){
         var mask = this.mask =  L.DomUtil.create('div', this.options.className,this._map.getContainer());
+
         L.DomEvent
             .on(mask, 'click', L.DomEvent.stopPropagation)
             .on(mask, 'mousedown', L.DomEvent.stopPropagation)
@@ -61,7 +62,7 @@ ME.Handler.AreaSelectLayers = L.Handler.extend(
         this._rectangle.style.marginTop = this._startPoint.y + "px";
         this._rectangle.style.marginLeft = this._startPoint.x + "px";
         this._rectangle.style.border = "2px dashed #f00";
-        this._rectangle.style.background = "#00f";
+        this._rectangle.style.background = "#6cb6ff";
         this._rectangle.style.opacity = "0.5";
 
     },

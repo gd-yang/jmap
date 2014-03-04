@@ -25,16 +25,45 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
     _selecting: function(e){
         var bounds = e.bounds;
         var that = this;
-        var latlngBounds = L.latLngBounds(this._map.containerPointToLatLng(bounds.max),
-            this._map.containerPointToLatLng(bounds.min));
 
         this.group.eachLayer(function(layer){
             var id = layer._leaflet_id;
-            var layerBounds = layer.getBounds();
-            if(layerBounds.intersects(latlngBounds)&&that.group.selectedLayers.indexOf(id)<0){
+            var intersect = that._intersect(bounds,layer);
+            var index = that.group.selectedLayers.indexOf(id);
+            // if intersect, select it
+            if(intersect && index<0){
                 that.group.selectedLayers.push(id);
                 layer.setState('select');
             }
+            // if non intersect, unselect it
+            else if (!intersect && index>=0){
+                that.group.selectedLayers.splice(index,1);
+                layer.setState('common');
+            }
         });
+    },
+
+    _intersect: function(bounds, polyline){
+        var points = [], segmentBounds, that = this;
+        // just detect polyline now.
+        if(polyline.type != "line") return false;
+
+        polyline.getLatLngs().forEach(function(latlng,i){
+            points.push(that._map.latLngToContainerPoint(latlng));
+        });
+
+        // console.log("begin----------------------");
+        // console.log(points.length);
+
+        // points = L.LineUtil.simplify(points, 20);
+
+        // console.log(points.length);
+        // console.log("end----------------------");
+
+        for(var i=0,l=points.length-1;i<l;i++){
+            segmentBounds = L.bounds(points[i],points[i+1]);
+            if(bounds.intersects(segmentBounds)) return true;
+        }
+        return false;
     }
 });

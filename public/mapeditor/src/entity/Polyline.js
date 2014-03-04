@@ -54,6 +54,21 @@ ME.Polyline = L.Polyline.extend({
         return _line + '</way>';
     },
 
+    _onMouseClick: function(e){
+        var wasDragged = this.dragging && this.dragging.moved();
+        var wasRotated = this.rotating && this.rotating.moved();
+
+        // if (this.hasEventListeners(e.type) || wasDragged || wasRotated) {
+        //     L.DomEvent.stopPropagation(e);
+        // }
+
+        if (wasDragged || wasRotated) { return; }
+
+        if (this._map.dragging && this._map.dragging.moved()) { return; }
+
+        this._fireMouseEvent(e);
+    },
+
     _getPathPartStr: function(points){
         var str = L.Polyline.prototype._getPathPartStr.call(this,points);
 
