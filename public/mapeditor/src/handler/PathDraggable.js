@@ -30,11 +30,9 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		this._originalPoints = this._getOriginalPoints();
 		this.pathCenter = path._map.latLngToLayerPoint(latlngBounds.getCenter());
 
-		path._map.dragging.disable();
-
 		this._moved = false;
 
-		if (e.shiftKey || ((e.which !== 1) && (e.button !== 1) && !e.touches)) { return; }
+		if (e.shiftKey || e.ctrlKey || ((e.which !== 1) && (e.button !== 1) && !e.touches)) { return; }
 
 		L.DomEvent.stopPropagation(e);
 
@@ -53,6 +51,8 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		L.DomEvent
 		    .on(document, L.Draggable.MOVE[e.type], this._onMove, this)
 		    .on(document, L.Draggable.END[e.type], this._onUp, this);
+
+		path._map.dragging.disable();
 	},
 
 	_onMove: function (e) {
@@ -93,10 +93,10 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	},
 
 	_onUp: function (e) {
+		this.path._map.dragging.enable();
         this._enableEdit();
 		L.Draggable.prototype._onUp.apply(this,[e]);
 		this.path.fire("dragend");
-		this.path._map.dragging.enable();
 	},
 
 	_transform: function(){

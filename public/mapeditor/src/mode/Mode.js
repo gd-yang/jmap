@@ -19,8 +19,11 @@ ME.Mode = L.Class.extend(
         this.group = this._map.editingGroup;
         //this.group.addTo(map);
 
-        if(this._handler.on)
+        if(this._handler.on){
             this._handler.on("disabled",this._disable,this);
+            this._handler.on("enabled",this._enable,this);
+        }
+            
     },
 
     /**
@@ -52,11 +55,19 @@ ME.Mode = L.Class.extend(
         delete this.group;
         this._map.off('draw:created',this._finish,this);
     },
+
     _disable: function(){
         if(!this._enabled) return;
 
         this._enabled = false;
         this._map.off('draw:created',this._finish,this);
+    },
+
+    _enable: function(){
+        if(this._enabled) return;
+
+        this._enabled = true;
+        this._map.on('draw:created',this._finish,this);
     },
 
     /**

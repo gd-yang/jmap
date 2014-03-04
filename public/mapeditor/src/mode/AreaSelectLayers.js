@@ -15,10 +15,10 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
-        var handler = new ME.Handler.AreaSelectLayers(map);
-        ME.Mode.prototype.initialize.apply(this,[map,handler]);
+        // var handler = new ME.Handler.AreaSelectLayers(map);
+        // ME.Mode.prototype.initialize.apply(this,[map,handler]);
 
-        handler.on("selecting", this._selecting, this);
+        // handler.on("selecting", this._selecting, this);
 
     },
 

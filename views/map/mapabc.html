@@ -78,7 +78,7 @@
     <script src="/mapeditor/src/mode/DrawRectangle.js"></script>
     <script src="/mapeditor/src/mode/SelectRoad.js"></script>
     <script src="/mapeditor/src/mode/AreaSelectRoad.js"></script>
-    <script src="/mapeditor/src/mode/AreaSelectLayers.js"></script>
+    
     <script src="/mapeditor/src/control/Toolbar.js"></script>
     <script src="/mapeditor/src/util/SelectRoad.js"></script>
     <style>
@@ -112,7 +112,7 @@
     var drawcontrol = new ME.Control.Toolbar({buttons:["panMap","drawPolyline","drawPolygon","drawMarker"]});
     map.addControl(drawcontrol); 
     map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
-    map.addControl(new ME.Control.Toolbar({buttons:["areaSelectLayers","save","cancel","delete"]}));
+    map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));
 
     $('.leaflet-dataset-list ul li .view').on('click',function () {
         var dataSetId = $(this).parent().attr('data-dataId'), group;

@@ -314,6 +314,7 @@ ME.Control.Button.presets = [
 			var group = map.editingGroup;
 			group.selectedLayers.forEach(function(layerid){
 				var layer = group.getLayer(layerid);
+				if(!layer) return;
 				var ll = layer.getLatLngs();
 				var arr = [];
 				ll.forEach(function(latlng){
@@ -343,15 +344,15 @@ ME.Control.Button.presets = [
 			});
 		}
 	},
-	{
-		name: "areaSelectLayers",
-		title: "区域选图层",
-		className: "mapeditor-toolbar-draw-rectangle",
-		handler: function(){
-			var map = this._map;
-			map._areaSelectLayersMode.enable();
-		}
-	},
+	// {
+	// 	name: "areaSelectLayers",
+	// 	title: "区域选图层",
+	// 	className: "mapeditor-toolbar-draw-rectangle",
+	// 	handler: function(){
+	// 		var map = this._map;
+	// 		map._areaSelectLayersMode.enable();
+	// 	}
+	// },
 	{
 		name: "save",
 		title: "保存",
