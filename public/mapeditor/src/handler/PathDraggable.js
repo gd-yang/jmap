@@ -103,6 +103,10 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 		//implemented by subclass
 	},
 
+	moved: function(){
+		return this._moved;
+	},
+
 	_disableEdit: function(){
 		if(this.path.editing.enabled()==false) return;
 		this.path.editing.disable();
