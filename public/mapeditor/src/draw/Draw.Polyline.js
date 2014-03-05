@@ -103,6 +103,8 @@
 
             L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 
+            this.options.shapeOptions.closed = false;
+
             this._map.changes.fire('created', {layer:poly});
         },
 
@@ -120,8 +122,6 @@
             }
             else{
                 this._markers[0].off('click', this._closePolyline, this);
-                L.setOptions(this._poly,{closable: false});
-                this.options.shapeOptions.closable = false;
             }
                 
         },
@@ -130,8 +130,8 @@
             var latlng = this._markers[0].getLatLng();
             latlng = L.latLng(latlng.lat, latlng.lng);
 
-            L.setOptions(this._poly,{closable: this.options.closable});
-            this.options.shapeOptions.closable = true;
+            L.setOptions(this._poly,{closed: true});
+            this.options.shapeOptions.closed = true;
 
             this._poly.redraw();
 
