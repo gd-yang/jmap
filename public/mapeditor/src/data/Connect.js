@@ -4,7 +4,10 @@
         initialize: function (map, datasetId) {
             this._map = map;
             this.datasetId = datasetId;
-            this.http = new XHR(true);
+            this.http = new XHR({
+                cross : true,
+                fla : true
+            });
         },
         loadData: function (callback) {
             var _this = this,
@@ -43,7 +46,10 @@
             var _this = this,
                 config = ME.Config,
                 url = config.data.saveUrl,
-                xhr = new XHR(true),
+                xhr = new XHR({
+                    cross : true,
+                    fla : true
+                }),
                 paras = config.data.saveParas;
 
             paras.dataSetId = this.datasetId;
