@@ -5,7 +5,7 @@ ME.Util = ME.Util || {};
  * @param  {Function} cb      [description]
  * @param  {Object}   context [description]
  */
-ME.Util.pointSelectRoad = function(config,cb,context){
+ME.Util.pointSelectRoad = function(config, cb, context){
 	var xhr = new XHR(true);
     xhr.getJSON(config.url,{
         paras:{

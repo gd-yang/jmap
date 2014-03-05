@@ -50,7 +50,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
 	                    return road;
                 });
 
-                _this._map.fire('draw:created', {roads : roads, pathtype:"pointSelectRoad"});
+                _this._map.fire('draw:created', {roads : roads, pathtype : "pointSelectRoad"});
             }
 
             _this.disable();
@@ -58,6 +58,10 @@ ME.Handler.SelectRoad = L.Handler.extend(
                 _this.enable();
         };
 
-        ME.Util.pointSelectRoad({url:this.options.url,lng:e.latlng.lng,lat:e.latlng.lat},cb,this);
+        ME.Util.pointSelectRoad({
+            url : this.options.url,
+            lng : e.latlng.lng,
+            lat : e.latlng.lat
+        },cb,this);
     }
 });

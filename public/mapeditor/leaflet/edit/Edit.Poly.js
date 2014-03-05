@@ -56,8 +56,7 @@ L.Edit.Poly = L.Handler.extend({
                     changes.fire('created', {layer : layer});
                     break;
                 case 'marker:modify' :
-                    changes.fire('modified', {layer : layer})
-                        .fire('modified', {layer : poly});
+                    changes.fire('modified', {layer : layer});
                     break;
             }
         }

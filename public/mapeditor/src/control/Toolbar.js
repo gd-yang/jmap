@@ -324,17 +324,19 @@ ME.Control.Button.presets = [
 			});
 			ME.Util.roadsToArea({url:url,line:latlngs.join("-")},function(data){
 				data = JSON.parse(data);
-				var latlngs = data.data[0].split(";");
-				var coor = [];
-				latlngs.forEach(function(latlng){
-					var arr = latlng.split(",");
-					var ll = new L.LatLng(arr[1],arr[0]);
-					coor.push(ll);
-				});
+                data.data.forEach(function(road){
+                    var latlngs = road.split(";");
+                    var coor = [];
+                    latlngs.forEach(function(latlng){
+                        var arr = latlng.split(",");
+                        var ll = new L.LatLng(arr[1],arr[0]);
+                        coor.push(ll);
+                    });
 
-                var layer = new ME.Polygon({latlngs:coor});
-                group.clearSelectedLayers({remove : true});
-				group.addDataLayer(layer);
+                    var layer = new ME.Polygon({latlngs:coor});
+                    group.clearSelectedLayers({remove : true});
+                    group.addDataLayer(layer);
+                });
 			});
 		}
 	},
