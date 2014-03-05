@@ -4,7 +4,7 @@
             TYPE: 'polyline'
         },
         options:{
-            closable: true
+            closable : true
         },
 
         Poly: L.Polyline,
@@ -94,8 +94,6 @@
 
         _fireCreatedEvent: function () {
             var entity = this.type === 'polygon' ? 'Polygon' : 'Polyline', poly;
-
-
             poly = new ME[entity]({
                 latlngs : this._poly.getLatLngs(),
                 options : this.options.shapeOptions
@@ -104,7 +102,6 @@
             L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 
             this.options.shapeOptions.closed = false;
-
             this._map.changes.fire('created', {layer:poly});
         },
 
@@ -119,23 +116,16 @@
 
             if (markerCount > 2) {
                 this._markers[0].on('click', this._closePolyline, this);
-            }
-            else{
+            }else{
                 this._markers[0].off('click', this._closePolyline, this);
             }
-                
         },
 
         _closePolyline: function(){
-            var latlng = this._markers[0].getLatLng();
-            latlng = L.latLng(latlng.lat, latlng.lng);
-
             L.setOptions(this._poly,{closed: true});
             this.options.shapeOptions.closed = true;
 
             this._poly.redraw();
-
-
             this._finishShape();
         },
 
