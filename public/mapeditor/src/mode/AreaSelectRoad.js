@@ -29,12 +29,6 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
 
         if(layerType != "polygon") return;
 
-        L.setOptions(layer,{moveable:true,rotateable:true});
-        // this.group.addLayer(layer);
-
-        // layer.editing.enable();
-
-        // layer.rotating.enable();
         var latlngs = layer.getLatLngs(),
             flatlatlngs = [];
         latlngs.forEach(function(latlng){
