@@ -42,7 +42,7 @@ ME.Polygon = L.Polygon.extend({
                 nd.pop();
             }
         }
-        this.type = 'area';
+        this.type = 'polygon';
     },
     
     _onMouseClick: function(e){
