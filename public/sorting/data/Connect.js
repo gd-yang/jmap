@@ -2,10 +2,16 @@ define(function (require, exports, module) {
     var Connect= L.Class.extend({
         includes : L.Mixin.Events,
         initialize : function(map){
-            this.http = new XHR(true);
+            this.http = new XHR({
+                cross : true
+            });
             this.map = map;
             this.on('dataload:error', function(){
                 alert('数据加载失败！');
+            });
+
+            this.on('dataload:success', function(){
+                console.log('数据加载成功！');
             });
 
             this.on('datasave:error', function(){
@@ -36,6 +42,7 @@ define(function (require, exports, module) {
                     return;
                 }
                 console.log(data)
+                _this.fire('dataload:success',{data : data});
                 if (!!callback && typeof callback == 'function'){
                     callback(data.data.dataSet);
                 }
