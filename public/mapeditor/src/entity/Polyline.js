@@ -8,26 +8,26 @@ ME.Polyline = L.Polyline.extend({
         lineJoin: null,
         weight: 3,
         opacity: 0.5,
-
         fill: false,
         fillColor: null, //same as color by default
         fillOpacity: 0.2,
-
         clickable: true
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd=[], marker;
+        var id, latlngs, styleOptions, data, nd=[];
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
-            styleOptions = options.options;
+            styleOptions = options.options || {};
             data = options.data;
         }
-
+        styleOptions = L.extend({},this.options, styleOptions);
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
+        this.closed = styleOptions.closed || false;
+
         if (!!data){
             this.data = data;
         }else{
@@ -40,7 +40,16 @@ ME.Polyline = L.Polyline.extend({
             }
         }
 
-        this.type = 'line';
+        // 闭合点的处理
+        if (nd.length > 0){
+            var len = nd.length;
+            if (nd[0].ref === nd[len-1].ref){
+                nd.pop();
+            }
+            this.closed = true;
+        }
+
+        this.type = 'polyline';
     },
     toXML: function () {
         var data = this.data, _line,
@@ -55,6 +64,9 @@ ME.Polyline = L.Polyline.extend({
             return '<nd ref="' + nd.ref + '" />'
         });
 
+        if (this.closed){
+            nds.push(nds[0]);
+        }
         _line += nds.join('');
         tagstr = tags.map(function (tag) {
             var v = tag.v || '', k = tag.k;
@@ -80,11 +92,10 @@ ME.Polyline = L.Polyline.extend({
     },
 
     _getPathPartStr: function(points){
-        var str = L.Polyline.prototype._getPathPartStr.call(this,points);
+        var str = L.Polyline.prototype._getPathPartStr.call(this, points);
 
-        if(this.options.closable === true)
+        if(this.closed === true)
             str  = str + (L.Browser.svg ? 'z' : 'x');
-
         return str;
     }
 });

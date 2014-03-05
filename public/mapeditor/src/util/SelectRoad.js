@@ -6,7 +6,10 @@ ME.Util = ME.Util || {};
  * @param  {Object}   context [description]
  */
 ME.Util.pointSelectRoad = function(config, cb, context){
-	var xhr = new XHR(true);
+	var xhr = new XHR({
+        cross : true,
+        fla : true
+    });
     xhr.getJSON(config.url,{
         paras:{
             xy: config.lng + ',' + config.lat
@@ -24,7 +27,10 @@ ME.Util.pointSelectRoad = function(config, cb, context){
  * @param  {Object}   context [description]
  */
 ME.Util.areaSelectRoad = function(config,cb,context){
-	var xhr = new XHR(true);
+	var xhr = new XHR({
+        cross : true,
+        fla : true
+    });
     xhr.post(config.url,{
         paras:{
             region: config.latlngs
@@ -42,7 +48,10 @@ ME.Util.areaSelectRoad = function(config,cb,context){
  * @param  {Object}   context [description]
  */
 ME.Util.roadsToArea = function(config,cb,context){
-	var xhr = new XHR(true);
+	var xhr = new XHR({
+        cross : true,
+        fla : true
+    });
     xhr.post(config.url,{
         paras:{
             line: config.line

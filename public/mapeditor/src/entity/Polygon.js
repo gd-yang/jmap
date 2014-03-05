@@ -42,20 +42,19 @@ ME.Polygon = L.Polygon.extend({
                 nd.pop();
             }
         }
-        this.type = 'area';
+        this.type = 'polygon';
     },
     
     _onMouseClick: function(e){
-        var wasDragged = this.dragging && this.dragging.moved();
-        var wasRotated = this.rotating && this.rotating.moved();
+        var wasDragged = this.dragging && this.dragging.moved(),
+            wasRotated = this.rotating && this.rotating.moved();
+        if (wasDragged || wasRotated) {
+            return;
+        }
 
-        // if (this.hasEventListeners(e.type) || wasDragged || wasRotated) {
-        //     L.DomEvent.stopPropagation(e);
-        // }
-
-        if (wasDragged || wasRotated) { return; }
-
-        if (this._map.dragging && this._map.dragging.moved()) { return; }
+        if (this._map.dragging && this._map.dragging.moved()) {
+            return;
+        }
 
         this._fireMouseEvent(e);
     },

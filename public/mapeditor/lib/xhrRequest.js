@@ -9,7 +9,7 @@
         isArr = type('Array'),
         isObj = type('Object'),
         supports = {
-            xhr2 : 'withCredentials' in new XMLHttpRequest
+            xhr2 : !!XMLHttpRequest && 'withCredentials' in new XMLHttpRequest
         };
 
     function parseXML( data ) {
@@ -189,49 +189,38 @@
     var MSXML = function(){
         return new ActiveXObject('Microsoft.XMLHTTP');
     };
-    var isXDomain = false;
-    function createCrossXHR(){
-//        if (typeof XMLHttpRequest !== "undefined" && supports.xhr2) {
-//            createCrossXHR = _XMLHttpRequest;
-//            return _XMLHttpRequest();
-//        }
-//        else if('XDomainRequest' in window){
-//            isXDomain = true;
-//            console.log('XDomainRequest');
-//            createCrossXHR = _XDomainRequest;
-//            return _XDomainRequest();
-//        }
-//        else {
-            createCrossXHR = _FlaCrossRequest;
+
+    function createCrossXHR(fla){
+        if (fla || !supports.xhr2){
             FlashAjax.install('/mapeditor/swf/request.swf');
             return _FlaCrossRequest();
-//        }
-//        return null;
+        }else if(supports.xhr2) {
+            return _XMLHttpRequest();
+        }
+        return null;
     }
     function createXHR() {
         var xhr = null;
         if (typeof XMLHttpRequest !== "undefined") {
-            createXHR = _XMLHttpRequest;
             xhr = _XMLHttpRequest();
         } else if (typeof ActiveXObject != "undefined") {
             try{
                 xhr = MSXML2();
-                createXHR = MSXML2;
                 return xhr;
             }catch(e){
                 xhr = MSXML();
-                createXHR = MSXML;
                 return xhr;
             }
         }
         return xhr;
     }
 
-    function XHR(cross) {
-        this.cross = !!cross;
+    function XHR(options) {
+        options = options || {};
+        this.cross = !!options.cross;
+        var fla = !!options.fla;
         this.xhr = this.cross === true
-            ? createCrossXHR()
-            : createXHR();
+            ? createCrossXHR(fla) : createXHR();
     }
 
     XHR.prototype = {
@@ -252,7 +241,7 @@
             var async = config.async !== false,
                 paras = config.paras || {},
                 override = config.override || 'text/xml; charset=utf-8',
-                withCredentials = config.withCredentials !== true,
+                withCredentials = true,
                 timeout = config.timeout || 300000,
                 username = config.username,
                 pwd = config.pwd,
@@ -267,22 +256,19 @@
 
             this.open(method, url, async, username, pwd);
 
-            if (isXDomain){
-                //this.xhr['Content-Type'] = 'application/x-www-form-urlencoded';
-            } else{
-                this.setRequestHeader('Content-type', contentType);
-            }
+            this.setRequestHeader('Content-type', contentType);
 
             if(!this.cross){
                 this.setRequestHeaders(headers);
             }
+
             if (timeout&&'timeout' in this.xhr) {
                 this.xhr.timeout = timeout;
             }
-
-            if (supports.xhr2){
-                this.xhr.withCredentials = withCredentials;
-            }
+             // 跨域允许访问本地cookie,允许请求源不能是*
+//            if (supports.xhr2){
+//                this.xhr.withCredentials = withCredentials;
+//            }
 
             this.overrideMimeType(override);
             this.send(method == 'post' ? paras : null);
@@ -421,7 +407,7 @@
             }
         },
         onSuccess : function(){
-            var args = Array.prototyep.slice.call(arguments);
+            var args = Array.prototype.slice.call(arguments);
             if (this.success && typeof this.success == 'function'){
                 this.success.apply(this, args);
             }
