@@ -15,10 +15,14 @@ ME.Draw.Marker = L.Draw.Marker.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var _this = this, marker = new ME.Marker({latlng:this._marker.getLatLng(), options:{
-            icon: this.options.icon,
-            draggable: this.options.draggable
-        }});
+		var _this = this,
+            marker = new ME.Marker({
+                latlng : this._marker.getLatLng(),
+                options : {
+                    icon : this.options.icon,
+                    draggable : this.options.draggable
+                }
+            });
 
         this._map.changes.fire('created',{layer:marker});
         marker.on('dragend', function(){
