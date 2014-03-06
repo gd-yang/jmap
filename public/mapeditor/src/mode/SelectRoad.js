@@ -15,20 +15,26 @@ ME.Mode.SelectRoad = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        var handler;
+
         if(map._selectRoadMode) return;
         map._selectRoadMode = this;
-        var handler = new ME.Handler.SelectRoad(map);
+
+        handler = new ME.Handler.SelectRoad(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
 
     _finish: function(e){
         var roads = e.roads,
             _this = this;
+
         if(e.pathtype != "pointSelectRoad") return;
+        
         roads.forEach(function(road){
             var path = new ME.Polyline({
                 latlngs : road
             });
+
             _this.group.addDataLayer(path);
         });
     }

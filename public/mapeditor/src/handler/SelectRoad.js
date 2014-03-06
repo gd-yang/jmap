@@ -22,9 +22,10 @@ ME.Handler.SelectRoad = L.Handler.extend(
 
         this.fire('enabled');
     },
+    
     removeHooks :function(){
         this._map.off('click', this._getRoads, this);
-        this._map._container.style.cursor = '-webkit-grab';
+        this._map._container.style.cursor = '';
 
         this.fire('disabled');
     },
@@ -35,11 +36,11 @@ ME.Handler.SelectRoad = L.Handler.extend(
      */
     _getRoads : function(e){
         var _this = this;
-        var url = this.options.url;
-        
+        var url = this.options.url;        
         var cb = function(data){
             var status = data.status;
             var roads = data.data;
+
             if (roads !== null){
                 roads = roads.map(function(road){
 	                    road = road.split(';');

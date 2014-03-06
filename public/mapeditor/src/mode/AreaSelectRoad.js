@@ -19,20 +19,23 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        var handler;
+
         if(map._areaSelectRoadMode) return;
         map._areaSelectRoadMode = this;
-        var handler = new L.Draw.Polygon(map);
+
+        handler = new L.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
 
     _finish: function(data){
         var layer = data.layer,
-            layerType = data.layerType;
+            layerType = data.layerType,
+            latlngs = layer.getLatLngs(),
+            flatlatlngs = [];
 
         if(layerType != "polygon") return;
 
-        var latlngs = layer.getLatLngs(),
-            flatlatlngs = [];
         latlngs.forEach(function(latlng){
             flatlatlngs.push(latlng.lng+","+latlng.lat);
         });
