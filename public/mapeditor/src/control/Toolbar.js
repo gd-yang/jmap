@@ -118,7 +118,7 @@ ME.Control.Toolbar = L.Control.extend(
 	},
 
 	/**
-	 * remove button from toolbar 
+	 * remove button from toolbar
 	 * @param  {String} name [description]
 	 */
 	removeButton: function(name){
@@ -199,7 +199,7 @@ ME.Control.Button = L.Class.extend({
 			.on(button, 'click', L.DomEvent.preventDefault);
 
 		if(handler){
-			L.DomEvent.on(button, 'click', handler);	
+			L.DomEvent.on(button, 'click', handler);
 		}
 	},
 

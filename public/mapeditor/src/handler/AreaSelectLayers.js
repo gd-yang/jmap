@@ -106,7 +106,9 @@ L.Map.DragSelect = L.Handler.extend({
     _checkIntersection: function(bounds, polyline){
         var points = [], segmentBounds, that = this;
         // just detect polyline now.
-        if(polyline.type != "polyline" && polyline.type != "AssistLine") return false;
+        if(polyline.type != "polyline" && polyline.type != "assistline") {
+            return false;
+        }
 
         polyline.getLatLngs().forEach(function(latlng,i){
             points.push(that._map.latLngToLayerPoint(latlng));
@@ -114,7 +116,9 @@ L.Map.DragSelect = L.Handler.extend({
 
         for(var i=0,l=points.length-1;i<l;i++){
             segmentBounds = L.bounds(points[i],points[i+1]);
-            if(bounds.intersects(segmentBounds)) return true;
+            if(bounds.intersects(segmentBounds)) {
+                return true;
+            }
         }
         return false;
     },

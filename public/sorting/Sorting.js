@@ -1,7 +1,7 @@
 define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
 
-    var buttons = ["drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
+    var buttons = ["browser","drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
         toolbar = new ME.Control.Toolbar({buttons : buttons});
 
     var Sorting = L.Class.extend({

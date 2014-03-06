@@ -6,11 +6,11 @@ ME.Entity.AssistLine = L.Polyline.extend({
     includes: ME.Entity.EditBind,
     initialize: function (lanlngs, options) {
         L.Polyline.prototype.initialize.call(this, lanlngs, options);
-        this.type = 'AssistLine';
+        this.type = 'assistline';
         this.states = new ME.State();
         this.selected = false;
     },
-    toPolyling: function () {
+    toPolyline: function () {
 
     }
 });

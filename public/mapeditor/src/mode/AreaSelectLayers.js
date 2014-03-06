@@ -46,7 +46,9 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
     _intersect: function(bounds, polyline){
         var points = [], segmentBounds, that = this;
         // just detect polyline now.
-        if(polyline.type != "line") return false;
+        if(polyline.type != "assistline" && polyline.type != "polyline") {
+            return false;
+        }
 
         polyline.getLatLngs().forEach(function(latlng,i){
             points.push(that._map.latLngToContainerPoint(latlng));

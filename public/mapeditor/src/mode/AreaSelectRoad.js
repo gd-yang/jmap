@@ -43,7 +43,15 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
         //make sure the first point same with the last point, so backend api can recognize it as a polygon
         flatlatlngs.push(flatlatlngs[0]);
 
-        ME.Util.areaSelectRoad({url:this.options.url,latlngs:flatlatlngs.join(";")},function(data){console.log(data);},this);
-        
+        ME.Util.areaSelectRoad({
+            url:this.options.url,
+            latlngs:flatlatlngs.join(";")
+        },function(data){
+            if (!!data.data && data.data.length > 0){
+                alert(data);
+            } else{
+                alert('没有可导出的路');
+            }
+        },this);
     }
 });
