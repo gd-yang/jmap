@@ -1,14 +1,18 @@
+/**
+ * 多边形
+ * @type {*}
+ */
 ME.Polygon = L.Polygon.extend({
-    includes : ME.Entity.CommonShape,
+    includes: ME.Entity.DataEditBind,
     options: {
         weight: 3,
-        fill: true,
+        fill: true
     },
-    initialize : function(options){
-        var id, latlngs, styleOptions,data, nd =[], latlngLen;
+    initialize: function (options) {
+        var id, latlngs, styleOptions, data, nd = [], latlngLen;
         if (!!options) {
             id = options.id;
-            latlngs = options.latlngs||[];
+            latlngs = options.latlngs || [];
             styleOptions = options.options;
             data = options.data;
         }
@@ -18,34 +22,36 @@ ME.Polygon = L.Polygon.extend({
         this.states = new ME.State();
         this.selected = false;
         // 初始化数据,如果无数据，则初始化
-        if (!!data){
+        if (!!data) {
             this.data = data;
             nd = data.nd[0][0];
-        } else{
+        } else {
             latlngLen = latlngs.length;
-            if (latlngLen > 0 && latlngs[0].equals(latlngs[latlngLen-1])){
+            if (latlngLen > 0 && latlngs[0].equals(latlngs[latlngLen - 1])) {
                 latlngs.pop();
             }
 
             this.data = {
-                id : this._leaflet_id,
-                version : '1',
-                changeset : '1',
-                nd : nd,
-                tag : [{k:'area', v:'yes'}]
+                id: this._leaflet_id,
+                version: '1',
+                changeset: '1',
+                nd: nd,
+                tag: [
+                    {k: 'area', v: 'yes'}
+                ]
             }
         }
         // 闭合点的处理
-        if (nd.length > 0){
+        if (nd.length > 0) {
             var len = nd.length;
-            if (nd[0].ref === nd[len-1].ref){
+            if (nd[0].ref === nd[len - 1].ref) {
                 nd.pop();
             }
         }
         this.type = 'polygon';
     },
-    
-    _onMouseClick: function(e){
+
+    _onMouseClick: function (e) {
         var wasDragged = this.dragging && this.dragging.moved(),
             wasRotated = this.rotating && this.rotating.moved();
         if (wasDragged || wasRotated) {
@@ -59,24 +65,24 @@ ME.Polygon = L.Polygon.extend({
         this._fireMouseEvent(e);
     },
 
-    toXML : function(){
-        var data = this.data, _line, nds = data.nd[0][0]||[],
+    toXML: function () {
+        var data = this.data, _line, nds = data.nd[0][0] || [],
             tags = data.tag || [], tagstr;
         _line = '<way';
         _line += ' id="' + this._leaflet_id + '"';
         _line += ' version="' + data.version + '"';
         _line += ' changeset="' + data.changeset + '">';
-        nds = nds.map(function(nd){
-            return '<nd ref="' + nd.ref +'" />'
+        nds = nds.map(function (nd) {
+            return '<nd ref="' + nd.ref + '" />'
         });
         // 提交数据要处理闭合点
-        if (nds.length > 0){
+        if (nds.length > 0) {
             nds.push(nds[0]);
         }
         _line += nds.join('');
-        tagstr = tags.map(function(tag){
-            var v = tag.v||'', k =tag.k;
-            return '<tag k="'+k+'" v="'+v+'"/>';
+        tagstr = tags.map(function (tag) {
+            var v = tag.v || '', k = tag.k;
+            return '<tag k="' + k + '" v="' + v + '"/>';
         });
         _line += tagstr.join('');
         return _line + '</way>';

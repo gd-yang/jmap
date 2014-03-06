@@ -1,5 +1,9 @@
+/**
+ * 标记
+ * @type {*}
+ */
 ME.Marker = L.Marker.extend({
-    includes : ME.Entity.CommonShape,
+    includes: ME.Entity.DataEditBind,
     options: {
         icon: new L.Icon({
             iconUrl: '/mapeditor/images/2.png',
@@ -32,39 +36,39 @@ ME.Marker = L.Marker.extend({
 
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State({
-            common : {
-                icon : new L.Icon({
+            common: {
+                icon: new L.Icon({
                     iconUrl: '/mapeditor/images/4.png'
                 })
             },
-            hover : {
-                icon : new L.Icon({
+            hover: {
+                icon: new L.Icon({
                     iconUrl: '/mapeditor/images/5.png'
                 })
             },
-            select : {
-                icon : new L.Icon({
+            select: {
+                icon: new L.Icon({
                     iconUrl: '/mapeditor/images/5.png'
                 })
             }
         });
         this.selected = false;
         this.data = data || {
-            id : this._leaflet_id,
-            lat : latlng.lat,
-            lon : latlng.lng,
+            id: this._leaflet_id,
+            lat: latlng.lat,
+            lon: latlng.lng,
             version: '1',
             changeset: '1',
-            tag : []
+            tag: []
         };
         this.type = 'marker';
     },
-    setStyle : function(options){
+    setStyle: function (options) {
         options = L.Util.extend({}, this.options, options);
         this.setIcon(options.icon);
         this.setOpacity(options.opacity);
     },
-    _fireDragEnd : function(){
+    _fireDragEnd: function () {
         this._map.changes.fire(/^-\d+$/.test(this._leaflet_id)
             ? 'created'
             : 'modified', {layer: this});
