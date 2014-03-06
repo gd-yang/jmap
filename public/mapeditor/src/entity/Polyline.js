@@ -56,28 +56,28 @@ ME.Polyline = L.Polyline.extend({
         this.type = 'polyline';
     },
     toXML: function () {
-        // var data = this.data, _line,
-        //     nds = data.nd[0][0], tags = data.tag, tagstr;
+        var data = this.data, _line,
+            nds = data.nd[0][0], tags = data.tag, tagstr;
 
-        // _line = '<way';
-        // _line += ' id="' + this._leaflet_id + '"';
-        // _line += ' version="' + data.version + '"';
-        // _line += ' changeset="' + data.changeset + '">';
+        _line = '<way';
+        _line += ' id="' + this._leaflet_id + '"';
+        _line += ' version="' + data.version + '"';
+        _line += ' changeset="' + data.changeset + '">';
 
-        // nds = nds.map(function (nd) {
-        //     return '<nd ref="' + nd.ref + '" />'
-        // });
+        nds = nds.map(function (nd) {
+            return '<nd ref="' + nd.ref + '" />'
+        });
 
-        // if (this.closed) {
-        //     nds.push(nds[0]);
-        // }
-        // _line += nds.join('');
-        // tagstr = tags.map(function (tag) {
-        //     var v = tag.v || '', k = tag.k;
-        //     return '<tag k="' + k + '" v="' + v + '"/>';
-        // });
-        // _line += tagstr.join('');
-        // return _line + '</way>';
+        if (this.closed) {
+            nds.push(nds[0]);
+        }
+        _line += nds.join('');
+        tagstr = tags.map(function (tag) {
+            var v = tag.v || '', k = tag.k;
+            return '<tag k="' + k + '" v="' + v + '"/>';
+        });
+        _line += tagstr.join('');
+        return _line + '</way>';
     },
 
     _onMouseClick: function (e) {
