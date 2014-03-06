@@ -31,11 +31,8 @@ ME.Mode.SelectRoad = ME.Mode.extend(
         if(e.pathtype != "pointSelectRoad") return;
         
         roads.forEach(function(road){
-            var path = new ME.Polyline({
-                latlngs : road
-            });
-
-            _this.group.addDataLayer(path);
+            var path = new ME.Entity.AssistLine(road);
+            _this.group.addLayer(path);
         });
     }
 });

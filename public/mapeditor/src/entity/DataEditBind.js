@@ -1,15 +1,19 @@
-ME.Entity.CommonShape = {
-    setData : function(data){
+/**
+ * 产生数据交互的绑定事件
+ * @type {*}
+ */
+ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
+    setData: function (data) {
         this.data = data;
     },
-    getData : function(){
+    getData: function () {
         return this.data;
     },
-    editEnable : function(){
-        this.on('click', function(){
+    editEnable: function () {
+        this.on('click', function () {
             console.log(111)
         });
-        if (this.editing){
+        if (this.editing) {
             this.editing.enable();
         }
         this.dragging.enable();
@@ -19,14 +23,14 @@ ME.Entity.CommonShape = {
             .on('selectOut', this._fireSelectOut, this)
             .on('edit', this._fireChanges, this);
         // 暂时，以后转移到菜单触发
-        if (this.dragging.on){
+        if (this.dragging.on) {
             this.dragging.on('dragend', this._fireDragEnd, this);
-        }else{
+        } else {
             this.on('dragend', this._fireDragEnd, this);
         }
     },
-    editDisable : function(){
-        if (this.editing){
+    editDisable: function () {
+        if (this.editing) {
             this.editing.disable();
         }
         this.dragging.disable();
@@ -36,34 +40,11 @@ ME.Entity.CommonShape = {
             .off('selectOut', this._fireSelectOut, this)
             .off('edit', this._fireChanges, this);
         // 暂时，以后转移到菜单触发
-        if (this.dragging.off){
+        if (this.dragging.off) {
             this.dragging.off('dragend', this._fireDragEnd, this);
-        }else{
+        } else {
             this.off('dragend', this._fireDragEnd, this);
         }
-    },
-    setState: function (stateName) {
-        if (this.setStyle){
-            this.setStyle(this.states[stateName]);
-        }
-    },
-    _fireOut: function () {
-        if (!this.selected){
-            this.setState('common');
-        }
-    },
-    _fireOver: function () {
-        if (!this.selected){
-            this.setState('hover');
-        }
-    },
-    _fireSelect : function(){
-        this.setState('select');
-        this.selected = true;
-    },
-    _fireSelectOut : function(){
-        this.setState('common');
-        this.selected = false;
     },
     _fireChanges: function (e) {
         var _this = this;
@@ -71,15 +52,15 @@ ME.Entity.CommonShape = {
             ? 'created'
             : 'modified', {layer: _this});
     },
-    _fireDragEnd : function(){
+    _fireDragEnd: function () {
         var _this = this,
             editing = this.editing, markers;
         //this.fire('edit');
         markers = editing._markers;
-        markers.forEach(function(marker){
+        markers.forEach(function (marker) {
             _this._map.changes.fire(/^-\d+$/.test(marker._leaflet_id)
                 ? 'created'
                 : 'modified', {layer: marker});
         });
     }
-};
+});

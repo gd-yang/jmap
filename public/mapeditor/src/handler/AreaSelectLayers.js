@@ -3,8 +3,7 @@ L.Map.mergeOptions({
     dragSelect: true
 });
 
-L.Map.DragSelect = L.Handler.extend(
-{
+L.Map.DragSelect = L.Handler.extend({
 	includes: L.Mixin.Events,
 	options: {
         className:"mapeditor-areaselectlayer-mask",
@@ -79,11 +78,13 @@ L.Map.DragSelect = L.Handler.extend(
     },
 
     _selecting: function(startpoint,endpoint){
-        var bounds = L.bounds(startpoint, endpoint);
-        var that = this;
-        var group = this._map.editingGroup;
+        var bounds = L.bounds(startpoint, endpoint),
+            that = this,
+            group = this._map.editingGroup;
 
-        if(!group) return;
+        if(!group) {
+            return;
+        }
 
         group.eachLayer(function(layer){
             var id = layer._leaflet_id;
@@ -94,9 +95,7 @@ L.Map.DragSelect = L.Handler.extend(
                 group.selectedLayers.push(id);
                 layer.setState('select');
                 layer.selected = true;
-            }
-            // if non intersect, unselect it
-            else if (!intersect && index>=0){
+            }else if (!intersect && index>=0){
                 group.selectedLayers.splice(index,1);
                 layer.setState('common');
                 layer.selected = false;
@@ -136,7 +135,6 @@ L.Map.DragSelect = L.Handler.extend(
     },
 
     _onMouseUp: function (e) {
-
         this._finish();
     },
 

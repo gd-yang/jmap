@@ -1,5 +1,9 @@
+/**
+ * 曲线
+ * @type {*}
+ */
 ME.Polyline = L.Polyline.extend({
-    includes : ME.Entity.CommonShape,
+    includes: ME.Entity.DataEditBind,
     options: {
         stroke: true,
         color: '#0033ff',
@@ -14,36 +18,36 @@ ME.Polyline = L.Polyline.extend({
         clickable: true
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd=[];
+        var id, latlngs, styleOptions, data, nd = [];
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
             styleOptions = options.options || {};
             data = options.data;
         }
-        styleOptions = L.extend({},this.options, styleOptions);
+        styleOptions = L.extend({}, this.options, styleOptions);
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
         this.closed = styleOptions.closed || false;
 
-        if (!!data){
+        if (!!data) {
             this.data = data;
-        }else{
+        } else {
             this.data = {
-                id : this._leaflet_id,
-                version : '1',
-                changeset : '1',
-                nd : [],
-                tag : []
+                id: this._leaflet_id,
+                version: '1',
+                changeset: '1',
+                nd: [],
+                tag: []
             }
         }
 
         // 闭合点的处理
-        if (nd.length > 0){
+        if (nd.length > 0) {
             var len = nd.length;
-            if (nd[0].ref === nd[len-1].ref){
+            if (nd[0].ref === nd[len - 1].ref) {
                 nd.pop();
             }
             this.closed = true;
@@ -64,7 +68,7 @@ ME.Polyline = L.Polyline.extend({
             return '<nd ref="' + nd.ref + '" />'
         });
 
-        if (this.closed){
+        if (this.closed) {
             nds.push(nds[0]);
         }
         _line += nds.join('');
@@ -76,26 +80,26 @@ ME.Polyline = L.Polyline.extend({
         return _line + '</way>';
     },
 
-    _onMouseClick: function(e){
+    _onMouseClick: function (e) {
         var wasDragged = this.dragging && this.dragging.moved();
         var wasRotated = this.rotating && this.rotating.moved();
+        if (wasDragged || wasRotated) {
+            return;
+        }
 
-        // if (this.hasEventListeners(e.type) || wasDragged || wasRotated) {
-        //     L.DomEvent.stopPropagation(e);
-        // }
-
-        if (wasDragged || wasRotated) { return; }
-
-        if (this._map.dragging && this._map.dragging.moved()) { return; }
+        if (this._map.dragging && this._map.dragging.moved()) {
+            return;
+        }
 
         this._fireMouseEvent(e);
     },
 
-    _getPathPartStr: function(points){
+    _getPathPartStr: function (points) {
         var str = L.Polyline.prototype._getPathPartStr.call(this, points);
 
-        if(this.closed === true)
-            str  = str + (L.Browser.svg ? 'z' : 'x');
+        if (this.closed === true){
+            str = str + (L.Browser.svg ? 'z' : 'x');
+        }
         return str;
     }
 });
