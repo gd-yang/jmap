@@ -15,6 +15,8 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        if(map._drawPolygonMode) return;
+        map._drawPolygonMode = this;
         var handler = new ME.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },

@@ -15,6 +15,8 @@ ME.Mode.DrawCircle = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        if(map._drawCircleMode) return;
+        map._drawCircleMode = this;
         var handler = new L.Draw.Circle(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },

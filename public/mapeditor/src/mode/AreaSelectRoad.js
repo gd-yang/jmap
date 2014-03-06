@@ -19,6 +19,8 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        if(map._areaSelectRoadMode) return;
+        map._areaSelectRoadMode = this;
         var handler = new L.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
@@ -29,12 +31,6 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
 
         if(layerType != "polygon") return;
 
-        L.setOptions(layer,{moveable:true,rotateable:true});
-        // this.group.addLayer(layer);
-
-        // layer.editing.enable();
-
-        // layer.rotating.enable();
         var latlngs = layer.getLatLngs(),
             flatlatlngs = [];
         latlngs.forEach(function(latlng){

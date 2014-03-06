@@ -15,6 +15,8 @@ ME.Mode.SelectRoad = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        if(map._selectRoadMode) return;
+        map._selectRoadMode = this;
         var handler = new ME.Handler.SelectRoad(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },

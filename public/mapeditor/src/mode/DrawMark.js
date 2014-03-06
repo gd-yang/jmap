@@ -15,6 +15,8 @@ ME.Mode.DrawMark = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        if(map._drawMarkerMode) return;
+        map._drawMarkerMode = this;
         var handler = new ME.Draw.Marker(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },

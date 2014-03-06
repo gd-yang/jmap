@@ -139,7 +139,8 @@ ME.Control.Button = L.Class.extend({
             options = this._getFromPresetByName(options);
         if(!options) return;
         if(!options.name) return;
-        if(!options.handler && !options.mode) return;
+        if(!options.handler) return;
+        if(options.mode) new options.mode(map);
 
         L.extend(temp,options);
 
@@ -242,7 +243,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._drawPolylineMode.enable();
-		}
+		},
+		mode: ME.Mode.DrawPolyline
 	},
 	{
 		name: "drawPolygon",
@@ -252,7 +254,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._drawPolygonMode.enable();
-		}
+		},
+		mode: ME.Mode.DrawPolygon
 	},
 	{
 		name: "drawCircle",
@@ -262,7 +265,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._drawCircleMode.enable();
-		}
+		},
+		mode: ME.Mode.DrawCircle
 	},
 	{
 		name: "drawRectangle",
@@ -272,7 +276,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._drawRectangleMode.enable();
-		}
+		},
+		mode: ME.Mode.DrawRectangle
 	},
 	{
 		name: "drawMarker",
@@ -282,7 +287,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._drawMarkerMode.enable();
-		}
+		},
+		mode: ME.Mode.DrawMark
 	},
 	{
 		name: "pointSelectRoad",
@@ -291,7 +297,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._selectRoadMode.enable();
-		}
+		},
+		mode: ME.Mode.SelectRoad
 	},
 	{
 		name: "areaSelectRoad",
@@ -301,7 +308,8 @@ ME.Control.Button.presets = [
 		handler: function(){
 			var map = this._map;
 			map._areaSelectRoadMode.enable();
-		}
+		},
+		mode: ME.Mode.AreaSelectRoad
 	},
 	{
 		name: "getPolygonFromRoads",
