@@ -140,31 +140,33 @@
 
             this.selectedLayers = [];
         },
-        addDataLayer : function(layer){
-            if (!this.editing){
+        addDataLayer: function (layer) {
+            if (!this.editing) {
                 return;
             }
+
             L.FeatureGroup.prototype.addLayer.call(this, layer);
             this.fire('datalayer:add', {layer: layer});
         },
-        removeDataLayer : function(layer){
-            var _this =this, markers;
-            if (!this.editing){
+        removeDataLayer: function (layer) {
+            var _this = this, markers, type;
+            if (!this.editing) {
                 return;
             }
 
             if (typeof layer === 'string') {
                 layer = this.getLayer(layer);
             }
+            type = layer.type;
             // 删除polyline或者polygon需要删除线上的点
-            if (this.geoType !== '1'){
+            if (type == 'polyline' || type == 'polygon') {
                 markers = layer.editing._markers;
-                markers.forEach(function(marker){
-                    _this.fire('datalayer:remove', {layer:marker}, _this);
+                markers.forEach(function (marker) {
+                    _this.fire('datalayer:remove', {layer: marker}, _this);
                 });
             }
             layer.editDisable();
-            this.fire('datalayer:remove', {layer : layer});
+            this.fire('datalayer:remove', {layer: layer});
             L.FeatureGroup.prototype.removeLayer.call(this, layer);
         },
         loadLayers: function () {
@@ -180,7 +182,6 @@
             var _this = this;
             this.connect.saveData(function(data){
                 console.log('保存执行回调！！')
-                var nodes, ways;
                 _this._map.clearChanges();
                 _this.clearSelectedLayers();
                 _this.clearLayers();
