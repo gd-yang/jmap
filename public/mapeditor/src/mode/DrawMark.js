@@ -15,14 +15,19 @@ ME.Mode.DrawMark = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        var handler;
+
         if(map._drawMarkerMode) return;
         map._drawMarkerMode = this;
-        var handler = new ME.Draw.Marker(map);
+
+        handler = new ME.Draw.Marker(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
     _finish: function(data){
         var layerType = data.layerType;
+
         if(layerType != "marker") return;
+        
         this.group.addLayer(data.layer);
     }
 });

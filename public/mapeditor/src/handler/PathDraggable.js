@@ -24,9 +24,12 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	},
 
 	_onDown: function (e) {
-		if(this.path instanceof L.Path == false) return;
 		var path = this.path,
-			latlngBounds = path.getBounds();
+			latlngBounds = path.getBounds(),
+			first;
+
+		if(this.path instanceof L.Path == false) return;
+
 		this._originalPoints = this._getOriginalPoints();
 		this.pathCenter = path._map.latLngToLayerPoint(latlngBounds.getCenter());
 
@@ -43,7 +46,7 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 
 		if (this._moving) { return; }
 
-		var first = e.touches ? e.touches[0] : e;
+		first = e.touches ? e.touches[0] : e;
 
 		this._startPoint = new L.Point(first.clientX, first.clientY);
 		this._startPos = this._newPos = this._startPoint;
@@ -56,14 +59,16 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	},
 
 	_onMove: function (e) {
+		var first, newPoint, offset;
+		
 		if (e.touches && e.touches.length > 1) {
 			this._moved = true;
 			return;
 		}
 
-		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e),
-		    newPoint = new L.Point(first.clientX, first.clientY),
-		    offset = newPoint.subtract(this._startPoint);
+		first = (e.touches && e.touches.length === 1 ? e.touches[0] : e);
+		newPoint = new L.Point(first.clientX, first.clientY);
+		offset = newPoint.subtract(this._startPoint);
 
 		this._newPos = newPoint;
 		if (!offset.x && !offset.y) { return; };

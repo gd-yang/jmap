@@ -15,9 +15,12 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        var handler;
+
         if(map._drawPolygonMode) return;
         map._drawPolygonMode = this;
-        var handler = new ME.Draw.Polygon(map);
+
+        handler = new ME.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
 
@@ -26,6 +29,7 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
             layerType = data.layerType;
 
         if(layerType != "polygon") return;
+        
         L.setOptions(layer,{moveable : true, rotateable : true});
         this.group.addLayer(layer);
         layer.editEnable();

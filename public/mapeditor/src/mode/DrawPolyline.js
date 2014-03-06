@@ -15,9 +15,12 @@ ME.Mode.DrawPolyline = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
+        var handler;
+
         if(map._drawPolylineMode) return;
         map._drawPolylineMode = this;
-        var handler = new ME.Draw.Polyline(map);
+
+        handler = new ME.Draw.Polyline(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },
 

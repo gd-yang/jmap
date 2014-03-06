@@ -52,6 +52,7 @@ ME.Handler.PolylineRotateable = ME.Handler.PathDraggable.extend(
 				originalPoints = this._originalPoints,
 				$m,
 				latlngs = [];
+				
 			s = map.containerPointToLayerPoint(s);
 			e = map.containerPointToLayerPoint(e);
 			$m = this._getMatrix(s,e);

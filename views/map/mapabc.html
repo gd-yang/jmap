@@ -62,7 +62,9 @@
     <script src="/mapeditor/src/util/DataToLayers.js"></script>
     <script src="/mapeditor/src/group/Group.js"></script>
     <script src="/mapeditor/src/Entity.js"></script>
-    <script src="/mapeditor/src/entity/CommonShape.js"></script>
+    <script src="/mapeditor/src/entity/EditBind.js"></script>
+    <script src="/mapeditor/src/entity/DataEditBind.js"></script>
+    <script src="/mapeditor/src/entity/AssistLine.js"></script>
     <script src="/mapeditor/src/entity/Polygon.js"></script>
     <script src="/mapeditor/src/entity/Polyline.js"></script>
     <script src="/mapeditor/src/entity/Marker.js"></script>
@@ -111,7 +113,7 @@
     });
     // 添加数据据控制
     map.addControl(new ME.DataControl());
-    var drawcontrol = new ME.Control.Toolbar({buttons:["panMap","drawPolyline","drawPolygon","drawMarker"]});
+    var drawcontrol = new ME.Control.Toolbar({buttons:["browser","drawPolyline","drawPolygon","drawMarker"]});
     map.addControl(drawcontrol); 
     map.addControl(new ME.Control.Toolbar({buttons:["pointSelectRoad","areaSelectRoad","getPolygonFromRoads"]}));
     map.addControl(new ME.Control.Toolbar({buttons:["save","cancel","delete"]}));

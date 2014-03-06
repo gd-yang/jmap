@@ -18,10 +18,11 @@ ME.Handler.PolylineMoveable = ME.Handler.PathDraggable.extend(
 	 * @return {Array} latlngs array after transform
 	 */
 	_transform: function(s,e){
-		var offset = e.subtract(s);
-			map = this.path._map;
+		var offset = e.subtract(s),
+			map = this.path._map,
 			originalPoints = this._originalPoints,
 			latlngs = [];
+			
 		for(var i = 0, l = originalPoints.length; i<l; i++){
 			latlngs.push(map.layerPointToLatLng(originalPoints[i].add(offset)));
 		}

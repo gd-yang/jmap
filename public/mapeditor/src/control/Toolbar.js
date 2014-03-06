@@ -19,9 +19,11 @@ ME.Control.Toolbar = L.Control.extend(
 	},
 
 	initialize:function(options){
+		var container;
+
 		L.Control.prototype.initialize.apply(this, [options]);
 
-		var container = this._container = L.DomUtil.create('div', this.options.toolbarClassName);
+		container = this._container = L.DomUtil.create('div', this.options.toolbarClassName);
 		L.DomUtil.addClass(container,this.options.direction);
 		if(this.options.className)
 			L.DomUtil.addClass(container,this.options.className);
@@ -30,13 +32,16 @@ ME.Control.Toolbar = L.Control.extend(
 	},
 
 	onAdd: function(map){
+		var buttons,
+			_this;
+
 		this._map = map;
-		var buttons = this.options.buttons,
-			that = this;
+		buttons = this.options.buttons;
+		_this = this;
 
 		if(buttons)
 			buttons.forEach(function(button){
-				that.addButton(button);
+				_this.addButton(button);
 			});
 		return this._container;
 	},
@@ -226,7 +231,7 @@ ME.Control.Button = L.Class.extend({
 
 ME.Control.Button.presets = [
 	{
-		name: "panMap",
+		name: "browser",
 		//innerHTML: "画线",
 		title: "移动地图",
 		className: "mapeditor-toolbar-pan-map",
