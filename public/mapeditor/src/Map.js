@@ -15,12 +15,6 @@
             this.changes = new ME.Changes();
             this.toolbars = new ME.Hash();
             this.openedGroup = new ME.Hash();
-
-            this._drawPolylineMode = new ME.Mode.DrawPolyline(this);
-            this._drawPolygonMode = new ME.Mode.DrawPolygon(this);
-            this._drawMarkerMode = new ME.Mode.DrawMark(this);
-            this._selectRoadMode = new ME.Mode.SelectRoad(this);
-            this._areaSelectRoadMode = new ME.Mode.AreaSelectRoad(this);
             
             this.addControl(L.control.scale());
 
