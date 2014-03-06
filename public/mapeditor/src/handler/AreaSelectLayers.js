@@ -106,7 +106,7 @@ L.Map.DragSelect = L.Handler.extend({
     _checkIntersection: function(bounds, polyline){
         var points = [], segmentBounds, that = this;
         // just detect polyline now.
-        if(polyline.type != "polyline") return false;
+        if(polyline.type != "polyline" && polyline.type != "AssistLine") return false;
 
         polyline.getLatLngs().forEach(function(latlng,i){
             points.push(that._map.latLngToLayerPoint(latlng));
