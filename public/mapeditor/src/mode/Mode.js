@@ -35,10 +35,11 @@ ME.Mode = L.Class.extend(
         }
 
         ME.Mode._activeMode = this;
-
         this._enabled = true;
+
         this._handler.enable();
         this.group = this._map.editingGroup;
+        this.fire("enabled");
         this._map.on('draw:created',this._finish,this);
     },
 
@@ -47,10 +48,11 @@ ME.Mode = L.Class.extend(
      */
     disable: function(){
         if(!this._enabled) return;
+        this._enabled = false;
 
         this._handler.disable();
-        this._enabled = false;
         delete this.group;
+        this.fire("disabled");
         this._map.off('draw:created',this._finish,this);
     },
 
@@ -58,6 +60,7 @@ ME.Mode = L.Class.extend(
         if(!this._enabled) return;
 
         this._enabled = false;
+        this.fire("disabled");
         this._map.off('draw:created',this._finish,this);
     },
 
@@ -65,6 +68,7 @@ ME.Mode = L.Class.extend(
         if(this._enabled) return;
 
         this._enabled = true;
+        this.fire("enabled");
         this._map.on('draw:created',this._finish,this);
     },
 

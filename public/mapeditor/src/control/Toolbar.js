@@ -153,6 +153,7 @@ ME.Control.Button = L.Class.extend({
 
         this.name = temp.name;
         this._map = map;
+        this.enabled = true;
 
         L.setOptions(this,temp);
         this._createButton(this.options);
@@ -160,13 +161,31 @@ ME.Control.Button = L.Class.extend({
     },
 
     disable: function(){
+    	if(!this.enabled) return;
+
+    	this.enabled = false;
     	this._removeEvent();
     	L.DomUtil.addClass(this.el, "disabled");
     },
 
     enable: function(){
+    	if(this.enabled) return;
+
+    	this.enabled = true;
     	this._bindEvent();
     	L.DomUtil.removeClass(this.el, "disabled");
+    },
+
+    activated: function(){
+		this.enabled = false;
+    	this._removeEvent();
+    	L.DomUtil.addClass(this.el, "activated");
+    },
+
+    deactivated: function(){
+		this.enabled = true;
+    	this._bindEvent();
+    	L.DomUtil.removeClass(this.el, "activated");
     },
 
 	_bindEvent: function(){
@@ -202,8 +221,13 @@ ME.Control.Button = L.Class.extend({
 	dispose: function(){
 		this._removeEvent();
 		this._map = null;
-		//this.el.remove();
+		if(this.mode){
+			this.mode.off("enabled", this.enable, this);
+			this.mode.off("disabled", this.disable, this);
+			this.mode = null;
+		}
         this.el.parentNode.removeChild(this.el);
+        this.el = null;
 	},
 
 	_createButton: function(options){
@@ -236,9 +260,15 @@ ME.Control.Button.presets = [
 		title: "移动地图",
 		className: "mapeditor-toolbar-pan-map",
 		handler: function(){
-			if(ME.Mode._activeMode)
-            	ME.Mode._activeMode.disable();
-		}
+			var map = this._map;
+			if(!this.mode){
+				this.mode = map._browserMapMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
+		},
+		mode: ME.Mode.BrowserMap
 	},
 	{
 		name: "drawPolyline",
@@ -247,7 +277,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-draw-polyline",
 		handler: function(){
 			var map = this._map;
-			map._drawPolylineMode.enable();
+			if(!this.mode){
+				this.mode = map._drawPolylineMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.DrawPolyline
 	},
@@ -258,7 +293,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-draw-polygon",
 		handler: function(){
 			var map = this._map;
-			map._drawPolygonMode.enable();
+			if(!this.mode){
+				this.mode = map._drawPolygonMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.DrawPolygon
 	},
@@ -269,7 +309,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-draw-circle",
 		handler: function(){
 			var map = this._map;
-			map._drawCircleMode.enable();
+			if(!this.mode){
+				this.mode = map._drawCircleMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.DrawCircle
 	},
@@ -280,7 +325,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-draw-rectangle",
 		handler: function(){
 			var map = this._map;
-			map._drawRectangleMode.enable();
+			if(!this.mode){
+				this.mode = map._drawRectangleMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.DrawRectangle
 	},
@@ -291,7 +341,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-draw-marker",
 		handler: function(){
 			var map = this._map;
-			map._drawMarkerMode.enable();
+			if(!this.mode){
+				this.mode = map._drawMarkerMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.DrawMark
 	},
@@ -301,7 +356,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-road-pointroad",
 		handler: function(){
 			var map = this._map;
-			map._selectRoadMode.enable();
+			if(!this.mode){
+				this.mode = map._selectRoadMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.SelectRoad
 	},
@@ -312,7 +372,12 @@ ME.Control.Button.presets = [
 		className: "mapeditor-toolbar-road-arearoad",
 		handler: function(){
 			var map = this._map;
-			map._areaSelectRoadMode.enable();
+			if(!this.mode){
+				this.mode = map._areaSelectRoadMode;
+				this.mode.on("enabled", this.activated, this);
+				this.mode.on("disabled", this.deactivated, this);
+			}
+			this.mode.enable();
 		},
 		mode: ME.Mode.AreaSelectRoad
 	},
