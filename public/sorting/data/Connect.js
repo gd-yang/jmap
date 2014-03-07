@@ -2,11 +2,15 @@ define(function (require, exports, module) {
     var Connect= L.Class.extend({
         includes : L.Mixin.Events,
         initialize : function(map){
+            var _this = this;
             this.http = new XHR({
                 cross : true
             });
             this.map = map;
             this.on('dataload:error', function(){
+                if (_this.polygonCode === ''){
+                    return;
+                }
                 alert('数据加载失败！');
             });
 
@@ -18,8 +22,10 @@ define(function (require, exports, module) {
                 alert('数据保存失败！');
             });
 
-            this.on('datasave:success', function(){
+            this.on('datasave:success', function(e){
+                var data = e.data;
                 alert('数据保存成功！');
+                $('.polygonCode').text(data.polygonCode);
             });
         },
         loadData: function (callback) {
@@ -41,7 +47,7 @@ define(function (require, exports, module) {
                     _this.fire('dataload:error',{data:data});
                     return;
                 }
-                console.log(data)
+
                 _this.fire('dataload:success',{data : data});
                 if (!!callback && typeof callback == 'function'){
                     callback(data.data.dataSet);
