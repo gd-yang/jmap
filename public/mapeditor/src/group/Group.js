@@ -3,7 +3,6 @@
         initialize: function (options) {
             options = options || {};
             var layers = options.layers;
-
             L.LayerGroup.prototype.initialize.call(this, layers);
             this.editing = false;
             this.openning = false;
@@ -137,7 +136,7 @@
                     _this.removeDataLayer(layer);
                 }
             });
-
+            this.fire('clearSelectedLayers');
             this.selectedLayers = [];
         },
         addDataLayer: function (layer) {
@@ -211,10 +210,11 @@
                 bounds = this._map.getBounds();
                 layers = this.getLayers() || [];
                 layers.forEach(function (layer) {
-                    var flag = _this.geoType && (_this.geoType == '1'
-                        ? bounds.contains(layer.getLatLng())
-                        : bounds.intersects(layer.getBounds()));
-                    if (!flag && !_this._map.changes.has(layer._leaflet_id)) {
+                    var flag = _this.geoType && (_this.geoType == '1' ?
+                               bounds.contains(layer.getLatLng()) : bounds.intersects(layer.getBounds())),
+                        _leaflet_id = layer._leaflet_id;
+                    // 不是新创建的并且不在视野范围内并且也没在changes里的就可以清除掉
+                    if (!(/^-\d+/.test(_leaflet_id)) && !flag && !_this._map.changes.has(_leaflet_id)) {
                         _this.removeLayer(layer);
                     }
                 });
