@@ -15,33 +15,32 @@ ME.Mode.BrowserMap = ME.Mode.extend(
      * @param  {Map} map
      */
     initialize: function(map){
-        var handler;
-
         this._map = map;
         this._enabled = false;
 
-        if(map._browserMapMode) return;
+        if(map._browserMapMode) {
+            return;
+        }
         map._browserMapMode = this;
     },
 
     enable: function(){
-        if(this._enabled) return;
-
+        if(this._enabled) {
+            return;
+        }
         this._enabled = true;
-
-        if(ME.Mode._activeMode)
+        if(ME.Mode._activeMode){
             ME.Mode._activeMode.disable();
+        }
         ME.Mode._activeMode = this;
-
         this.fire("enabled");
     },
 
     disable: function(){
-        if(!this._enabled) return;
-
+        if(!this._enabled) {
+            return;
+        }
         this._enabled = false;
-
         this.fire("disabled");
-        //
     }
 });
