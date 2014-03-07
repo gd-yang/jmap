@@ -20,31 +20,24 @@ ME.Control.Toolbar = L.Control.extend(
 
 	initialize:function(options){
 		var container;
-
-		L.Control.prototype.initialize.apply(this, [options]);
-
+		L.Control.prototype.initialize.call(this, options);
 		container = this._container = L.DomUtil.create('div', this.options.toolbarClassName);
 		L.DomUtil.addClass(container,this.options.direction);
-		if(this.options.className)
-			L.DomUtil.addClass(container,this.options.className);
-
+		if(this.options.className){
+            L.DomUtil.addClass(container,this.options.className);
+        }
 		this._buttons = {};
 	},
 
-	onAdd: function(map){
-		var buttons,
-			_this;
-
-		this._map = map;
-		buttons = this.options.buttons;
-		_this = this;
-
-		if(buttons)
-			buttons.forEach(function(button){
-				_this.addButton(button);
-			});
-		return this._container;
-	},
+    onAdd: function (map) {
+        var buttons = this.options.buttons || [],
+            _this = this;
+        this._map = map;
+        buttons.forEach(function (button) {
+            _this.addButton(button);
+        });
+        return this._container;
+    },
 
 	onRemove: function(){
 		for(var key in this._buttons){
@@ -76,12 +69,15 @@ ME.Control.Toolbar = L.Control.extend(
 		var buttons = this._buttons;
 		var isfirst = !Object.keys(buttons).length;
 
-		if(options instanceof ME.Control.Button)
-			button = options;
-		else
-			button = new ME.Control.Button(options);
+		if(options instanceof ME.Control.Button){
+            button = options;
+        }else{
+            button = new ME.Control.Button(options);
+        }
 
-		if(!button.el) return;
+		if(!button.el) {
+            return;
+        }
 
 		if(!this._map) {
 			this.options.buttons = this.options.buttons || [];
@@ -92,8 +88,9 @@ ME.Control.Toolbar = L.Control.extend(
 			return;
 		}
 
-		if(isfirst)
-			L.DomUtil.addClass(button.el,"first");
+		if(isfirst){
+            L.DomUtil.addClass(button.el,"first");
+        }
 
 		Object.keys(buttons).forEach(function(key){
 			L.DomUtil.removeClass(buttons[key].el,"last");
@@ -133,10 +130,11 @@ ME.Control.Toolbar = L.Control.extend(
 	 */
 	removeButton: function(name){
 		var button = this._buttons[name];
-		if(!button) return;
+		if(!button) {
+            return;
+        }
 
 		delete this._buttons[name];
-
 		button.dispose();
 	}
 });
@@ -159,7 +157,6 @@ ME.Control.Button = L.Class.extend({
 
         L.setOptions(this,options);
         this._createButton(this.options);
-
     },
 
     onAdd: function(map){
@@ -178,8 +175,9 @@ ME.Control.Button = L.Class.extend({
     },
 
     disable: function(){
-    	if(!this.enabled) return;
-
+    	if(!this.enabled){
+            return;
+        }
     	this.enabled = false;
     	this._removeEvent();
     	L.DomUtil.addClass(this.el, "disabled");
@@ -187,7 +185,9 @@ ME.Control.Button = L.Class.extend({
     },
 
     enable: function(){
-    	if(this.enabled) return;
+    	if(this.enabled) {
+            return;
+        }
 
     	this.enabled = true;
     	this._bindEvent();
@@ -238,7 +238,8 @@ ME.Control.Button = L.Class.extend({
 
 	dispose: function(){
 		this._removeEvent();
-		if(this.mode){
+		this._map = null;
+		if(this.mode) {
 			this.mode.off("enabled", this.enable, this);
 			this.mode.off("disabled", this.disable, this);
 			this.mode = null;
@@ -285,6 +286,13 @@ ME.Control.Button.drawPolygon = new ME.Control.Button({
 		title: "画面",
 		className: "mapeditor-toolbar-draw-polygon",
 		mode: ME.Mode.DrawPolygon
+	});
+
+ME.Control.Button.drawAssistLine = new ME.Control.Button({
+		name: "drawAssistLine",
+		title: "画辅助线",
+		className: "mapeditor-toolbar-draw-polyline",
+		mode: ME.Mode.DrawAssistLine
 	});
 
 ME.Control.Button.drawCircle = new ME.Control.Button({

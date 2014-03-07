@@ -16,7 +16,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-		featureGroup: null
+		featureGroup : null
 	},
 
 	initialize: function (options) {

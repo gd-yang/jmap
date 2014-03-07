@@ -1,6 +1,5 @@
 define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
-
     var buttons = ["browserMap","drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
         toolbar = new ME.Control.Toolbar();
 
@@ -17,18 +16,7 @@ define(function (require, exports, module) {
             });
 
             this.connect = new Connect(this.map);
-            this.connect.on('datasave:success', function(e){
-                var data = e.data;
-                $('.polygonCode').text(data.polygonCode);
-                console.log('保存成功！')
-            });
-            this.connect.on('dataload:error', function(){
-                console.log('加载失败！')
-            });
 
-            this.connect.on('dataload:success', function(){
-                console.log('加载成功！')
-            });
         },
         editOneData: function () {
             var map = this.map;

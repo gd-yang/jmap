@@ -234,7 +234,6 @@ L.Toolbar = L.Class.extend({
 
 	_hideActionsToolbar: function () {
 		this._actionsContainer.style.display = 'none';
-
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
 		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');

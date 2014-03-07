@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @memberOf  ME
  * @constructor
  * @namespace Mode
@@ -11,17 +11,16 @@ ME.Mode = L.Class.extend(
 {
     includes: L.Mixin.Events,
 
-    initialize: function(map,handler){
+    initialize: function(map, handler){
         this._map = map;
         this._handler = handler;
         this._enabled = false;
         this.group = this._map.editingGroup;
-        
-        if(this._handler.on){
-            this._handler.on("disabled",this._disable,this);
-            this._handler.on("enabled",this._enable,this);
+
+        if (this._handler.on){
+            this._handler.on("disabled", this._disable, this);
+            this._handler.on("enabled", this._enable, this);
         }
-            
     },
 
     /**
@@ -40,16 +39,17 @@ ME.Mode = L.Class.extend(
         this._handler.enable();
         this.group = this._map.editingGroup;
         this.fire("enabled");
-        this._map.on('draw:created',this._finish,this);
+        this._map.on('draw:created', this._finish, this);
     },
 
     /**
      * disable mode
      */
     disable: function(){
-        if(!this._enabled) return;
+        if(!this._enabled) {
+            return;
+        }
         this._enabled = false;
-
         this._handler.disable();
         delete this.group;
         this.fire("disabled");
@@ -57,16 +57,18 @@ ME.Mode = L.Class.extend(
     },
 
     _disable: function(){
-        if(!this._enabled) return;
-
+        if(!this._enabled) {
+            return;
+        }
         this._enabled = false;
         this.fire("disabled");
         this._map.off('draw:created',this._finish,this);
     },
 
     _enable: function(){
-        if(this._enabled) return;
-
+        if(this._enabled) {
+            return;
+        }
         this._enabled = true;
         this.fire("enabled");
         this._map.on('draw:created',this._finish,this);
