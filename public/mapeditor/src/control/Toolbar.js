@@ -20,31 +20,24 @@ ME.Control.Toolbar = L.Control.extend(
 
 	initialize:function(options){
 		var container;
-
-		L.Control.prototype.initialize.apply(this, [options]);
-
+		L.Control.prototype.initialize.call(this, options);
 		container = this._container = L.DomUtil.create('div', this.options.toolbarClassName);
 		L.DomUtil.addClass(container,this.options.direction);
-		if(this.options.className)
-			L.DomUtil.addClass(container,this.options.className);
-
+		if(this.options.className){
+            L.DomUtil.addClass(container,this.options.className);
+        }
 		this._buttons = {};
 	},
 
-	onAdd: function(map){
-		var buttons,
-			_this;
-
-		this._map = map;
-		buttons = this.options.buttons;
-		_this = this;
-
-		if(buttons)
-			buttons.forEach(function(button){
-				_this.addButton(button);
-			});
-		return this._container;
-	},
+    onAdd: function (map) {
+        var buttons = this.options.buttons || [],
+            _this = this;
+        this._map = map;
+        buttons.forEach(function (button) {
+            _this.addButton(button);
+        });
+        return this._container;
+    },
 
 	onRemove: function(){
 		for(var key in this._buttons){
@@ -76,15 +69,19 @@ ME.Control.Toolbar = L.Control.extend(
 		var buttons = this._buttons;
 		var isfirst = !Object.keys(buttons).length;
 
-		if(options instanceof ME.Control.Button)
-			button = options;
-		else
-			button = new ME.Control.Button(this._map,options);
+		if(options instanceof ME.Control.Button){
+            button = options;
+        }else{
+            button = new ME.Control.Button(this._map,options);
+        }
 
-		if(!button.el) return;
+		if(!button.el) {
+            return;
+        }
 
-		if(isfirst)
-			L.DomUtil.addClass(button.el,"first");
+		if(isfirst){
+            L.DomUtil.addClass(button.el,"first");
+        }
 
 		Object.keys(buttons).forEach(function(key){
 			L.DomUtil.removeClass(buttons[key].el,"last");
@@ -107,14 +104,12 @@ ME.Control.Toolbar = L.Control.extend(
 
 	disableButton: function(name){
 		var button = this._buttons[name];
-
-		button.disable();
+		    button.disable();
 	},
 
 	enableButton: function(name){
 		var button = this._buttons[name];
-
-		button.enable();
+		    button.enable();
 	},
 
 	/**
@@ -123,10 +118,11 @@ ME.Control.Toolbar = L.Control.extend(
 	 */
 	removeButton: function(name){
 		var button = this._buttons[name];
-		if(!button) return;
+		if(!button) {
+            return;
+        }
 
 		delete this._buttons[name];
-
 		button.dispose();
 	}
 });
@@ -140,15 +136,18 @@ ME.Control.Button = L.Class.extend({
 
 	initialize: function(map,options){
         var temp = {};
-        if(typeof options == "string")
+        if(typeof options == "string"){
             options = this._getFromPresetByName(options);
-        if(!options) return;
-        if(!options.name) return;
-        if(!options.handler) return;
-        if(options.mode) new options.mode(map);
+        }
+        if(!options || !options.name || !options.handler) {
+            return;
+        }
+
+        if(options.mode){
+            new options.mode(map);
+        }
 
         L.extend(temp,options);
-
         temp.handler = options.handler.bind(this);
 
         this.name = temp.name;
@@ -157,19 +156,21 @@ ME.Control.Button = L.Class.extend({
 
         L.setOptions(this,temp);
         this._createButton(this.options);
-
     },
 
     disable: function(){
-    	if(!this.enabled) return;
-
+    	if(!this.enabled){
+            return;
+        }
     	this.enabled = false;
     	this._removeEvent();
     	L.DomUtil.addClass(this.el, "disabled");
     },
 
     enable: function(){
-    	if(this.enabled) return;
+    	if(this.enabled) {
+            return;
+        }
 
     	this.enabled = true;
     	this._bindEvent();
@@ -221,7 +222,7 @@ ME.Control.Button = L.Class.extend({
 	dispose: function(){
 		this._removeEvent();
 		this._map = null;
-		if(this.mode){
+		if(this.mode) {
 			this.mode.off("enabled", this.enable, this);
 			this.mode.off("disabled", this.disable, this);
 			this.mode = null;
@@ -245,8 +246,9 @@ ME.Control.Button = L.Class.extend({
 		var btn;
 
 		ME.Control.Button.presets.forEach(function(button){
-			if(button.name == name)
-				btn = button;
+			if(button.name == name){
+                btn = button;
+            }
 		});
 
 		return btn;
@@ -286,6 +288,22 @@ ME.Control.Button.presets = [
 		},
 		mode: ME.Mode.DrawPolyline
 	},
+    {
+        name: "drawAssistLine",
+        //innerHTML: "画线",
+        title: "画辅助线",
+        className: "mapeditor-toolbar-draw-polyline",
+        handler: function(){
+            var map = this._map;
+            if(!this.mode){
+                this.mode = new ME.Mode.DrawAssistLine(map);
+                this.mode.on("enabled", this.activated, this);
+                this.mode.on("disabled", this.deactivated, this);
+            }
+            this.mode.enable();
+        },
+        mode: ME.Mode.DrawAssistLine
+    },
 	{
 		name: "drawPolygon",
 		//innerHTML: "画面",
