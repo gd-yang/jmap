@@ -18,18 +18,21 @@ ME.Polyline = L.Polyline.extend({
         clickable: true
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd = [];
+        var id, latlngs, styleOptions, data, nd = [], isFireEdit;
         if (options) {
             id = options.id;
             latlngs = options.latlngs;
             styleOptions = options.options || {};
             data = options.data;
+            isFireEdit = options.isFireEdit;
         }
         styleOptions = L.extend({}, this.options, styleOptions);
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
+        this.edited = false;
+        this.isFireEdit = isFireEdit !== false;
         this.closed = styleOptions.closed || false;
 
         if (!!data) {

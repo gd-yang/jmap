@@ -10,6 +10,10 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         return this.data;
     },
     editEnable: function () {
+        if (this.edited){
+            return;
+        }
+        this.edited = true;
         this.on('click', function () {
             console.log(111)
         });
@@ -30,6 +34,10 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         }
     },
     editDisable: function () {
+        if (!this.edited){
+            return;
+        }
+        this.edited = false;
         if (this.editing) {
             this.editing.disable();
         }
