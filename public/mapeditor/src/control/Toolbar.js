@@ -42,10 +42,11 @@ ME.Control.Toolbar = L.Control.extend(
 	onRemove: function(){
 		for(var key in this._buttons){
 			if(this._buttons.hasOwnProperty(key)){
-				this._buttons[key].dispose();
+				this._buttons[key].onRemove();
 			}
 		}
 		this._buttons = {};
+		this._map = null;
 	},
 
 	/**
@@ -79,9 +80,9 @@ ME.Control.Toolbar = L.Control.extend(
             return;
         }
 
+		this.options.buttons = this.options.buttons || [];
+		this.options.buttons.push(button);
 		if(!this._map) {
-			this.options.buttons = this.options.buttons || [];
-			this.options.buttons.push(button);
 			return;
 		}
 		if(this._buttons[button.name]){
@@ -135,7 +136,7 @@ ME.Control.Toolbar = L.Control.extend(
         }
 
 		delete this._buttons[name];
-		button.dispose();
+		button.onRemove();
 	}
 });
 
@@ -157,21 +158,6 @@ ME.Control.Button = L.Class.extend({
 
         L.setOptions(this,options);
         this._createButton(this.options);
-    },
-
-    onAdd: function(map){
-    	var options = this.options;
-
-    	if(!map || this.mode) return;
-
-    	this._map = map;
-
-		if(options.mode)
-        {
-        	this.mode = new options.mode(map);
-			this.mode.on("enabled", this.activated, this);
-			this.mode.on("disabled", this.deactivated, this);
-        }
     },
 
     disable: function(){
@@ -236,16 +222,29 @@ ME.Control.Button = L.Class.extend({
 		}
 	},
 
-	dispose: function(){
+	onAdd: function(map){
+    	var options = this.options;
+
+    	if(!map) return;
+
+    	this._map = map;
+
+		if(!this.mode && options.mode)
+        {
+        	this.mode = new options.mode(map);
+			this.mode.on("enabled", this.activated, this);
+			this.mode.on("disabled", this.deactivated, this);
+        }
+    	this._bindEvent();
+    },
+
+	onRemove: function(){
 		this._removeEvent();
 		this._map = null;
 		if(this.mode) {
-			this.mode.off("enabled", this.enable, this);
-			this.mode.off("disabled", this.disable, this);
-			this.mode = null;
+			this.mode.disable();
 		}
         this.el.parentNode.removeChild(this.el);
-        this.el = null;
 	},
 
 	_createButton: function(options){
@@ -255,8 +254,6 @@ ME.Control.Button = L.Class.extend({
 		}
 
 		this.el = button;
-
-		this._bindEvent();
 	},
 
 	_handlerForMode: function(){
