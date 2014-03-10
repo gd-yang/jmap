@@ -1,6 +1,8 @@
 define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
-    var buttons = ["browserMap","drawPolymarker","drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
+    var buttons = ["browserMap","drawAssistMarker","drawAssistLine",
+            "drawAssistPolygon","drawPolygon","pointSelectRoad",
+            "areaSelectRoad","getPolygonFromRoads","delete","save"],
         toolbar = new ME.Control.Toolbar();
 
         buttons.forEach(function(button){
@@ -18,9 +20,12 @@ define(function (require, exports, module) {
             this.connect = new Connect(this.map);
 
         },
-        editOneData: function () {
+        editOneData: function (polygonCode, clientKey) {
+            console.log(polygonCode)
             var map = this.map;
-            var polygonCode = $.trim($('.polygonCode').text());
+            polygonCode = polygonCode || $('.polygonCode').text();
+            clientKey = clientKey || $('.clientKey').text();
+            console.log(polygonCode)
             if (polygonCode === '') {
                 alert('请输入要编辑的区域码！');
                 return;
@@ -30,15 +35,18 @@ define(function (require, exports, module) {
                 this.clearOldGroup.call(this);
             }
             this.connect.polygonCode = polygonCode;
+            this.connect.clientKey = clientKey;
             this.createNewGroup.call(this);
             this.group.loadLayers()
         },
-        createOneData: function () {
+        createOneData: function (clientKey) {
             console.log(this)
+            clientKey = clientKey || $('.clientKey').text();
             if (!!this.group) {
                 this.clearOldGroup.call(this);
             }
             this.connect.polygonCode = '';
+            this.connect.clientKey = clientKey;
             this.createNewGroup.call(this);
         },
         saveData : function(){
