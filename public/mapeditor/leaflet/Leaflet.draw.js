@@ -36,9 +36,9 @@ L.drawLocal = {
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: '点击鼠标开始画图形.',
+					cont: '点击鼠标继续画图形.',
+					end: '点击第一个点闭合图形.'
 				}
 			},
 			polyline: {
