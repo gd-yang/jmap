@@ -292,6 +292,13 @@ ME.Control.Button.drawAssistLine = new ME.Control.Button({
 		mode: ME.Mode.DrawAssistLine
 	});
 
+ME.Control.Button.drawAssistMarker = new ME.Control.Button({
+    name: "drawAssistMarker",
+    title: "画辅助点",
+    className: "mapeditor-toolbar-draw-marker",
+    mode: ME.Mode.DrawAssistMarker
+});
+
 ME.Control.Button.drawCircle = new ME.Control.Button({
 		name: "drawCircle",
 		title: "画园",
