@@ -416,6 +416,10 @@ ME.Control.Button.presets = [
 				ll.forEach(function(latlng){
 					arr.push(latlng.lng + "," +latlng.lat);
 				});
+
+                if (layer.type == 'polygon' || layer.type == 'polyline' && layer.closed === true){
+                    arr.push(arr[0]);
+                }
 				latlngs.push(arr.join(";"));
 			});
 			ME.Util.roadsToArea({url:url,line:latlngs.join("-")},function(data){
