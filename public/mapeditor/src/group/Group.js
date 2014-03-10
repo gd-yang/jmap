@@ -55,11 +55,15 @@
         },
         _fireLayerAdd : function(e){
             var layer = e.layer;
-            layer.editEnable();
+            if (layer.isFireEdit){
+                layer.editEnable();
+            }
         },
         _fireLayerRemove : function(e){
             var layer = e.layer;
-            layer.editDisable();
+            if (layer.isFireEdit){
+                layer.editDisable();
+            }
         },
         open: function () {
             if (this.openning || !this._map) {
