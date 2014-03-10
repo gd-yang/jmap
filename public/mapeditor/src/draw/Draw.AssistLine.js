@@ -1,7 +1,4 @@
 ME.Draw.AssistLine = L.Draw.Polyline.extend({
-    statics: {
-        TYPE: 'assistline'
-    },
     initialize : function(map, options){
         L.Draw.Polyline.prototype.initialize.call(this, map, options);
         this.type = 'assistline'
