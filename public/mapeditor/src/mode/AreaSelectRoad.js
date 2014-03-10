@@ -21,9 +21,6 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
     initialize: function(map){
         var handler;
 
-        if(map._areaSelectRoadMode) return;
-        map._areaSelectRoadMode = this;
-
         handler = new L.Draw.Polygon(map);
         ME.Mode.prototype.initialize.apply(this,[map,handler]);
     },

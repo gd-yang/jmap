@@ -17,11 +17,6 @@ ME.Mode.BrowserMap = ME.Mode.extend(
     initialize: function(map){
         this._map = map;
         this._enabled = false;
-
-        if(map._browserMapMode) {
-            return;
-        }
-        map._browserMapMode = this;
     },
 
     enable: function(){

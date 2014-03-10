@@ -72,12 +72,21 @@ ME.Control.Toolbar = L.Control.extend(
 		if(options instanceof ME.Control.Button){
             button = options;
         }else{
-            button = new ME.Control.Button(this._map,options);
+            button = new ME.Control.Button(options);
         }
 
 		if(!button.el) {
             return;
         }
+
+		if(!this._map) {
+			this.options.buttons = this.options.buttons || [];
+			this.options.buttons.push(button);
+			return;
+		}
+		if(this._buttons[button.name]){
+			return;
+		}
 
 		if(isfirst){
             L.DomUtil.addClass(button.el,"first");
@@ -91,6 +100,7 @@ ME.Control.Toolbar = L.Control.extend(
 		container.appendChild(button.el);
 
 		this._buttons[button.name] = button;
+		button.onAdd(this._map);
 	},
 
 	/**
@@ -104,12 +114,14 @@ ME.Control.Toolbar = L.Control.extend(
 
 	disableButton: function(name){
 		var button = this._buttons[name];
-		    button.disable();
+		if(!button) return;
+		button.disable();
 	},
 
 	enableButton: function(name){
 		var button = this._buttons[name];
-		    button.enable();
+		if(!button) return;
+		button.enable();
 	},
 
 	/**
@@ -134,28 +146,32 @@ ME.Control.Button = L.Class.extend({
 		attributes: ["title"]
 	},
 
-	initialize: function(map,options){
-        var temp = {};
-        if(typeof options == "string"){
-            options = this._getFromPresetByName(options);
-        }
-        if(!options || !options.name || !options.handler) {
-            return;
-        }
+	initialize: function(options){
+        if(!options) return;
+        if(!options.name) return;
+        if(!options.handler && !options.mode) return;
+        if(options.mode) options.handler = this._handlerForMode;
 
-        if(options.mode){
-            new options.mode(map);
-        }
-
-        L.extend(temp,options);
-        temp.handler = options.handler.bind(this);
-
-        this.name = temp.name;
-        this._map = map;
+        this.name = options.name;
         this.enabled = true;
 
-        L.setOptions(this,temp);
+        L.setOptions(this,options);
         this._createButton(this.options);
+    },
+
+    onAdd: function(map){
+    	var options = this.options;
+
+    	if(!map || this.mode) return;
+
+    	this._map = map;
+
+		if(options.mode)
+        {
+        	this.mode = new options.mode(map);
+			this.mode.on("enabled", this.activated, this);
+			this.mode.on("disabled", this.deactivated, this);
+        }
     },
 
     disable: function(){
@@ -165,6 +181,7 @@ ME.Control.Button = L.Class.extend({
     	this.enabled = false;
     	this._removeEvent();
     	L.DomUtil.addClass(this.el, "disabled");
+    	L.DomUtil.removeClass(this.el, "activated");
     },
 
     enable: function(){
@@ -200,7 +217,7 @@ ME.Control.Button = L.Class.extend({
 			.on(button, 'click', L.DomEvent.preventDefault);
 
 		if(handler){
-			L.DomEvent.on(button, 'click', handler);
+			L.DomEvent.on(button, 'click', handler, this);
 		}
 	},
 
@@ -215,7 +232,7 @@ ME.Control.Button = L.Class.extend({
 			.off(button, 'click', L.DomEvent.preventDefault);
 
 		if(handler){
-			L.DomEvent.off(button, 'click', handler);
+			L.DomEvent.off(button, 'click', handler, this);
 		}
 	},
 
@@ -242,164 +259,78 @@ ME.Control.Button = L.Class.extend({
 		this._bindEvent();
 	},
 
-	_getFromPresetByName: function(name){
-		var btn;
-
-		ME.Control.Button.presets.forEach(function(button){
-			if(button.name == name){
-                btn = button;
-            }
-		});
-
-		return btn;
+	_handlerForMode: function(){
+		if(this.mode)
+		{
+			this.mode.enable();
+		}
 	}
 });
 
-ME.Control.Button.presets = [
-	{
-		name: "browser",
-		//innerHTML: "画线",
+ME.Control.Button.browserMap = new ME.Control.Button({
+		name: "browserMap",
 		title: "移动地图",
 		className: "mapeditor-toolbar-pan-map",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._browserMapMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.BrowserMap
-	},
-	{
+	});
+
+ME.Control.Button.drawPolyline = new ME.Control.Button({
 		name: "drawPolyline",
-		//innerHTML: "画线",
 		title: "画线",
 		className: "mapeditor-toolbar-draw-polyline",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._drawPolylineMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.DrawPolyline
-	},
-    {
-        name: "drawAssistLine",
-        //innerHTML: "画线",
-        title: "画辅助线",
-        className: "mapeditor-toolbar-draw-polyline",
-        handler: function(){
-            var map = this._map;
-            if(!this.mode){
-                this.mode = new ME.Mode.DrawAssistLine(map);
-                this.mode.on("enabled", this.activated, this);
-                this.mode.on("disabled", this.deactivated, this);
-            }
-            this.mode.enable();
-        },
-        mode: ME.Mode.DrawAssistLine
-    },
-	{
+	});
+
+ME.Control.Button.drawPolygon = new ME.Control.Button({
 		name: "drawPolygon",
-		//innerHTML: "画面",
 		title: "画面",
 		className: "mapeditor-toolbar-draw-polygon",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._drawPolygonMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.DrawPolygon
-	},
-	{
+	});
+
+ME.Control.Button.drawAssistLine = new ME.Control.Button({
+		name: "drawAssistLine",
+		title: "画辅助线",
+		className: "mapeditor-toolbar-draw-polyline",
+		mode: ME.Mode.DrawAssistLine
+	});
+
+ME.Control.Button.drawCircle = new ME.Control.Button({
 		name: "drawCircle",
-		//innerHTML: "画园",
 		title: "画园",
 		className: "mapeditor-toolbar-draw-circle",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._drawCircleMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.DrawCircle
-	},
-	{
+	});
+
+ME.Control.Button.drawRectangle = new ME.Control.Button({
 		name: "drawRectangle",
-		//innerHTML: "画方",
 		title: "画方",
 		className: "mapeditor-toolbar-draw-rectangle",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._drawRectangleMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.DrawRectangle
-	},
-	{
+	});
+
+ME.Control.Button.drawMarker = new ME.Control.Button({
 		name: "drawMarker",
-		//innerHTML: "标注",
 		title: "标注",
 		className: "mapeditor-toolbar-draw-marker",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._drawMarkerMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.DrawMark
-	},
-	{
+	});
+
+ME.Control.Button.pointSelectRoad = new ME.Control.Button({
 		name: "pointSelectRoad",
 		title: "点选路",
 		className: "mapeditor-toolbar-road-pointroad",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._selectRoadMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.SelectRoad
-	},
-	{
+	});
+
+ME.Control.Button.areaSelectRoad = new ME.Control.Button({
 		name: "areaSelectRoad",
-		//innerHTML: "画面",
 		title: "区域选路",
 		className: "mapeditor-toolbar-road-arearoad",
-		handler: function(){
-			var map = this._map;
-			if(!this.mode){
-				this.mode = map._areaSelectRoadMode;
-				this.mode.on("enabled", this.activated, this);
-				this.mode.on("disabled", this.deactivated, this);
-			}
-			this.mode.enable();
-		},
 		mode: ME.Mode.AreaSelectRoad
-	},
-	{
+	});
+
+ME.Control.Button.getPolygonFromRoads = new ME.Control.Button({
 		name: "getPolygonFromRoads",
 		title: "生成区域",
 		className: "mapeditor-toolbar-road-roadstoarea",
@@ -438,18 +369,12 @@ ME.Control.Button.presets = [
                     group.addDataLayer(layer);
                 });
 			});
+			if(ME.Mode._activeMode)
+            	ME.Mode._activeMode.disable();
 		}
-	},
-	// {
-	// 	name: "areaSelectLayers",
-	// 	title: "区域选图层",
-	// 	className: "mapeditor-toolbar-draw-rectangle",
-	// 	handler: function(){
-	// 		var map = this._map;
-	// 		map._areaSelectLayersMode.enable();
-	// 	}
-	// },
-	{
+	});
+
+ME.Control.Button.save = new ME.Control.Button({
 		name: "save",
 		title: "保存",
 		className: "mapeditor-toolbar-actions-save",
@@ -462,8 +387,9 @@ ME.Control.Button.presets = [
 				layer._originalCoord =  L.LatLngUtil.cloneLatLngs(layer.getLatLngs());
 			}
 		}
-	},
-	{
+	});
+
+ME.Control.Button.cancel = new ME.Control.Button({
 		name: "cancel",
 		title: "取消",
 		className: "mapeditor-toolbar-actions-cancel",
@@ -476,8 +402,9 @@ ME.Control.Button.presets = [
 				layer.setLatLngs(layer._originalCoord);
 			}
 		}
-	},
-	{
+	});
+
+ME.Control.Button.delete = new ME.Control.Button({
 		name: "delete",
 		title: "删除",
 		className: "mapeditor-toolbar-actions-delete",
@@ -485,5 +412,4 @@ ME.Control.Button.presets = [
 			var map = this._map, group = map.editingGroup;
                 group.clearSelectedLayers({remove : true});
 		}
-	}
-];
+	});
