@@ -64,7 +64,7 @@ ME.Marker = L.Marker.extend({
         this.type = 'marker';
     },
     setStyle: function (options) {
-        options = L.Util.extend({}, this.options, options);
+        options = L.extend({}, this.options, options);
         this.setIcon(options.icon);
         this.setOpacity(options.opacity);
     },
