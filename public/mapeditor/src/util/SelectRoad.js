@@ -31,7 +31,7 @@ ME.Util.areaSelectRoad = function(config,cb,context){
         cross : true,
         fla : true
     });
-    xhr.post(config.url,{
+    xhr.get(config.url,{
         paras:{
             region: config.latlngs
         }
