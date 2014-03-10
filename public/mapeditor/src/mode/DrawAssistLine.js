@@ -8,7 +8,8 @@ ME.Mode.DrawAssistLine = ME.Mode.extend({
         ME.Mode.prototype.initialize.apply(this, [map, handler]);
     },
     _finish: function (data) {
-        var layerType = data.layerType, layer = data.layer;
+        var layerType = data.layerType,
+            layer = data.layer;
         if (layerType != "assistline") {
             return;
         }
