@@ -35,7 +35,7 @@ define(function (require, exports, module) {
                 paras : {
                     sid : '2005',
                     polygonCode : this.polygonCode,
-                    clientKey : $.trim($('.clientKey').text()),
+                    clientKey : this.clientKey,
                     now : (new Date()).getTime()
                 }
             }, function(result){
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
                 paras : {
                     sid : '2004',
                     polygonCode : this.polygonCode,
-                    clientKey : $.trim($('.clientKey').text()),
+                    clientKey : this.clientKey,
                     xml : this.map.changes.toXML()
                 }
             }, function(result){
