@@ -6,7 +6,7 @@ ME.Util.DataToLayers = function (geoType, dataset, callback) {
                 nodes.forEach(function (node) {
                     layer = new ME.Marker({
                         id: node.id,
-                        latlng: [node.lat, node.lon],
+                        latlng: L.latLng(node.lat, node.lon),
                         data: node
                     });
                     if (callback && typeof callback === 'function') {
@@ -25,7 +25,7 @@ ME.Util.DataToLayers = function (geoType, dataset, callback) {
                         var _node = nodes.filter(function (node) {
                             return node.id == n.ref;
                         })[0];
-                        return [_node.lat, _node.lon];
+                        return L.latLng(_node.lat, _node.lon);
                     });
 
                     layer = new ME.Polyline({
@@ -50,7 +50,7 @@ ME.Util.DataToLayers = function (geoType, dataset, callback) {
                         var _node = nodes.filter(function (node) {
                             return node.id == n.ref;
                         })[0];
-                        return [_node.lat, _node.lon];
+                        return L.latLng(_node.lat, _node.lon);
                     });
 
                     layer = new ME.Polygon({

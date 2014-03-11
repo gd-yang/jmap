@@ -25,12 +25,13 @@ ME.Marker = L.Marker.extend({
         riseOffset: 250
     },
     initialize: function (options) {
-        var id, latlng, styleOptions, data;
+        var id, latlng, styleOptions, data, isFireEdit;
         if (options) {
             id = options.id;
             latlng = options.latlng;
             styleOptions = options.options;
             data = options.data;
+            isFireEdit = options.isFireEdit;
         }
         L.Marker.prototype.initialize.call(this, latlng, styleOptions);
 
@@ -53,6 +54,8 @@ ME.Marker = L.Marker.extend({
             }
         });
         this.selected = false;
+        this.edited = false;
+        this.isFireEdit = isFireEdit !== false;
         this.data = data || {
             id: this._leaflet_id,
             lat: latlng.lat,

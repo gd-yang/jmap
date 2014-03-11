@@ -10,18 +10,21 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         return this.data;
     },
     editEnable: function () {
-        this.on('click', function () {
-            console.log(111)
-        });
+        if (this.edited){
+            return;
+        }
+        this.edited = true;
+
         if (this.editing) {
             this.editing.enable();
         }
-        this.dragging.enable();
+
         this.on('selectIn', this._fireSelect, this)
             .on('mouseover', this._fireOver, this)
             .on('mouseout', this._fireOut, this)
             .on('selectOut', this._fireSelectOut, this)
             .on('edit', this._fireChanges, this);
+        this.dragging.enable();
         // 暂时，以后转移到菜单触发
         if (this.dragging.on) {
             this.dragging.on('dragend', this._fireDragEnd, this);
@@ -30,15 +33,20 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         }
     },
     editDisable: function () {
+        if (!this.edited){
+            return;
+        }
+        this.edited = false;
         if (this.editing) {
             this.editing.disable();
         }
-        this.dragging.disable();
+
         this.off('selectIn', this._fireSelect, this)
             .off('mouseover', this._fireOver, this)
             .off('mouseout', this._fireOut, this)
             .off('selectOut', this._fireSelectOut, this)
             .off('edit', this._fireChanges, this);
+        this.dragging.disable();
         // 暂时，以后转移到菜单触发
         if (this.dragging.off) {
             this.dragging.off('dragend', this._fireDragEnd, this);

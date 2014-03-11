@@ -6,21 +6,38 @@ ME.Polygon = L.Polygon.extend({
     includes: ME.Entity.DataEditBind,
     options: {
         weight: 3,
-        fill: true
+        fill: true,
+        contextmenu: true,
+        contextmenuWidth: 200,
+        contextmenuItems: [{
+            text: '获取坐标',
+            callback: function(e){
+               console.log(e.latlng);
+            }
+        },{
+            text: '获取当前图形ID',
+            callback: function(e){
+                console.log(e)
+                console.log(e.target._leaflet_id);
+            }
+        }]
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd = [], latlngLen;
+        var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit;
         if (!!options) {
             id = options.id;
             latlngs = options.latlngs || [];
             styleOptions = options.options;
             data = options.data;
+            isFireEdit = options.isFireEdit;
         }
 
         L.Polygon.prototype.initialize.call(this, latlngs, styleOptions);
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
+        this.edited = false;
+        this.isFireEdit = isFireEdit !== false;
         // 初始化数据,如果无数据，则初始化
         if (!!data) {
             this.data = data;

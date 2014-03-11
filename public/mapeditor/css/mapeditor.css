@@ -4,7 +4,7 @@
     border-radius: 4px;
 }
 .mapeditor-toolbar-bar.h{
-	font-size: 0px;/* white space after inline-block */
+	font-size: 0;/* white space after inline-block */
 }
 .mapeditor-toolbar-bar .toolbar-button{
 	width:26px;
@@ -18,11 +18,11 @@
 	background-color: #fff;
 }
 .mapeditor-toolbar-bar a{
-	background-image: url('/mapeditor/images/spritesheet.png');
+	background-image: url(/mapeditor/images/spritesheet.png);
     background-repeat: no-repeat;
 }
 .mapeditor-toolbar-bar a.disabled{
-	background-image: url('/mapeditor/images/spritesheet-disabled.png');
+	background-image: url(/mapeditor/images/spritesheet-disabled.png);
 	cursor: default;
 }
 .mapeditor-toolbar-bar.v .toolbar-button{
@@ -79,13 +79,25 @@
 .mapeditor-toolbar-draw-marker{
 	background-position: -122px -2px;
 }
+.mapeditor-toolbar-draw-assistline{
+    background-position: -449px -2px;
+}
+.mapeditor-toolbar-draw-assistpolygon{
+    background-position: -482px -2px;
+}
+.mapeditor-toolbar-draw-assistmarker{
+    background-position: -515px -2px;
+}
+
+.mapeditor-toolbar-actions-save{
+	background-position: -418px -4px;
+}
 .mapeditor-toolbar-actions-delete{
 	background-position: -182px -2px;
 }
 .mapeditor-toolbar-actions-cancel{
 	background-position: -362px -2px;
 }
-
 
 .mapeditor-toolbar-road-pointroad{
 	background-position: -272px -2px;
@@ -98,18 +110,6 @@
 }
 .mapeditor-toolbar-pan-map{
 	background-position: -392px -2px;
-}
-.mapeditor-toolbar-draw-assistline{
-	background-position: -422px -2px;
-}
-.mapeditor-toolbar-draw-assistpolygon{
-	background-position: -452px -2px;
-}
-.mapeditor-toolbar-actions-save{
-	background-position: -482px -2px;
-}
-.mapeditor-toolbar-draw-assistpoint{
-	background-position: -512px -2px;
 }
 .mapeditor-areaselectlayer-mask{
 	position:absolute;

@@ -290,14 +290,21 @@ ME.Control.Button.drawPolygon = new ME.Control.Button({
 ME.Control.Button.drawAssistLine = new ME.Control.Button({
 		name: "drawAssistLine",
 		title: "画辅助线",
-		className: "mapeditor-toolbar-draw-polyline",
+		className: "mapeditor-toolbar-draw-assistline",
 		mode: ME.Mode.DrawAssistLine
 	});
+
+ME.Control.Button.drawAssistPolygon = new ME.Control.Button({
+    name: "drawAssistPolygon",
+    title: "画辅助面",
+    className: "mapeditor-toolbar-draw-assistpolygon",
+    mode: ME.Mode.DrawAssistPolygon
+});
 
 ME.Control.Button.drawAssistMarker = new ME.Control.Button({
     name: "drawAssistMarker",
     title: "画辅助点",
-    className: "mapeditor-toolbar-draw-marker",
+    className: "mapeditor-toolbar-draw-assistmarker",
     mode: ME.Mode.DrawAssistMarker
 });
 
@@ -346,15 +353,16 @@ ME.Control.Button.getPolygonFromRoads = new ME.Control.Button({
 			var map = this._map;
 			var group = map.editingGroup;
 			group.selectedLayers.forEach(function(layerid){
-				var layer = group.getLayer(layerid);
+				var layer = group.getLayer(layerid), type;
 				if(!layer) return;
+                type = layer.type;
 				var ll = layer.getLatLngs();
 				var arr = [];
 				ll.forEach(function(latlng){
 					arr.push(latlng.lng + "," +latlng.lat);
 				});
-
-                if (layer.type == 'polygon' || layer.type == 'polyline' && layer.closed === true){
+                if (type == 'polygon' || type == 'assistpolygon'
+                    || ((type == 'polyline' || type == 'assistline') && layer.closed === true)){
                     arr.push(arr[0]);
                 }
 				latlngs.push(arr.join(";"));
@@ -375,23 +383,19 @@ ME.Control.Button.getPolygonFromRoads = new ME.Control.Button({
                     group.addDataLayer(layer);
                 });
 			});
-			if(ME.Mode._activeMode)
-            	ME.Mode._activeMode.disable();
+			if(ME.Mode._activeMode){
+                ME.Mode._activeMode.disable();
+            }
 		}
 	});
 
 ME.Control.Button.save = new ME.Control.Button({
 		name: "save",
-		title: "保存",
+		title: "保存编辑",
 		className: "mapeditor-toolbar-actions-save",
 		handler: function(){
-			var map = this._map;
-			var layer = map._currentpath;
-			if(layer){
-				layer.dragging.disable();
-				layer.editing.disable();
-				layer._originalCoord =  L.LatLngUtil.cloneLatLngs(layer.getLatLngs());
-			}
+			var map = this._map, group = map.editingGroup;
+            group.saveLayers.call(group);
 		}
 	});
 
@@ -412,7 +416,7 @@ ME.Control.Button.cancel = new ME.Control.Button({
 
 ME.Control.Button.delete = new ME.Control.Button({
 		name: "delete",
-		title: "删除",
+		title: "删除选中图形",
 		className: "mapeditor-toolbar-actions-delete",
 		handler: function(){
 			var map = this._map, group = map.editingGroup;

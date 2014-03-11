@@ -1,8 +1,16 @@
 ;(function(ME){
     ME.Map = L.Map.extend({
         initialize : function(id, options){
+
             var tileOptions = options.tileOptions || {};
-            tileOptions = L.extend({minZoom: 1, maxZoom: 18, subdomains: '123'}, tileOptions);
+            tileOptions = L.extend({
+                minZoom: 1,
+                maxZoom: 18,
+                subdomains: '123'
+
+            }, tileOptions);
+
+
             var config = ME.Config,
                 _this = this,
             // 绘图工具
