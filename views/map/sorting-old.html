@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
-    <script src="/js/lib/jquery-1.7.2.js"></script>
+    <script src="/js/lib/jquery-1.8.3.min.js"></script>
     <!--[if lt IE 9]>
     <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script>
@@ -166,10 +166,15 @@
 <script>
     Modular.use('/sorting/Sorting.js', function (Sorting) {
         var sorting = new Sorting();
-        var cityring = new ME.Polygon({latlngs:[]});
+        var innerring = new ME.Polygon({latlngs:[],options:{noClip:true}});
+        var middlering = new ME.Donut([[], []],{fillColor:"#f00",noClip:true});
+        var outerring = new ME.Donut([[], []],{fillColor:"#0f0",noClip:true});
+        sorting.map.addLayer(innerring);
+        sorting.map.addLayer(middlering);
+        sorting.map.addLayer(outerring);
+        var innerlatlngs, middlelatlngs, outerlatlngs;
         var ringfn = function(name){
-            var map = this.map,
-                group = map.editingGroup,
+            var deferred = $.Deferred(),
                 config = {
                     url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
                     city: "上海",
@@ -183,13 +188,19 @@
                     latlngs.push(L.latLng(nd.lat,nd.lon));
                 });
 
-                cityring.setLatLngs(latlngs);
+                if(name =="内环") innerlatlngs = latlngs;
+                else if(name == "中环") middlelatlngs = latlngs;
+                else outerlatlngs = latlngs;
 
-                map.addLayer(cityring);
+                deferred.resolve(latlngs);
 
             };
-
-            ME.Util.getCityRing(config,cb);
+            if(name=="内环" && innerlatlngs) {deferred.resolve(innerlatlngs);}
+            else if(name=="中环" && middlelatlngs) {deferred.resolve(middlelatlngs);}
+            else if(name=="外环" && outerlatlngs) {deferred.resolve(outerlatlngs);}
+            else {ME.Util.getCityRing(config,cb);}
+            return deferred;
+            
         };
         $('.editor').click(function(){
             sorting.editOneData.call(sorting);
@@ -202,13 +213,23 @@
 
 
         $(".innerring").click(function(){
-            ringfn.call(sorting,"内环");
+            ringfn("内环").done(function(latlngs){
+                innerring.setLatLngs(latlngs);
+            });
         });
-         $(".middlering").click(function(){
-            ringfn.call(sorting,"中环");
+        $(".middlering").click(function(){
+            ringfn("中环").then(function(latlngs){
+                return ringfn("内环");
+            }).done(function(){
+                middlering.polygon.setLatLngs([middlelatlngs, innerlatlngs]);
+            });
         });
-          $(".outerring").click(function(){
-            ringfn.call(sorting,"外环");
+        $(".outerring").click(function(){
+            ringfn("外环").then(function(){
+                return ringfn("中环");
+            }).done(function(){
+                outerring.polygon.setLatLngs([outerlatlngs, middlelatlngs]);
+            });
         });
     });
     $(document).ready(function () {
