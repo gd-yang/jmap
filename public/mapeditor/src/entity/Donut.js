@@ -4,8 +4,7 @@
 ME.DonutPolygon = L.Polyline.extend({
 	options: {
 		fill: true,
-		stroke: false,
-		noClip:true
+		stroke: false
 	},
 
 	initialize: function (latlngs, options) {
@@ -18,14 +17,14 @@ ME.DonutPolygon = L.Polyline.extend({
 		this._outerLatlngs = this._convertLatLngs(latlngs[0]);
 		this._innerLatlngs = this._convertLatLngs(latlngs[1]);
 		if(!this.outerPolyline){
-			this.outerPolyline = new ME.Polyline({latlngs:this._outerLatlngs,options:{closed:true,noClip:true}});
+			this.outerPolyline = new ME.Polyline({latlngs:this._outerLatlngs,options:{closed:true}});
 			this.outerPolyline.on("editing edit",this._editing, this);
 		}
 		else{
 			this.outerPolyline.setLatLngs(this._outerLatlngs);
 		}
 		if(!this.innerPolyline){
-			this.innerPolyline = new ME.Polyline({latlngs:this._innerLatlngs,options:{closed:true,noClip:true}});
+			this.innerPolyline = new ME.Polyline({latlngs:this._innerLatlngs,options:{closed:true}});
 			this.innerPolyline.on("editing edit",this._editing, this);
 		}
 		else{
@@ -85,10 +84,13 @@ ME.DonutPolygon = L.Polyline.extend({
 ME.Donut = L.FeatureGroup.extend({
 	initialize: function(layer,options){
 		var editing, _this = this;
-		this.polygon = new ME.DonutPolygon(layer,options);
-		this.outerPolyline = this.polygon.outerPolyline;
-		this.innerPolyline = this.polygon.innerPolyline;
-		L.FeatureGroup.prototype.initialize.call(this, [this.polygon, this.outerPolyline, this.innerPolyline]);
+		if(layer instanceof ME.DonutPolygon ==  false){
+            return;
+        }
+		this.polygon = layer;
+		this.outerPolyline = layer.outerPolyline;
+		this.innerPolyline = layer.innerPolyline;
+		L.FeatureGroup.prototype.initialize.call(this, [layer, layer.outerPolyline, layer.innerPolyline]);
 		editing = this.editing = {};
 
 		editing.enable = function(){
