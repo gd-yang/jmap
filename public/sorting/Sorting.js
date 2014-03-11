@@ -2,7 +2,43 @@ define(function (require, exports, module) {
     var Connect = require('/sorting/data/Connect.js');
     var buttons = ["browserMap","drawPolymarker","drawPolyline","drawPolygon","pointSelectRoad","areaSelectRoad","getPolygonFromRoads","delete"],
         toolbar = new ME.Control.Toolbar();
+/* 测试代码  ------start--------*/
+    var cityring = new ME.Polygon({latlngs:[]});
+    var ringfn = function(name){
+        var map = this._map,
+            group = map.editingGroup,
+            config = {
+                url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
+                city: "上海",
+                name: name
+            };
+        var cb = function(data){
+            var nds = data.data.dataSet.node,
+                latlngs = [];
 
+            nds.map(function(nd,i){
+                latlngs.push(L.latLng(nd.lat,nd.lon));
+            });
+
+            cityring.setLatLngs(latlngs);
+
+            map.addLayer(cityring);
+
+        };
+
+        ME.Util.getCityRing(config,cb);
+    }
+    var cityringtoolbar = new ME.Control.Toolbar({position:"topright",direction:"h"});
+    cityringtoolbar.addButton({name:"innerring",innerHTML:"内环",tagName:"span",handler:function(){
+        ringfn.call(this,"内环");
+    }});
+     cityringtoolbar.addButton({name:"middlering",innerHTML:"中环",tagName:"span",handler:function(){
+        ringfn.call(this,"中环");
+    }});
+      cityringtoolbar.addButton({name:"outerring",innerHTML:"外环",tagName:"span",handler:function(){
+        ringfn.call(this,"外环");
+    }});
+/* 测试代码  ------end--------*/
         buttons.forEach(function(button){
             toolbar.addButton(ME.Control.Button[button]);
         });
@@ -16,6 +52,8 @@ define(function (require, exports, module) {
             });
 
             this.connect = new Connect(this.map);
+            // 测试代码
+            this.map.addControl(cityringtoolbar);
 
         },
         editOneData: function () {

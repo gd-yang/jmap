@@ -6,61 +6,62 @@
 .mapeditor-toolbar-bar.h{
 	font-size: 0px;/* white space after inline-block */
 }
-
-.mapeditor-toolbar-bar a{
+.mapeditor-toolbar-bar .toolbar-button{
+	width:26px;
+	height:26px;
+	line-height: 26px;
+	text-align: center;
+	text-decoration: none;
+	color:black;
+	cursor:pointer;
+	font-size: 12px;
 	background-color: #fff;
+}
+.mapeditor-toolbar-bar a{
 	background-image: url('/mapeditor/images/spritesheet.png');
     background-repeat: no-repeat;
-    width: 26px;
-    height: 26px;
-    line-height: 26px;
-    
-    text-align: center;
-    text-decoration: none;
-    color: black;
-    cursor:pointer;
 }
 .mapeditor-toolbar-bar a.disabled{
 	background-image: url('/mapeditor/images/spritesheet-disabled.png');
 	cursor: default;
 }
-.mapeditor-toolbar-bar.v a{
+.mapeditor-toolbar-bar.v .toolbar-button{
 	display: block;
     border-bottom: 1px solid #ccc;
 }
-.mapeditor-toolbar-bar.v a.first{
+.mapeditor-toolbar-bar.v .toolbar-button.first{
 	border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
-.mapeditor-toolbar-bar.v a.last{
+.mapeditor-toolbar-bar.v .toolbar-button.last{
 	 border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     border-bottom: none;
 }
 
-.mapeditor-toolbar-bar.h a{
+.mapeditor-toolbar-bar.h .toolbar-button{
 	display: inline-block;
     border-right: 1px solid #ccc;
 }
 
-.mapeditor-toolbar-bar.h a.first{
+.mapeditor-toolbar-bar.h .toolbar-button.first{
 	border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.mapeditor-toolbar-bar.h a.last{
+.mapeditor-toolbar-bar.h .toolbar-button.last{
 	 border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     border-bottom: none;
 }
-.mapeditor-toolbar-bar a:hover{
+.mapeditor-toolbar-bar .toolbar-button:hover{
 	background-color: #f4f4f4;
 }
-.mapeditor-toolbar-bar a.activated{
+.mapeditor-toolbar-bar .toolbar-button.activated{
 	background-color: #e3e3e3;
 	cursor: default;
 }
 
-.mapeditor-toolbar-bar a.disabled:hover{
+.mapeditor-toolbar-bar .toolbar-button.disabled:hover{
 	background-color: #fff;
 }
 .mapeditor-toolbar-draw-polyline{
