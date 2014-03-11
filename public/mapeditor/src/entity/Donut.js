@@ -1,9 +1,10 @@
 /**
  * 镂空环
  */
-ME.Donut = L.Polyline.extend({
+ME.DonutPolygon = L.Polyline.extend({
 	options: {
-		fill: true
+		fill: true,
+		stroke: false
 	},
 
 	initialize: function (latlngs, options) {
@@ -15,6 +16,24 @@ ME.Donut = L.Polyline.extend({
 		this._latlngs = this._convertLatLngs(latlngs[0].concat(latlngs[1]));
 		this._outerLatlngs = this._convertLatLngs(latlngs[0]);
 		this._innerLatlngs = this._convertLatLngs(latlngs[1]);
+		if(!this.outerPolyline){
+			this.outerPolyline = new ME.Polyline({latlngs:this._outerLatlngs,options:{closed:true}});
+			this.outerPolyline.on("editing edit",this._editing, this);
+		}
+		else{
+			this.outerPolyline.setLatLngs(this._outerLatlngs);
+		}
+		if(!this.innerPolyline){
+			this.innerPolyline = new ME.Polyline({latlngs:this._innerLatlngs,options:{closed:true}});
+			this.innerPolyline.on("editing edit",this._editing, this);
+		}
+		else{
+			this.innerPolyline.setLatLngs(this._innerLatlngs);
+		}
+	},
+
+	_editing: function(){
+		this.setLatLngs([this.outerPolyline.getLatLngs(),this.innerPolyline.getLatLngs()]);
 	},
 
 	projectLatlngs: function () {
@@ -59,5 +78,35 @@ ME.Donut = L.Polyline.extend({
 	_getPathPartStr: function (points) {
 		var str = L.Polyline.prototype._getPathPartStr.call(this, points);
 		return str + (L.Browser.svg ? 'z' : 'x');
+	}
+});
+
+ME.Donut = L.FeatureGroup.extend({
+	initialize: function(layer,options){
+		var editing, _this = this;
+		if(layer instanceof ME.DonutPolygon ==  false) return;
+		this.polygon = layer;
+		this.outerPolyline = layer.outerPolyline;
+		this.innerPolyline = layer.innerPolyline;
+		L.FeatureGroup.prototype.initialize.call(this, [layer, layer.outerPolyline, layer.innerPolyline]);
+		editing = this.editing = {};
+
+		editing.enable = function(){
+			_this.outerPolyline.editing.enable();
+			_this.innerPolyline.editing.enable();
+		};
+		editing.disable = function(){
+			_this.outerPolyline.editing.disable();
+			_this.innerPolyline.editing.disable();
+		};
+
+		L.setOptions(this,options);
+	},
+
+	onAdd: function(map){
+		L.FeatureGroup.prototype.onAdd.call(this,map);
+		if(this.options.editable){
+			this.editing.enable();
+		}
 	}
 });
