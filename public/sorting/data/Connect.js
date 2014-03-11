@@ -1,4 +1,4 @@
-define(function (require, exports, module) {
+(function (ST) {
     var Connect= L.Class.extend({
         includes : L.Mixin.Events,
         initialize : function(map){
@@ -81,5 +81,5 @@ define(function (require, exports, module) {
         }
     });
 
-    module.exports = Connect;
-});
+    ST.Connect = Connect;
+})(Sorting || (Sorting={}));

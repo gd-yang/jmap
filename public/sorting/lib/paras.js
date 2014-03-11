@@ -1,4 +1,4 @@
-define(function (require, exports, module){
+(function (ST){
     function getURLParas(){
         var url = window.location.href, obj={};
         url = url.split('?');
@@ -15,5 +15,5 @@ define(function (require, exports, module){
         url = obj;
         return url;
     }
-    return getURLParas;
-});
+    ST.paras = getURLParas;
+})(Sorting || (Sorting={}));

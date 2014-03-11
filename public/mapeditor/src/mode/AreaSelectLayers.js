@@ -46,7 +46,7 @@ ME.Mode.AreaSelectLayers = ME.Mode.extend(
     _intersect: function(bounds, polyline){
         var points = [], segmentBounds, that = this;
         // just detect polyline now.
-        if(polyline.type != "assistline" && polyline.type != "polyline") {
+        if(polyline.type != "assistline" && polyline.type != "assistpolygon" && polyline.type != "polyline") {
             return false;
         }
 

@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.7.2.js"></script>
-    <!--[if lt IE 9]>
+
     <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script>
-    <![endif]-->
+
     <script src="/mapeditor/lib/xhrRequest.js"></script>
     <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/leaflet/leaflet-src.js"></script>
@@ -93,7 +93,9 @@
     <script src="/mapeditor/src/mode/BrowserMap.js"></script>
     <script src="/mapeditor/src/control/Toolbar.js"></script>
     <script src="/mapeditor/src/util/SelectRoad.js"></script>
-    <script src="/sorting/lib/modular.js"></script>
+    <script src="/sorting/Sorting.js"></script>
+    <script src="/sorting/data/Connect.js"></script>
+    <script src="/sorting/lib/paras.js"></script>
     <style>
         html, body {
             padding: 0;
@@ -104,18 +106,8 @@
 </head>
 <body>
 <script>
-    Modular.use(['/sorting/Sorting.js',  '/sorting/lib/paras.js'], function (Sorting, Paras) {
-        var sorting = new Sorting(),
-                paras = Paras();
-        var polygonCode = paras.polygonCode,
-                clientKey = paras.clientKey;
 
-        if (!!polygonCode){
-            sorting.editOneData(polygonCode, clientKey);
-        }else{
-            sorting.createOneData(clientKey);
-        }
-    });
+
     $(document).ready(function () {
         function resizeHeight() {
             $('#map').height($('body').innerHeight());
@@ -123,6 +115,14 @@
         resizeHeight();
         $(window).on('resize', resizeHeight);
 
+        var sorting = new Sorting.Main(),
+                paras = Sorting.paras();
+        var polygonCode = paras.polygonCode, clientKey = paras.clientKey;
+        if (!!polygonCode) {
+            sorting.editOneData(polygonCode, clientKey);
+        } else {
+            sorting.createOneData(clientKey);
+        }
     });
 </script>
 <div id="map"></div>
