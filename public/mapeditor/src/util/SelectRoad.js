@@ -15,6 +15,7 @@ ME.Util.pointSelectRoad = function(config, cb, context){
             xy: config.lng + ',' + config.lat
         }
     },function(data){
+        console.log(data);
     	if(typeof cb == "function")
     		cb.apply(context,[data]);
     });
