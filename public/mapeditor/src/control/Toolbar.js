@@ -414,17 +414,12 @@ ME.Control.Button.cancel = new ME.Control.Button({
 		}
 	});
 
-ME.Control.Button.delete = new ME.Control.Button({
-		name: "delete",
+ME.Control.Button.deleteShape = new ME.Control.Button({
+		name: "deleteShape",
 		title: "删除选中图形",
 		className: "mapeditor-toolbar-actions-delete",
 		handler: function(){
 			var map = this._map, group = map.editingGroup;
                 group.clearSelectedLayers({remove : true});
-
-            var hollow = new ME.Donut([[[31.208727306088207,121.4232587814331],[31.210122080671784,121.44338607788085],[31.19767849645092,121.44514560699463],[31.197751914727228,121.42261505126953]],
-                                        [[31.205754165294366,121.42823696136473],[31.207075572741214,121.43845081329346],[31.201569586589738,121.44081115722655],[31.20094555460659,121.42866611480713]]]);
-            map.addLayer(hollow);
-            //hollow.editing.enable();
 		}
 	});
