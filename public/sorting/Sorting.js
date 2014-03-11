@@ -4,7 +4,6 @@ define(function (require, exports, module) {
             "drawAssistPolygon","drawPolygon","pointSelectRoad",
             "areaSelectRoad","getPolygonFromRoads","delete","save"],
         toolbar = new ME.Control.Toolbar();
-
         buttons.forEach(function(button){
             toolbar.addButton(ME.Control.Button[button]);
         });

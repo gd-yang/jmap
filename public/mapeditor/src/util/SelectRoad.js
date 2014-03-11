@@ -61,3 +61,19 @@ ME.Util.roadsToArea = function(config,cb,context){
         	cb.apply(context,[data]);
     });
 };
+
+ME.Util.getCityRing = function(config,cb,context){
+    var xhr = new XHR({
+        cross : true,
+        fla : true
+    });
+    xhr.getJSON(config.url,{
+        paras:{
+            city: config.city,
+            name: config.name
+        }
+    },function(data){
+        if(typeof cb == "function")
+            cb.apply(context,[data]);
+    });
+};

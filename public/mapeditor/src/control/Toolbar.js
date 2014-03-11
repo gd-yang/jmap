@@ -144,7 +144,7 @@ ME.Control.Button = L.Class.extend({
 	options:{
 		tagName: "a",
 		className: "",
-		attributes: ["title"]
+		attributes: ["title","innerHTML"]
 	},
 
 	initialize: function(options){
@@ -248,7 +248,9 @@ ME.Control.Button = L.Class.extend({
 	},
 
 	_createButton: function(options){
-		var button = L.DomUtil.create(options.tagName, options.className || "");
+		var button = L.DomUtil.create(options.tagName, options.className || "");		
+		L.DomUtil.addClass(button,"toolbar-button");
+
 		for(var i=0,attribute; attribute = this.options.attributes[i++];){
 			button[attribute] = options[attribute]?options[attribute]:"";
 		}
@@ -419,5 +421,11 @@ ME.Control.Button.delete = new ME.Control.Button({
 		handler: function(){
 			var map = this._map, group = map.editingGroup;
                 group.clearSelectedLayers({remove : true});
+
+            // var hollow = new ME.Donut([[[31.208727306088207,121.4232587814331],[31.210122080671784,121.44338607788085],[31.19767849645092,121.44514560699463],[31.197751914727228,121.42261505126953]],
+            //                             [[31.205754165294366,121.42823696136473],[31.207075572741214,121.43845081329346],[31.201569586589738,121.44081115722655],[31.20094555460659,121.42866611480713]]]);
+            // map.addLayer(hollow);
+            // hollow.editing.enable();
+            // hollow.dragging.enable();
 		}
 	});
