@@ -165,6 +165,31 @@
 <script>
     Modular.use('/sorting/Sorting.js', function (Sorting) {
         var sorting = new Sorting();
+        var cityring = new ME.Polygon({latlngs:[]});
+        var ringfn = function(name){
+            var map = this.map,
+                group = map.editingGroup,
+                config = {
+                    url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
+                    city: "上海",
+                    name: name
+                };
+            var cb = function(data){
+                var nds = data.data.dataSet.node,
+                    latlngs = [];
+
+                nds.map(function(nd,i){
+                    latlngs.push(L.latLng(nd.lat,nd.lon));
+                });
+
+                cityring.setLatLngs(latlngs);
+
+                map.addLayer(cityring);
+
+            };
+
+            ME.Util.getCityRing(config,cb);
+        };
         $('.editor').click(function(){
             sorting.editOneData.call(sorting);
         });
@@ -172,6 +197,18 @@
             sorting.createOneData.call(sorting);
         });
         $('.save').click($.proxy(sorting.saveData, sorting));
+
+
+
+        $(".innerring").click(function(){
+            ringfn.call(sorting,"内环");
+        });
+         $(".middlering").click(function(){
+            ringfn.call(sorting,"中环");
+        });
+          $(".outerring").click(function(){
+            ringfn.call(sorting,"外环");
+        });
     });
     $(document).ready(function () {
         function resizeHeight() {
@@ -195,6 +232,9 @@
     <span class="editor button">编辑</span>
     <span class="create button">创建新区域</span>
     <span class="save button">保存编辑</span>
+    <span class="innerring button">内环</span>
+    <span class="middlering button">中环</span>
+    <span class="outerring button">外环</span>
 </div>
 <div id="map"></div>
 </body>
