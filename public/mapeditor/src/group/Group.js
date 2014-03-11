@@ -92,7 +92,8 @@
                 targetLayer = e.layer,
                 _leaflet_id = targetLayer._leaflet_id,
                 index;
-
+            // 使下面的layer可点击
+            targetLayer.bringToBack();
             if (!e.originalEvent.shiftKey) {
                 if (this.selectedLayers.indexOf(_leaflet_id) == -1){
                     this.selectedLayers.forEach(function(_leaflet_id){
