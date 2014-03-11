@@ -169,10 +169,8 @@
         var innerring = new ME.Polygon({latlngs:[],options:{noClip:true}});
         var middlering = new ME.Donut([[], []],{fillColor:"#f00",noClip:true});
         var outerring = new ME.Donut([[], []],{fillColor:"#0f0",noClip:true});
-        sorting.map.addLayer(innerring);
-        sorting.map.addLayer(middlering);
-        sorting.map.addLayer(outerring);
-        var innerlatlngs, middlelatlngs, outerlatlngs;
+        var surroundcity = new ME.Donut([[], []],{fillColor:"#00f",noClip:true});
+        var innerlatlngs, middlelatlngs, outerlatlngs, surroundlatlngs;
         var ringfn = function(name){
             var deferred = $.Deferred(),
                 config = {
@@ -187,10 +185,6 @@
                 nds.map(function(nd,i){
                     latlngs.push(L.latLng(nd.lat,nd.lon));
                 });
-
-                if(name =="内环") innerlatlngs = latlngs;
-                else if(name == "中环") middlelatlngs = latlngs;
-                else outerlatlngs = latlngs;
 
                 deferred.resolve(latlngs);
 
@@ -214,21 +208,39 @@
 
         $(".innerring").click(function(){
             ringfn("内环").done(function(latlngs){
+                innerlatlngs = latlngs;
                 innerring.setLatLngs(latlngs);
+                sorting.map.addLayer(innerring);
             });
         });
         $(".middlering").click(function(){
             ringfn("中环").then(function(latlngs){
+                middlelatlngs = latlngs;
                 return ringfn("内环");
-            }).done(function(){
+            }).done(function(latlngs){
+                innerlatlngs = latlngs;
                 middlering.polygon.setLatLngs([middlelatlngs, innerlatlngs]);
+                sorting.map.addLayer(middlering);
             });
         });
         $(".outerring").click(function(){
-            ringfn("外环").then(function(){
+            ringfn("外环").then(function(latlngs){
+                outerlatlngs = latlngs;
                 return ringfn("中环");
-            }).done(function(){
+            }).done(function(latlngs){
+                middlelatlngs = latlngs;
                 outerring.polygon.setLatLngs([outerlatlngs, middlelatlngs]);
+                sorting.map.addLayer(outerring);
+            });
+        });
+        $(".surroundcity").click(function(){
+            ringfn("绕城高速").then(function(latlngs){
+                surroundlatlngs = latlngs;
+                return ringfn("外环");
+            }).done(function(latlngs){
+                outerlatlngs = latlngs;
+                surroundcity.polygon.setLatLngs([surroundlatlngs, outerlatlngs]);
+                sorting.map.addLayer(surroundcity);
             });
         });
     });
@@ -257,6 +269,7 @@
     <span class="innerring button">内环</span>
     <span class="middlering button">中环</span>
     <span class="outerring button">外环</span>
+    <span class="surroundcity button">绕城高速</span>
 </div>
 <div id="map"></div>
 </body>
