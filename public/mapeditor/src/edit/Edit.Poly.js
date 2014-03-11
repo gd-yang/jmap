@@ -167,6 +167,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
         }
 
         this._poly.redraw();
+        this._poly.fire("editing");
     },
     _onMarkerDragEnd: function (e) {
         var marker = e.target, method;
