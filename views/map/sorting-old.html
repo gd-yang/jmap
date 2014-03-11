@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
-    <script src="/js/lib/jquery-1.8.3.min.js"></script>
+    <script src="/js/lib/jquery-1.7.2.js"></script>
     <!--[if lt IE 9]>
     <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script>
@@ -93,7 +93,9 @@
     <script src="/mapeditor/src/mode/BrowserMap.js"></script>
     <script src="/mapeditor/src/control/Toolbar.js"></script>
     <script src="/mapeditor/src/util/SelectRoad.js"></script>
-    <script src="/sorting/lib/modular.js"></script>
+    <script src="/sorting/Sorting.js"></script>
+    <script src="/sorting/data/Connect.js"></script>
+    <script src="/sorting/lib/paras.js"></script>
     <style>
         html, body {
             padding: 0;
@@ -164,74 +166,6 @@
 </head>
 <body>
 <script>
-    Modular.use('/sorting/Sorting.js', function (Sorting) {
-        var sorting = new Sorting();
-        var innerring = new ME.Polygon({latlngs:[],options:{noClip:true}});
-        var middlering = new ME.Donut([[], []],{fillColor:"#f00",noClip:true});
-        var outerring = new ME.Donut([[], []],{fillColor:"#0f0",noClip:true});
-        sorting.map.addLayer(innerring);
-        sorting.map.addLayer(middlering);
-        sorting.map.addLayer(outerring);
-        var innerlatlngs, middlelatlngs, outerlatlngs;
-        var ringfn = function(name){
-            var deferred = $.Deferred(),
-                config = {
-                    url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
-                    city: "上海",
-                    name: name
-                };
-            var cb = function(data){
-                var nds = data.data.dataSet.node,
-                    latlngs = [];
-
-                nds.map(function(nd,i){
-                    latlngs.push(L.latLng(nd.lat,nd.lon));
-                });
-
-                if(name =="内环") innerlatlngs = latlngs;
-                else if(name == "中环") middlelatlngs = latlngs;
-                else outerlatlngs = latlngs;
-
-                deferred.resolve(latlngs);
-
-            };
-            if(name=="内环" && innerlatlngs) {deferred.resolve(innerlatlngs);}
-            else if(name=="中环" && middlelatlngs) {deferred.resolve(middlelatlngs);}
-            else if(name=="外环" && outerlatlngs) {deferred.resolve(outerlatlngs);}
-            else {ME.Util.getCityRing(config,cb);}
-            return deferred;
-            
-        };
-        $('.editor').click(function(){
-            sorting.editOneData.call(sorting);
-        });
-        $('.create').click(function(){
-            sorting.createOneData.call(sorting);
-        });
-        $('.save').click($.proxy(sorting.saveData, sorting));
-
-
-
-        $(".innerring").click(function(){
-            ringfn("内环").done(function(latlngs){
-                innerring.setLatLngs(latlngs);
-            });
-        });
-        $(".middlering").click(function(){
-            ringfn("中环").then(function(latlngs){
-                return ringfn("内环");
-            }).done(function(){
-                middlering.polygon.setLatLngs([middlelatlngs, innerlatlngs]);
-            });
-        });
-        $(".outerring").click(function(){
-            ringfn("外环").then(function(){
-                return ringfn("中环");
-            }).done(function(){
-                outerring.polygon.setLatLngs([outerlatlngs, middlelatlngs]);
-            });
-        });
-    });
     $(document).ready(function () {
         function resizeHeight() {
             var h = $('body').innerHeight();
@@ -244,13 +178,62 @@
         $('.input').attr('title', function(){
             return $(this).text();
         });
+
+        /**
+         * 操作
+         * @type {Sorting.Main}
+         */
+        var sorting = new Sorting.Main();
+        var cityring = new ME.Polygon({latlngs:[]});
+        var ringfn = function(name){
+            var map = this.map,
+                    group = map.editingGroup,
+                    config = {
+                        url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
+                        city: "上海",
+                        name: name
+                    };
+            var cb = function(data){
+                var nds = data.data.dataSet.node,
+                    latlngs = [];
+                nds.map(function(nd,i){
+                    latlngs.push(L.latLng(nd.lat,nd.lon));
+                });
+                cityring.setLatLngs(latlngs);
+                map.addLayer(cityring);
+            };
+
+            ME.Util.getCityRing(config,cb);
+        };
+
+        $('.editor').click(function(){
+            sorting.editOneData.call(sorting);
+        });
+
+        $('.create').click(function(){
+            sorting.createOneData.call(sorting);
+        });
+
+        $('.save').click($.proxy(sorting.saveData, sorting));
+
+        $(".innerring").click(function(){
+            ringfn.call(sorting,"内环");
+        });
+
+        $(".middlering").click(function(){
+            ringfn.call(sorting,"中环");
+        });
+
+        $(".outerring").click(function(){
+            ringfn.call(sorting,"外环");
+        });
     });
 </script>
 <div class="header">
     <span class="label">polygonCode</span>
-    <p class="input polygonCode" contenteditable="true">dc6c41d7-210f-4072-83ac-24d62e5d868a</p>
+    <p class="input polygonCode" contenteditable="true">ce29aead-f120-4ac9-a632-497aa95673d8</p>
     <span class="label">clientKey</span>
-    <p class="input clientKey" contenteditable="true">aa1352ff-e2c3-490f-9dad-ec85a13eee99</p>
+    <p class="input clientKey" contenteditable="true">aa1352ff-e2c3-490f-9dad-ec85a2255565</p>
     <span class="editor button">编辑</span>
     <span class="create button">创建新区域</span>
     <span class="save button">保存编辑</span>
