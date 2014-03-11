@@ -1,23 +1,24 @@
-define(function (require, exports, module) {
-    var Connect = require('/sorting/data/Connect.js');
-    var buttons = ["browserMap","drawAssistMarker","drawAssistLine",
-            "drawAssistPolygon","drawPolygon","pointSelectRoad",
-            "areaSelectRoad","getPolygonFromRoads","delete","save"],
+var Sorting={};
+(function(ST) {
+    console.log(ME.Control)
+    var buttons = ["browserMap","drawAssistLine",
+            "drawPolygon","pointSelectRoad",
+            "areaSelectRoad","getPolygonFromRoads","deleteShape","save"],
         toolbar = new ME.Control.Toolbar();
         buttons.forEach(function(button){
             toolbar.addButton(ME.Control.Button[button]);
         });
 
-    var Sorting = L.Class.extend({
+    ST.Main = L.Class.extend({
         initialize: function () {
+            console.log(ST);
             var _this = this;
             this.map = new ME.Map('map', {
                 center: new L.LatLng(31.20410238002499, 121.43068313598633),
                 zoom: 15
             });
 
-            this.connect = new Connect(this.map);
-
+            this.connect = new ST.Connect(this.map);
         },
         editOneData: function (polygonCode, clientKey) {
             console.log(polygonCode)
@@ -74,5 +75,5 @@ define(function (require, exports, module) {
         }
     });
 
-    module.exports = Sorting;
-});
+
+})(Sorting || (Sorting={}));
