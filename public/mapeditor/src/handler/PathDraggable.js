@@ -77,7 +77,7 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 
 		if (!this._moved) {
 			this._disableEdit();
-			this.fire('dragstart');
+			this.path.fire('dragstart');
 			this._moved = true;
 			L.DomUtil.addClass(document.body, 'leaflet-dragging');
 			L.DomUtil.addClass((e.target || e.srcElement), 'leaflet-drag-target');
@@ -94,7 +94,7 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	_updatePosition: function () {
 		this.fire('predrag');
 		this.path.setLatLngs(this._latlngs);
-		this.fire('drag');
+		this.path.fire('drag');
 	},
 
 	_onUp: function (e) {
