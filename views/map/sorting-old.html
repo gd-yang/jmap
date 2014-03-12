@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
-    <script src="/js/lib/jquery-1.7.2.js"></script>
+    <script src="/js/lib/jquery-1.8.3.min.js"></script>
     <!--[if lt IE 9]>
     <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script>
@@ -184,26 +184,35 @@
          * @type {Sorting.Main}
          */
         var sorting = new Sorting.Main();
-        var cityring = new ME.Polygon({latlngs:[]});
+        var innerring = new ME.Polygon({latlngs:[],options:{noClip:true}});
+        var middlering = new ME.Donut([[], []],{fillColor:"#f00",noClip:true});
+        var outerring = new ME.Donut([[], []],{fillColor:"#0f0",noClip:true});
+        var surroundcity = new ME.Donut([[], []],{fillColor:"#00f",noClip:true});
+        var innerlatlngs, middlelatlngs, outerlatlngs, surroundlatlngs;
         var ringfn = function(name){
-            var map = this.map,
-                    group = map.editingGroup,
-                    config = {
+            var config = {
                         url: "http://192.168.1.210:8090/sorting_web/gate?sid=2010",
                         city: "上海",
                         name: name
-                    };
+                    },
+                deferred = $.Deferred();
             var cb = function(data){
                 var nds = data.data.dataSet.node,
                     latlngs = [];
                 nds.map(function(nd,i){
                     latlngs.push(L.latLng(nd.lat,nd.lon));
                 });
-                cityring.setLatLngs(latlngs);
-                map.addLayer(cityring);
+                deferred.resolve(latlngs);
             };
 
-            ME.Util.getCityRing(config,cb);
+            if(name == "内环" && innerlatlngs) deferred.resolve(innerlatlngs);
+            else if(name == "中环" && middlelatlngs) deferred.resolve(middlelatlngs);
+            else if(name == "外环" && outerlatlngs) deferred.resolve(outerlatlngs);
+            else if(name == "绕城高速" && surroundlatlngs) deferred.resolve(surroundlatlngs);
+            else ME.Util.getCityRing(config,cb);
+
+            return deferred;
+            
         };
 
         $('.editor').click(function(){
@@ -217,15 +226,42 @@
         $('.save').click($.proxy(sorting.saveData, sorting));
 
         $(".innerring").click(function(){
-            ringfn.call(sorting,"内环");
+            ringfn("内环").done(function(latlngs){
+                innerlatlngs = latlngs;
+                innerring.setLatLngs(latlngs);
+                sorting.map.addLayer(innerring);
+            });
         });
 
         $(".middlering").click(function(){
-            ringfn.call(sorting,"中环");
+            ringfn("中环").then(function(latlngs){
+                middlelatlngs = latlngs;
+                return ringfn("内环");
+            }).done(function(latlngs){
+                innerlatlngs = latlngs;
+                middlering.polygon.setLatLngs([middlelatlngs, innerlatlngs]);
+                sorting.map.addLayer(middlering);
+            });
         });
-
         $(".outerring").click(function(){
-            ringfn.call(sorting,"外环");
+            ringfn("外环").then(function(latlngs){
+                outerlatlngs = latlngs;
+                return ringfn("中环");
+            }).done(function(latlngs){
+                middlelatlngs = latlngs;
+                outerring.polygon.setLatLngs([outerlatlngs, middlelatlngs]);
+                sorting.map.addLayer(outerring);
+            });
+        });
+        $(".surroundcity").click(function(){
+            ringfn("绕城高速").then(function(latlngs){
+                surroundlatlngs = latlngs;
+                return ringfn("外环");
+            }).done(function(latlngs){
+                outerlatlngs = latlngs;
+                surroundcity.polygon.setLatLngs([surroundlatlngs, outerlatlngs]);
+                sorting.map.addLayer(surroundcity);
+            });
         });
     });
 </script>
@@ -240,6 +276,7 @@
     <span class="innerring button">内环</span>
     <span class="middlering button">中环</span>
     <span class="outerring button">外环</span>
+    <span class="surroundcity button">绕城高速</span>
 </div>
 <div id="map"></div>
 </body>
