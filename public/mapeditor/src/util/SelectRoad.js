@@ -70,8 +70,8 @@ ME.Util.getCityRing = function(config,cb,context){
     });
     xhr.getJSON(config.url,{
         paras:{
-            city: config.city,
-            name: config.name
+            city: encodeURI(config.city),
+            name: encodeURI(config.name)
         }
     },function(data){
         if(typeof cb == "function")

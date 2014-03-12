@@ -37,7 +37,7 @@ ME.Handler.CircleMoveable = ME.Handler.PathDraggable.extend(
 	_updatePosition: function () {
 		this.fire('predrag');
 		this.path.setLatLng(this._latlngs[0]);
-		this.fire('drag');
+		this.path.fire('drag');
 	}
 });
 
