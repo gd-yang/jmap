@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <title>地图demo</title>
+    <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
+    <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
+    <script src="/js/lib/jquery-1.7.2.js"></script>
+    <script src="/mapeditor/lib/es5-shim.js"></script>
+    <script src="/mapeditor/lib/es5-sham.js"></script>
+    <script src="/mapeditor/lib/xhrRequest.js"></script>
+    <script src="/mapeditor/lib/sylvester.js"></script>
+    <script src="/mapeditor/leaflet/leaflet-src.js"></script>
+    <script src="/mapeditor/leaflet/leaflet.draw-src.js"></script>
+    <script src="/mapeditor/src/MapEditor.js"></script>
+    <script src="/mapeditor/src/Util.js"></script>
+    <script src="/mapeditor/src/util/Hash.js"></script>
+    <script src="/mapeditor/src/util/DataToLayers.js"></script>
+    <script src="/mapeditor/src/Draw.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polyline.js"></script>
+    <script src="/mapeditor/src/draw/Draw.AssistLine.js"></script>
+    <script src="/mapeditor/src/draw/Draw.AssistPolygon.js"></script>
+    <script src="/mapeditor/src/draw/Draw.AssistMarker.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Polygon.js"></script>
+    <script src="/mapeditor/src/draw/Draw.Marker.js"></script>
+    <script src="/mapeditor/src/Map.js"></script>
+    <script src="/mapeditor/src/Handler.js"></script>
+    <script src="/mapeditor/src/handler/SelectRoad.js"></script>
+    <script src="/mapeditor/src/handler/Delete.js"></script>
+    <script src="/mapeditor/src/handler/PathDraggable.js"></script>
+    <script src="/mapeditor/src/handler/PolylineMoveable.js"></script>
+    <script src="/mapeditor/src/handler/PolylineRotateable.js"></script>
+    <script src="/mapeditor/src/handler/CircleMoveable.js"></script>
+    <script src="/mapeditor/src/handler/AreaSelectLayers.js"></script>
+    <script src="/mapeditor/src/Config.js"></script>
+    <script src="/mapeditor/src/data/Changes.js"></script>
+    <script src="/mapeditor/src/util/State.js"></script>
+    <script src="/mapeditor/src/group/Group.js"></script>
+    <script src="/mapeditor/src/Entity.js"></script>
+    <script src="/mapeditor/src/entity/EditBind.js"></script>
+    <script src="/mapeditor/src/entity/DataEditBind.js"></script>
+    <script src="/mapeditor/src/entity/AssistLine.js"></script>
+    <script src="/mapeditor/src/entity/AssistPolygon.js"></script>
+    <script src="/mapeditor/src/entity/AssistMarker.js"></script>
+    <script src="/mapeditor/src/entity/Polygon.js"></script>
+    <script src="/mapeditor/src/entity/Polyline.js"></script>
+    <script src="/mapeditor/src/entity/Marker.js"></script>
+    <script src="/mapeditor/src/entity/Donut.js"></script>
+    <script src="/mapeditor/src/edit/Edit.Poly.js"></script>
+    <script src="/mapeditor/src/mode/Mode.js"></script>
+    <script src="/mapeditor/src/mode/DrawCircle.js"></script>
+    <script src="/mapeditor/src/mode/DrawMark.js"></script>
+    <script src="/mapeditor/src/mode/DrawPolygon.js"></script>
+    <script src="/mapeditor/src/mode/DrawPolyline.js"></script>
+    <script src="/mapeditor/src/mode/DrawAssistLine.js"></script>
+    <script src="/mapeditor/src/mode/DrawAssistPolygon.js"></script>
+    <script src="/mapeditor/src/mode/DrawAssistMarker.js"></script>
+    <script src="/mapeditor/src/mode/DrawRectangle.js"></script>
+    <script src="/mapeditor/src/mode/SelectRoad.js"></script>
+    <script src="/mapeditor/src/mode/AreaSelectRoad.js"></script>
+    <script src="/mapeditor/src/mode/AreaSelectLayers.js"></script>
+    <script src="/mapeditor/src/mode/BrowserMap.js"></script>
+    <script src="/mapeditor/src/control/Toolbar.js"></script>
+    <script src="/mapeditor/src/util/SelectRoad.js"></script>
+    <script src="/demo/Sorting.js"></script>
+    <script src="/demo/Connect.js"></script>
+    <script src="/demo/paras.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        function resizeHeight() {
+            $('#map').height($('body').innerHeight());
+        }
+        resizeHeight();
+        $(window).on('resize', resizeHeight);
+
+        var sorting = new Sorting.Main(),
+                paras = Sorting.paras();
+        var polygonCode = paras.polygonCode, clientKey = paras.clientKey;
+        if (!!polygonCode) {
+            sorting.editOneData(polygonCode, clientKey);
+        } else {
+            sorting.createOneData(clientKey);
+        }
+    });
+</script>
+<div id="map"></div>
+</body>
+</html>
