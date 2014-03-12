@@ -6,7 +6,9 @@ ME.Polygon = L.Polygon.extend({
     includes: ME.Entity.DataEditBind,
     options: {
         weight: 3,
-        fill: true
+        fill: true,        
+        contextmenu: true,
+        contextmenuWidth: 140
     },
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit;
@@ -19,6 +21,7 @@ ME.Polygon = L.Polygon.extend({
         }
         styleOptions = L.extend({}, this.options, styleOptions);
         L.Polygon.prototype.initialize.call(this, latlngs, styleOptions);
+        this._initContextMenuItems();
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
@@ -89,5 +92,21 @@ ME.Polygon = L.Polygon.extend({
         });
         _line += tagstr.join('');
         return _line + '</way>';
+    },
+
+    _initContextMenuItems: function(){
+        var contextmenuItems = [
+            {
+                text: "置于顶端",
+                callback: this.bringToFront,
+                context: this
+            },
+            {
+                text: "置于底端",
+                callback: this.bringToBack,
+                context: this
+            }
+        ];        
+        L.setOptions(this, {contextmenuItems: contextmenuItems});
     }
 });

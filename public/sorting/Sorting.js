@@ -15,7 +15,9 @@ var Sorting={};
             var _this = this;
             this.map = new ME.Map('map', {
                 center: new L.LatLng(31.20410238002499, 121.43068313598633),
-                zoom: 15
+                zoom: 15,
+                contextmenu: true,
+                contextmenuWidth: 100
             });
 
             this.connect = new ST.Connect(this.map);

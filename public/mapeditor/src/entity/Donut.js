@@ -1,7 +1,7 @@
 /**
  * 镂空环
  */
-ME.DonutPolygon = L.Polyline.extend({
+ME.HollowPolygon = L.Polyline.extend({
 	options: {
 		fill: true,
 		stroke: false,
@@ -13,10 +13,21 @@ ME.DonutPolygon = L.Polyline.extend({
 		this._initDonut(latlngs);
 	},
 
+	onAdd: function(map){
+		L.Polyline.prototype.onAdd.call(this, map);
+		map.addLayer(this.outerPolyline);
+		this.innerPolylines.forEach(function(line){
+			map.addLayer(line);
+		});
+	},
+
 	_initDonut: function (latlngs) {
-		this._latlngs = this._convertLatLngs(latlngs[0].concat(latlngs[1]));
-		this._outerLatlngs = this._convertLatLngs(latlngs[0]);
-		this._innerLatlngs = this._convertLatLngs(latlngs[1]);
+		var innerLatlngs = latlngs.slice(1);
+
+		this.innerPolylines = this.innerPolylines || [];
+		this._innerLatlngs = [];
+		this._latlngs = this._outerLatlngs = this._convertLatLngs(latlngs[0]);
+		// outer polyline
 		if(!this.outerPolyline){
 			this.outerPolyline = new ME.Polyline({latlngs:this._outerLatlngs,options:{closed:true,noClip:true}});
 			this.outerPolyline.on("editing edit",this._editing, this);
@@ -24,17 +35,27 @@ ME.DonutPolygon = L.Polyline.extend({
 		else{
 			this.outerPolyline.setLatLngs(this._outerLatlngs);
 		}
-		if(!this.innerPolyline){
-			this.innerPolyline = new ME.Polyline({latlngs:this._innerLatlngs,options:{closed:true,noClip:true}});
-			this.innerPolyline.on("editing edit",this._editing, this);
-		}
-		else{
-			this.innerPolyline.setLatLngs(this._innerLatlngs);
+		// inner latlngs and inner polyline
+		for(var i=0, len = innerLatlngs.length;i<len;i++){
+			this._innerLatlngs.push(this._convertLatLngs(innerLatlngs[i]));
+			if(!this.innerPolylines[i]){
+				this.innerPolylines[i] = new ME.Polyline({latlngs:this._innerLatlngs[i],options:{closed:true,noClip:true}});
+				this.innerPolylines[i].on("editing edit",this._editing, this);
+			}
+			else{
+				this.innerPolylines[i].setLatLngs(this._innerLatlngs[i]);
+			}
 		}
 	},
 
 	_editing: function(){
-		this.setLatLngs([this.outerPolyline.getLatLngs(),this.innerPolyline.getLatLngs()]);
+		var latlngs = [];
+
+		latlngs.push(this.outerPolyline.getLatLngs());
+		this.innerPolylines.forEach(function(line){
+			latlngs.push(line.getLatLngs());
+		});
+		this.setLatLngs(latlngs);
 	},
 
 	projectLatlngs: function () {
@@ -43,14 +64,17 @@ ME.DonutPolygon = L.Polyline.extend({
 		this._outerPoints = [];
 		this._innerPoints = [];
 
-		var  i, len;
+		var  i, len, j, l;
 
 		for (i = 0, len = this._outerLatlngs.length; i < len; i++) {
 			 this._outerPoints[i] = this._map.latLngToLayerPoint( this._outerLatlngs[i]);
 		}
 
 		for (i = 0, len = this._innerLatlngs.length; i < len; i++) {
-			 this._innerPoints[i] = this._map.latLngToLayerPoint( this._innerLatlngs[i]);
+			this._innerPoints[i] = [];
+			for (j = 0, l = this._innerLatlngs[i].length; j < l; j++) {
+			 	this._innerPoints[i][j] = this._map.latLngToLayerPoint( this._innerLatlngs[i][j]);
+			}
 		}
 	},
 
@@ -62,7 +86,7 @@ ME.DonutPolygon = L.Polyline.extend({
 	_clipPoints: function () {
 		var newParts = [];
 
-		this._parts = [this._innerPoints].concat([this._outerPoints]);
+		this._parts = this._innerPoints.concat([this._outerPoints]);
 
 		if (this.options.noClip) { return; }
 
@@ -83,30 +107,19 @@ ME.DonutPolygon = L.Polyline.extend({
 });
 
 ME.Donut = L.FeatureGroup.extend({
-	initialize: function(layer,options){
+	initialize: function(latlngs,options){
 		var editing, _this = this;
-		this.polygon = new ME.DonutPolygon(layer,options);
-		this.outerPolyline = this.polygon.outerPolyline;
-		this.innerPolyline = this.polygon.innerPolyline;
-		L.FeatureGroup.prototype.initialize.call(this, [this.polygon, this.outerPolyline, this.innerPolyline]);
-		editing = this.editing = {};
 
-		editing.enable = function(){
-			_this.outerPolyline.editing.enable();
-			_this.innerPolyline.editing.enable();
-		};
-		editing.disable = function(){
-			_this.outerPolyline.editing.disable();
-			_this.innerPolyline.editing.disable();
-		};
+		this.hollowPolygons = [];
+		for(var i=0, l = latlngs.length;i<l;i++){
+			this.hollowPolygons.push( new ME.HollowPolygon(latlngs[i],options));
+		}
+		L.FeatureGroup.prototype.initialize.call(this, this.hollowPolygons);
 
 		L.setOptions(this,options);
 	},
 
 	onAdd: function(map){
 		L.FeatureGroup.prototype.onAdd.call(this,map);
-		if(this.options.editable){
-			this.editing.enable();
-		}
 	}
 });

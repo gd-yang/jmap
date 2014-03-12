@@ -15,7 +15,9 @@ ME.Polyline = L.Polyline.extend({
         fill: false,
         fillColor: null, //same as color by default
         fillOpacity: 0.2,
-        clickable: true
+        clickable: true,
+        contextmenu: true,
+        contextmenuWidth: 140
     },
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], isFireEdit;
@@ -28,6 +30,7 @@ ME.Polyline = L.Polyline.extend({
         }
         styleOptions = L.extend({}, this.options, styleOptions);
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
+        this._initContextMenuItems();
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
         this.selected = false;
@@ -104,5 +107,21 @@ ME.Polyline = L.Polyline.extend({
             str = str + (L.Browser.svg ? 'z' : 'x');
         }
         return str;
+    },
+
+    _initContextMenuItems: function(){
+        var contextmenuItems = [
+            {
+                text: "置于顶端",
+                callback: this.bringToFront,
+                context: this
+            },
+            {
+                text: "置于底端",
+                callback: this.bringToBack,
+                context: this
+            }
+        ];
+        L.setOptions(this, {contextmenuItems: contextmenuItems});
     }
 });
