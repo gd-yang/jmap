@@ -76,6 +76,4 @@ var Sorting={};
             this.map.removeToolbar('EditToolbar');
         }
     });
-
-
 })(Sorting || (Sorting={}));
