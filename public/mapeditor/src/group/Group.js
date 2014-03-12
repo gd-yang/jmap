@@ -7,7 +7,10 @@
             this.editing = false;
             this.openning = false;
             this.selectedLayers = [];
-            this.connect = options.connect;
+            this.connect = options.connect || {
+                loadData : function(){},
+                saveData : function(){}
+            };
 
             this.on('click', function (e) {
                 console.log('click:', e.layer);
@@ -239,10 +242,10 @@
 
             switch (type){
                 case 'datalayer:add':
-                    map.changes.fire('created', {layer:layer});
+                    map.changes.fire('created', {layer : layer});
                     break;
                 case 'datalayer:remove' :
-                    map.changes.fire('deleted', {layer:layer});
+                    map.changes.fire('deleted', {layer : layer});
                     break;
             }
         }
