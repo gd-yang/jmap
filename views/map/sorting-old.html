@@ -8,41 +8,16 @@
     <title>地图demo</title>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.draw.css"/>
-    <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.contextmenu.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.8.3.min.js"></script>
-    <!--[if lt IE 9]>
+
     <script src="/mapeditor/lib/es5-shim.js"></script>
     <script src="/mapeditor/lib/es5-sham.js"></script>
-    <![endif]-->
+
     <script src="/mapeditor/lib/xhrRequest.js"></script>
     <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/leaflet/leaflet-src.js"></script>
-    <script src="/mapeditor/leaflet/Leaflet.draw.js"></script>
-    <script src="/mapeditor/leaflet/Leaflet.contextmenu-src.js"></script>
-    <script src="/mapeditor/leaflet/edit/Edit.Poly.js"></script>
-    <script src="/mapeditor/leaflet/edit/Edit.SimpleShape.js"></script>
-    <script src="/mapeditor/leaflet/edit/Edit.Circle.js"></script>
-    <script src="/mapeditor/leaflet/edit/Edit.Rectangle.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Feature.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Polyline.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Polygon.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.SimpleShape.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Rectangle.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Circle.js"></script>
-    <script src="/mapeditor/leaflet/draw/Draw.Marker.js"></script>
-    <script src="/mapeditor/leaflet/util/LatLngUtil.js"></script>
-    <script src="/mapeditor/leaflet/util/GeometryUtil.js"></script>
-    <script src="/mapeditor/leaflet/util/LineUtil.Intersect.js"></script>
-    <script src="/mapeditor/leaflet/util/Polyline.Intersect.js"></script>
-    <script src="/mapeditor/leaflet/util/Polygon.Intersect.js"></script>
-    <script src="/mapeditor/leaflet/Control.Draw.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/Tooltip.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/Toolbar.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/EditToolbar.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/EditToolbar.Edit.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/EditToolbar.Delete.js"></script>
-    <script src="/mapeditor/leaflet/toolbar/DrawToolbar.js"></script>
+    <script src="/mapeditor/leaflet/leaflet.draw-src.js"></script>
     <script src="/mapeditor/src/MapEditor.js"></script>
     <script src="/mapeditor/src/Util.js"></script>
     <script src="/mapeditor/src/util/Hash.js"></script>
@@ -72,6 +47,7 @@
     <script src="/mapeditor/src/Entity.js"></script>
     <script src="/mapeditor/src/entity/EditBind.js"></script>
     <script src="/mapeditor/src/entity/DataEditBind.js"></script>
+    <script src="/mapeditor/src/entity/Text.js"></script>
     <script src="/mapeditor/src/entity/AssistLine.js"></script>
     <script src="/mapeditor/src/entity/AssistPolygon.js"></script>
     <script src="/mapeditor/src/entity/AssistMarker.js"></script>
@@ -214,7 +190,7 @@
             else ME.Util.getCityRing(config,cb);
 
             return deferred;
-            
+
         };
 
         $('.editor').click(function(){
@@ -241,7 +217,7 @@
                 return ringfn("内环");
             }).done(function(latlngs){
                 innerlatlngs = latlngs;
-                middlering.hollowPolygons[0].setLatLngs([middlelatlngs, innerlatlngs]);
+                        middlering.hollowPolygons[0].setLatLngs([middlelatlngs, innerlatlngs]);
                 sorting.map.addLayer(middlering);
             });
         });
@@ -251,7 +227,7 @@
                 return ringfn("中环");
             }).done(function(latlngs){
                 middlelatlngs = latlngs;
-                outerring.hollowPolygons[0].setLatLngs([outerlatlngs, middlelatlngs]);
+                        outerring.hollowPolygons[0].setLatLngs([outerlatlngs, middlelatlngs]);
                 sorting.map.addLayer(outerring);
             });
         });
@@ -261,7 +237,7 @@
                 return ringfn("外环");
             }).done(function(latlngs){
                 outerlatlngs = latlngs;
-                surroundcity.hollowPolygons[0].setLatLngs([surroundlatlngs, outerlatlngs]);
+                        surroundcity.hollowPolygons[0].setLatLngs([surroundlatlngs, outerlatlngs]);
                 sorting.map.addLayer(surroundcity);
             });
         });
