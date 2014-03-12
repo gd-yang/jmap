@@ -13,11 +13,7 @@
     } else {
         definition();
     }
-    window.console = {
-        log : function(){
 
-        }
-    }
 })(function () {
 
 /**

@@ -10,13 +10,14 @@ ME.Polygon = L.Polygon.extend({
         contextmenu: true
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit;
+        var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit, text;
         if (!!options) {
             id = options.id;
             latlngs = options.latlngs || [];
             styleOptions = options.options||{};
             data = options.data;
             isFireEdit = options.isFireEdit;
+            text = options.text;
         }
         styleOptions = L.extend({}, this.options, styleOptions);
         L.Polygon.prototype.initialize.call(this, latlngs, styleOptions);
@@ -26,6 +27,10 @@ ME.Polygon = L.Polygon.extend({
         this.selected = false;
         this.edited = false;
         this.isFireEdit = isFireEdit !== false;
+        this.textNode = new ME.Text('测试名称');
+        if (!!text){
+            this.textNode.setText(text);
+        }
         // 初始化数据,如果无数据，则初始化
         if (!!data) {
             this.data = data;
@@ -54,6 +59,32 @@ ME.Polygon = L.Polygon.extend({
             }
         }
         this.type = 'polygon';
+    },
+
+    onAdd : function(map){
+        var _this = this;
+        L.Polygon.prototype.onAdd.call(this, map);
+        this._addText();
+        this.on('dragstart', this._removeText, this);
+        this.on('dragend', this._addText, this);
+        this.on('edit', function(e){
+            _this.textNode.setPosition(this.getBounds().getCenter());
+        })
+    },
+
+    onRemove : function(map){
+        L.Polygon.prototype.onRemove.call(this, map);
+        this._removeText();
+        this.off('dragstart', this._removeText, this);
+        this.off('dragend', this._addText, this);
+    },
+
+    _removeText : function(){
+        this._map.removeLayer(this.textNode);
+    },
+    _addText : function(){
+        this.textNode.addTo(this._map);
+        this.textNode.setPosition(this.getBounds().getCenter());
     },
 
     _onMouseClick: function (e) {
@@ -92,7 +123,9 @@ ME.Polygon = L.Polygon.extend({
         _line += tagstr.join('');
         return _line + '</way>';
     },
-
+    setText : function(text){
+        this.textNode.setText(text);
+    },
     _initContextMenuItems: function(){
         var contextmenuItems = [
             {
@@ -105,7 +138,7 @@ ME.Polygon = L.Polygon.extend({
                 callback: this.bringToBack,
                 context: this
             }
-        ];        
+        ];
         L.setOptions(this, {contextmenuItems: contextmenuItems});
     }
 });

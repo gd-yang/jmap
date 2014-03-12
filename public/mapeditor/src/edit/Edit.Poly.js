@@ -143,7 +143,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
         this._poly.fire('marker:remove', {layer : marker});
         marker
             .off('drag', this._onMarkerDrag, this)
-            .off('dragend', this._fireEdit, this)
+            .off('dragend', this._onMarkerDragEnd, this)
             .off('click', this._onMarkerClick, this);
     },
 
@@ -173,6 +173,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
         var marker = e.target, method;
         method = /^-\d+$/.test(marker._leaflet_id) ? 'marker:add' : 'marker:modify';
         this._poly.fire(method, {layer: marker});
+        this._fireEdit();
     },
     _onMarkerClick: function (e) {
         var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,

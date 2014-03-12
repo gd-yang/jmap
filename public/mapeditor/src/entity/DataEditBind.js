@@ -26,11 +26,7 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
             .on('edit', this._fireChanges, this);
         this.dragging.enable();
         // 暂时，以后转移到菜单触发
-        if (this.dragging.on) {
-            this.dragging.on('dragend', this._fireDragEnd, this);
-        } else {
-            this.on('dragend', this._fireDragEnd, this);
-        }
+        this.on('dragend', this._fireDragEnd, this);
     },
     editDisable: function () {
         if (!this.edited){
@@ -48,11 +44,7 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
             .off('edit', this._fireChanges, this);
         this.dragging.disable();
         // 暂时，以后转移到菜单触发
-        if (this.dragging.off) {
-            this.dragging.off('dragend', this._fireDragEnd, this);
-        } else {
-            this.off('dragend', this._fireDragEnd, this);
-        }
+        this.off('dragend', this._fireDragEnd, this);
     },
     _fireChanges: function (e) {
         var _this = this;
