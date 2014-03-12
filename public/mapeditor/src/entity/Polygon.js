@@ -66,8 +66,8 @@ ME.Polygon = L.Polygon.extend({
         var _this = this;
         L.Polygon.prototype.onAdd.call(this, map);
         this._addText();
-        this.dragging.on('dragstart', this._removeText, this);
-        this.dragging.on('dragend', this._addText, this);
+        this.on('dragstart', this._removeText, this);
+        this.on('dragend', this._addText, this);
         this.on('edit', function(e){
             _this.textNode.setPosition(this.getBounds().getCenter());
         })
@@ -76,8 +76,8 @@ ME.Polygon = L.Polygon.extend({
     onRemove : function(map){
         L.Polygon.prototype.onRemove.call(this, map);
         this._removeText();
-        this.dragging.off('dragstart', this._removeText, this);
-        this.dragging.off('dragend', this._addText, this);
+        this.off('dragstart', this._removeText, this);
+        this.off('dragend', this._addText, this);
     },
 
     _removeText : function(){
