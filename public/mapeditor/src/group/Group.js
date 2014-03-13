@@ -147,6 +147,7 @@
             this.fire('clearSelectedLayers');
             this.selectedLayers = [];
         },
+
         addDataLayer: function (layer) {
             if (!this.editing) {
                 return;
