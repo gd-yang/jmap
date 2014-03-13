@@ -7,7 +7,8 @@ ME.Polygon = L.Polygon.extend({
     options: {
         weight: 3,
         fill: true,
-        contextmenu: true
+        contextmenu: true,
+        contextmenuWidth: 140
     },
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit, text,_this=this;
@@ -27,10 +28,11 @@ ME.Polygon = L.Polygon.extend({
         this.selected = false;
         this.edited = false;
         this.isFireEdit = isFireEdit !== false;
-        // this.textNode = new ME.Text('测试名称');
-        // if (!!text){
-        //     this.textNode.setText(text);
-        // }
+        this.textNode = new ME.Text('测试名称');
+        
+        if (!!text){
+            this.textNode.setText(text);
+        }
         // 初始化数据,如果无数据，则初始化
         if (!!data) {
             this.data = data;
@@ -59,36 +61,35 @@ ME.Polygon = L.Polygon.extend({
             }
         }
         this.type = 'polygon';
-
-        this.on('selectIn', function(){
-           _this.setText('设置后的文字！')
-        });
     },
 
     onAdd : function(map){
         var _this = this;
         L.Polygon.prototype.onAdd.call(this, map);
-        this._addText();
-        this.on('dragstart', this._removeText, this);
-        this.on('dragend', this._addText, this);
+        this.addText();
+        if (L.Path.SVG){
+            this.on('dragstart', this.removeText, this);
+            this.on('dragend', this.addText, this);
+        }
         this.on('edit', function(e){
-            _this.textNode.setPosition(this.getBounds().getCenter());
+            _this.textNode.setPosition();
         })
     },
 
     onRemove : function(map){
-        this._removeText();
-        this.off('dragstart', this._removeText, this);
-        this.off('dragend', this._addText, this);
+        this.removeText();
+        if (L.Path.SVG){
+            this.off('dragstart', this.removeText, this);
+            this.off('dragend', this.addText, this);
+        }
         L.Polygon.prototype.onRemove.call(this, map);
     },
 
-    _removeText : function(){
-        this._map.removeLayer(this.textNode);
+    removeText : function(){
+        this.textNode.onRemove(this);
     },
-    _addText : function(){
-        this.textNode.addTo(this._map);
-        this.textNode.setPosition(this.getBounds().getCenter());
+    addText : function(){
+        this.textNode.onAdd(this);
     },
 
     _onMouseClick: function (e) {
