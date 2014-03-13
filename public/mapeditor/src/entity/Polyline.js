@@ -108,6 +108,65 @@ ME.Polyline = L.Polyline.extend({
         return str;
     },
 
+    _updatePath: function () {
+        L.Polyline.prototype._updatePath.call(this);
+        this.setText();
+    },
+
+    setText: function(text){
+        var textPath;
+        text = this.options.text = text || this.options.text;
+        if(!this._text){
+            this._initTextElement();
+        }
+
+        if(L.Browser.svg){
+            textPath = this._text.firstChild;
+            if(textPath && textPath.firstChild)
+                textPath.removeChild(textPath.firstChild);
+            if(text){            
+                textPath.appendChild(document.createTextNode(text));
+            }
+        }
+        else{
+            this._text.setAttribute("string", text);
+        }
+
+        
+    },
+
+    _initTextElement: function(){
+        var textNode, textPath, pathid;
+        pathid = this._path.getAttribute("id");
+        if(L.Browser.svg){                
+            this._text = textNode = this._createElement("text");
+            textPath = this._createElement("textPath");
+            if(!pathid)
+            {
+                pathid = "leaflet-pathid" + L.stamp(this);
+                this._path.setAttribute("id",pathid);
+            }
+            textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", '#'+pathid);
+            textNode.appendChild(textPath);
+            textNode.setAttribute("text-anchor", "middle");            
+            textPath.setAttribute("startOffset", "50%");
+            this._container.appendChild(textNode);
+        }
+        //vml
+        else{
+            this._text = textPath = this._createElement("textpath");
+            this._path.setAttribute("textpathok", "t");
+            textPath.setAttribute("style","v-text-align:left;color:black;font-size:30pt;");
+            this._container.appendChild(textPath);
+            this._container.setAttribute("allowoverlap","true");
+            textPath.setAttribute("on","t");
+            textPath.setAttribute("width","200pt");
+            textPath.setAttribute("height","100pt");
+            // this._container.filled =  true;
+
+        }
+    },
+
     _initContextMenuItems: function(){
         var contextmenuItems = [
             {

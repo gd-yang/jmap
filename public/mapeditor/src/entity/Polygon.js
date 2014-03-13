@@ -27,10 +27,10 @@ ME.Polygon = L.Polygon.extend({
         this.selected = false;
         this.edited = false;
         this.isFireEdit = isFireEdit !== false;
-        this.textNode = new ME.Text('测试名称');
-        if (!!text){
-            this.textNode.setText(text);
-        }
+        // this.textNode = new ME.Text('测试名称');
+        // if (!!text){
+        //     this.textNode.setText(text);
+        // }
         // 初始化数据,如果无数据，则初始化
         if (!!data) {
             this.data = data;
