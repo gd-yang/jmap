@@ -1,5 +1,11 @@
 ME.Text = L.Class.extend({
     includes: [L.Mixin.Events],
+    options : {
+        color : 'red',
+        fontSize : '14px',
+        fontFamily : 'microsoft yahei',
+        width : '350px'
+    },
     initialize: function (text, options) {
         if (typeof text === 'object'){
             options = text;
@@ -23,7 +29,7 @@ ME.Text = L.Class.extend({
 
         map.on({
             'viewreset': this.projectLatlngs,
-            'zoomend': this._redraw
+            'zoomend': this._updatePosition
         }, this);
     },
     onRemove: function (map) {
@@ -35,7 +41,7 @@ ME.Text = L.Class.extend({
 
         map.off({
             'viewreset': this.projectLatlngs,
-            'zoomend': this._redraw
+            'zoomend': this._updatePosition
         }, this);
     },
     addTo: function (map) {
@@ -50,12 +56,12 @@ ME.Text = L.Class.extend({
     },
     _initElements : function () {
         this._container = this._createElement(L.Path.SVG ? 'g' : 'shape');
-        this._textNode = this._createElement(L.Path.SVG ? 'text':'textbox');
+        this._textNode = this._createElement(L.Path.SVG ? 'text' : 'textbox');
 
         if (this.options.className) {
             L.DomUtil.addClass(this._path, this.options.className);
         }
-
+        this._updateStyle();
         this._container.appendChild(this._textNode);
     },
     setPosition : function(latlng){
@@ -84,12 +90,25 @@ ME.Text = L.Class.extend({
         }
     },
     _updateStyle : function(){
-
+        this._container.style.color = this.options.color;
+        this._container.style.fontSize = this.options.fontSize;
+        this._container.style.width = this.options.width;
+        this._container.style.fontFamily = this.options.fontFamily;
+    },
+    _updateText : function(){
+        var firstChild;
+        while(firstChild=this._textNode.firstChild){
+            this._textNode.removeChild(firstChild);
+        }
+        this._textNode.appendChild(this._text);
     },
     setText : function(text){
-        this._text = text;
+        this._text = document.createTextNode(text);
+        this._updateText();
+        this._updateStyle();
     },
     _redraw : function(){
-        this._updatePosition()
+        this._updateText();
+        this._updatePosition();
     }
 });

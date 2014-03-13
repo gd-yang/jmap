@@ -10,7 +10,7 @@ ME.Polygon = L.Polygon.extend({
         contextmenu: true
     },
     initialize: function (options) {
-        var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit, text;
+        var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit, text,_this=this;
         if (!!options) {
             id = options.id;
             latlngs = options.latlngs || [];
@@ -59,6 +59,10 @@ ME.Polygon = L.Polygon.extend({
             }
         }
         this.type = 'polygon';
+
+        this.on('selectIn', function(){
+           _this.setText('设置后的文字！')
+        });
     },
 
     onAdd : function(map){
@@ -73,10 +77,10 @@ ME.Polygon = L.Polygon.extend({
     },
 
     onRemove : function(map){
-        L.Polygon.prototype.onRemove.call(this, map);
         this._removeText();
         this.off('dragstart', this._removeText, this);
         this.off('dragend', this._addText, this);
+        L.Polygon.prototype.onRemove.call(this, map);
     },
 
     _removeText : function(){
