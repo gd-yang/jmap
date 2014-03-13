@@ -7,8 +7,7 @@ ME.Polygon = L.Polygon.extend({
     options: {
         weight: 3,
         fill: true,
-        contextmenu: true,
-        contextmenuWidth: 140
+        contextmenu: true
     },
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], latlngLen, isFireEdit, text,_this=this;

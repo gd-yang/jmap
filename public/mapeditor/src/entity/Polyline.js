@@ -16,8 +16,7 @@ ME.Polyline = L.Polyline.extend({
         fillColor: null, //same as color by default
         fillOpacity: 0.2,
         clickable: true,
-        contextmenu: true,
-        contextmenuWidth: 140
+        contextmenu: true
     },
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], isFireEdit;

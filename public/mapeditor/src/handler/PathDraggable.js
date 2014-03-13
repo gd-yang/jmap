@@ -19,8 +19,8 @@ ME.Handler.PathDraggable = L.Draggable.extend(
 	 */
 	initialize: function(path,dragElement){
 		this.path = path;
-		if(!dragElement) dragElement = path._path;
-		L.Draggable.prototype.initialize.apply(this,[path._path,dragElement]);
+		if(!dragElement) dragElement = path._container;
+		L.Draggable.prototype.initialize.apply(this,[path._container,dragElement]);
 	},
 
 	_onDown: function (e) {
