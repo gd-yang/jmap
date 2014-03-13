@@ -55,8 +55,8 @@
             })
         },
         saveData: function(callback) {
-            var _this = this;
-            var url = 'http://192.168.1.210:8090/sorting_web/gate';
+            var _this = this,
+                url = 'http://192.168.1.210:8090/sorting_web/gate';
             this.http.post(url, {
                 paras : {
                     sid : '2004',
