@@ -26,7 +26,7 @@ var Sorting={};
             var map = this.map;
             polygonCode = polygonCode || $('.polygonCode').text();
             clientKey = clientKey || $('.clientKey').text();
-            console.log(polygonCode)
+
             if (polygonCode === '') {
                 alert('请输入要编辑的区域码！');
                 return;

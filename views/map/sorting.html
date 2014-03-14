@@ -92,7 +92,14 @@
 
         var sorting = new Sorting.Main(),
                 paras = Sorting.paras();
-        var polygonCode = paras.polygonCode, clientKey = paras.clientKey;
+        var polygonCode = paras.polygonCode, clientKey = paras.clientKey, latlng = paras.latlng;
+        if (latlng){
+            latlng = latlng.split(',');
+            latlng.reverse();
+            var marker = new L.Marker(latlng);
+            sorting.map.addLayer(marker);
+            sorting.map.panTo(latlng);
+        }
         if (!!polygonCode) {
             sorting.editOneData(polygonCode, clientKey);
         } else {

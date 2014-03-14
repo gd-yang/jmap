@@ -14,60 +14,47 @@ ME.Text = L.Class.extend({
         this._text = document.createTextNode(text);
         L.setOptions(this, options);
     },
-    onAdd: function (map) {
-        this._map = map;
+    onAdd: function (poly) {
+        this._poly = poly;
+        var map = this._poly._map;
         if (!this._container) {
             this._initElements();
         }
-        if (this._container) {
-            this._map._pathRoot.appendChild(this._container);
-        }
-        if (this._text){
-            this._textNode.appendChild(this._text);
-        }
+        this._textNode.appendChild(this._text);
+        this._updatePosition();
         this.fire('add');
-
         map.on({
-            'viewreset': this.projectLatlngs,
+            'viewreset': this._redraw,
             'zoomend': this._updatePosition
         }, this);
     },
-    onRemove: function (map) {
-        map._pathRoot.removeChild(this._container);
-
-        // Need to fire remove event before we set _map to null as the event hooks might need the object
+    onRemove: function (poly) {
         this.fire('remove');
-        this._map = null;
-
-        map.off({
-            'viewreset': this.projectLatlngs,
+        this._textNode.removeChild(this._text);
+        poly._map.off({
+            'viewreset': this._redraw,
             'zoomend': this._updatePosition
         }, this);
+        this._poly = null;
     },
-    addTo: function (map) {
-        map.addLayer(this);
+    addTo: function (poly) {
+        poly.addText(this);
         return this;
-    },
-    projectLatlngs: function () {
-        this._point = this._map.latLngToLayerPoint(this._latlng);
     },
     _createElement: function (name) {
         return L.Path.prototype._createElement.call(this, name);
     },
     _initElements : function () {
-        this._container = this._createElement(L.Path.SVG ? 'g' : 'shape');
-        this._textNode = this._createElement(L.Path.SVG ? 'text' : 'textbox');
-
+        var _svg = L.Path.SVG;
+        this._container = _svg ? this._poly._container : this._poly._path;
+        this._textNode = this._createElement(_svg ? 'text' : 'textbox');
         if (this.options.className) {
             L.DomUtil.addClass(this._path, this.options.className);
         }
         this._updateStyle();
         this._container.appendChild(this._textNode);
     },
-    setPosition : function(latlng){
-        var point = this._map.latLngToLayerPoint(latlng);
-        this._latlng = latlng;
-        this._point = point;
+    setPosition : function(){
         this._updatePosition();
     },
     setStyle: function (style) {
@@ -80,20 +67,25 @@ ME.Text = L.Class.extend({
         return this;
     },
     _updatePosition :function(){
+        var poly = this._poly,
+            bounds = poly.getBounds(),
+            map = poly._map,
+            point = map.latLngToLayerPoint(bounds.getCenter());
+        var p1 = map.latLngToLayerPoint(bounds._northEast),
+            p2 = map.latLngToLayerPoint(bounds._southWest);
         if (L.Path.SVG){
-            this._textNode.setAttribute('x', this._point.x);
-            this._textNode.setAttribute('y', this._point.y);
-            console.dir(this._container)
+            this._textNode.setAttribute('x', point.x);
+            this._textNode.setAttribute('y', point.y);
         } else{
-            this._textNode.style.cssText = '';
-            this._container.style.cssText = 'width:300px;position:relative;top:'+this._point.y+'px;left:'+this._point.x+'px;';
+            this._textNode.style.position = 'relative';
+            this._textNode.style.top = (Math.abs(p1.y - p2.y))*0.5 + 'px';
+            this._textNode.style.left = (Math.abs(p1.x - p2.x))*0.5 + 'px';
         }
     },
     _updateStyle : function(){
-        this._container.style.color = this.options.color;
-        this._container.style.fontSize = this.options.fontSize;
-        this._container.style.width = this.options.width;
-        this._container.style.fontFamily = this.options.fontFamily;
+        this._textNode.style.color = this.options.color;
+        this._textNode.style.fontSize = this.options.fontSize;
+        this._textNode.style.fontFamily = this.options.fontFamily;
     },
     _updateText : function(){
         var firstChild;
