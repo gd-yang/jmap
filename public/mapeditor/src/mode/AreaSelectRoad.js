@@ -11,8 +11,6 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
  */
 {
     options:{
-        //url:"http://119.90.32.30/gbox/gate?sid=3001&encode=utf-8"
-        url:"http://192.168.1.210:8090/sorting_web/gate?sid=3001&encode=utf-8"//&region=
     },
     /**
      * init function
@@ -41,7 +39,7 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
         flatlatlngs.push(flatlatlngs[0]);
 
         ME.Util.areaSelectRoad({
-            url:this.options.url,
+            url:ME.Config.data.areaSelectRoadNameUrl,
             latlngs:flatlatlngs.join(";")
         },function(data){
             if (!!data.data && data.data.length > 0){

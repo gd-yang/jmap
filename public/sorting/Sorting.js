@@ -1,6 +1,6 @@
 var Sorting={};
 (function(ST) {
-    var buttons = ["browserMap","drawAssistLine","drawMarker",
+    var buttons = ["browserMap","drawAssistLine","drawPolyline","drawMarker",
             "drawPolygon","pointSelectRoad",
             "areaSelectRoad","getPolygonFromRoads","deleteShape","save"],
         toolbar = new ME.Control.Toolbar();
