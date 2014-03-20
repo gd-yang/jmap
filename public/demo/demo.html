@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <title>地图demo</title>
+    <link rel="stylesheet" href="./codemirror-3.22/lib/codemirror.css" />
+    <script src="./codemirror-3.22/lib/codemirror.js"></script>
+    <script src="./codemirror-3.22/mode/javascript/javascript.js"></script>
+    <script src="./jquery-1.8.3.min.js"></script>
+    <style type="text/css">
+    html,body{
+        margin:0;
+        padding:0;
+        height:100%;
+        overflow: hidden;
+    }
+    iframe{
+        position: absolute;
+        top:50px;
+        width:100%;
+    }
+    .codemirror-wraper{
+        position: absolute;
+        bottom:0;
+        width:100%;
+        height:300px;
+        display: none;
+        z-index: 4;
+    }
+    .category-wraper{
+        width:100%;
+        height:50px;
+        background:rgb(234,234,234);
+        z-index: 2;
+        position: relative;
+    }
+    ul,li{
+        list-style: none;
+        margin:0;
+        padding:0;
+        font-size: 0px;
+    }
+    li{
+        font-size: 12px;
+    }
+    .category{
+        display: inline-block;
+        padding: 0 1px;
+    }
+    .category .title{
+        text-align: center;
+        line-height: 50px;
+        padding:0 10px;
+        font-weight: bolder;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .subcategory-wraper{
+        display: none;
+        background: #fff;
+        opacity:.8;
+        position:absolute;
+        width:100%;
+        left:0;
+    }
+    .subcategory-wraper li{
+        display: inline-block;
+        padding:5px 10px;
+    }
+    .subcategory-wraper li a{
+        display: inline-block;
+        padding:10px 20px;
+        font-weight: bolder;
+        cursor: pointer;
+    }
+    .subcategory-wraper a:hover{
+        background: #ccc;
+        color:#0083d6;
+    }
+    .category:hover{
+        background: #fff;
+    }
+    .category:hover .subcategory-wraper{
+        display: block;
+    }
+    .description{
+        position: absolute;
+        z-index: 3;
+        left:50px;
+        background: #fff;
+        top:130px;
+        text-align: center;
+        padding-bottom: 10px;
+    }
+    .description .header{
+        background: #eaeaea;
+        padding:10px 0;
+        text-align: left;
+    }
+    .description .header i{
+        display: inline-block;
+        width:14px;
+        height: 14px;
+        vertical-align: middle;
+        background: url(close.gif) no-repeat;
+        float: right;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    .description .content{
+        padding:20px 10px;
+        width:150px;
+        word-break:break-all;
+        font-size: 12px;
+    }
+    .description button{
+        border-radius: 5px;
+        background: url(btn-on.png) no-repeat;
+        width:100px;
+        height:33px;
+        border:none;
+        color:#fff;
+    }
+    .iframe-wraper{
+        position: relative;
+        width:100%;
+        height:100%;
+        margin-top: -50px;
+        padding-top: 50px;
+        overflow: hidden;
+        z-index: 1;
+    }
+    </style>
+</head>
+<body>
+    <div class="category-wraper">
+        <ul>
+        </ul>
+    </div>
+    <div class="iframe-wraper">
+        <iframe frameborder="0" id="iframe"></iframe>
+    </div>    
+    <div class="codemirror-wraper">
+        <textarea id="mirror"></textarea>
+    </div>
+    <div class="description">
+        <div class="header">示例说明<i class="close"></i></div>
+        <div class="content"></div>
+        <button>查看源码</button>
+    </div>
+<script src="democonfig.js"></script>
+<script>
+    var iframe = $("#iframe").css("height",($(document).height()-50)+"px");
+    var textarea = $("#mirror");
+    var html = [],config,item;
+
+    for(var i=0,l=demoConfig.length;i<l;i++){
+        config = demoConfig[i];
+        html.push('<li class="category"><span class="title">'+config.title+'</span>');
+        html.push('<div class="subcategory-wraper"><ul>');
+        for(var j=0,len = config.items.length;j<len;j++){
+            item = config.items[j];
+            html.push('<li><a data-src="'+item.src+'" data-description="'+item.description+'">'+item.title+'</a></li>');
+        }
+        html.push('</ul></div></li>');
+    }
+
+    $(".category-wraper ul").html(html.join("")).on("click",".subcategory-wraper a", function(){
+        var src = $(this).data("src");
+        var description = $(this).data("description");
+        iframe.attr("src",src);
+        $(".description .content").text(description);
+        $(".codemirror-wraper").hide();
+    });
+
+    $(".subcategory-wraper a:eq(0)").click();
+
+    var visible =  false;
+    $(".description button").click(function(){
+        if(visible){
+            $(".codemirror-wraper").hide();
+            visible = false;
+            return;
+        }
+        $.get(iframe.attr("src"),function(text){
+            textarea.val(text);
+            $(".codemirror-wraper").show();
+            visible =true;
+            CodeMirror.fromTextArea(textarea[0]);
+
+        });
+    });
+</script>
+</body>
+</html>

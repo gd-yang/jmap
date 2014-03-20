@@ -1,4 +1,5 @@
-ME.Control = ME.Control || {};
+
+ME.Control = L.extend({},L.Control,ME.Control);
 ME.Control.Button = L.Class.extend({
 	options:{
 		tagName: "a",
