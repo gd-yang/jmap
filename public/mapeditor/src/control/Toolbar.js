@@ -395,7 +395,7 @@ ME.Control.Button.save = new ME.Control.Button({
 		className: "mapeditor-toolbar-actions-save",
 		handler: function(){
 			var map = this._map, group = map.editingGroup;
-            group.saveLayers.call(group);
+                group.saveLayers.call(group);
 		}
 	});
 
@@ -419,15 +419,8 @@ ME.Control.Button.deleteShape = new ME.Control.Button({
 		title: "删除选中图形",
 		className: "mapeditor-toolbar-actions-delete",
 		handler: function(){
-			var map = this._map, group = map.editingGroup;
+			var map = this._map,
+                group = map.editingGroup;
                 group.clearSelectedLayers({remove : true});
-
-            //     var hollow = new ME.Donut([[[[31.208727306088207,121.4232587814331],[31.210122080671784,121.44338607788085],[31.19767849645092,121.44514560699463],[31.197751914727228,121.42261505126953]],
-            //                             [[31.205754165294366,121.42823696136473],[31.207075572741214,121.43845081329346],[31.201569586589738,121.44081115722655],[31.20094555460659,121.42866611480713]],
-            //                             [[31.200468350900838,121.43497467041014],[31.20094555460659,121.44244194030762],[31.198596220810302,121.44218444824217],[31.198596220810302,121.4349317550659]]],
-            //                             [[[31.207626153728697,121.44784927368164],[31.20733251093423,121.4591360092163],[31.199550644701127,121.45677566528322],[31.200688599064133,121.44832134246826],[31.203735312714606,121.4462184906006]],
-            //                             [[31.205790871306046,121.45072460174559],[31.205827577303502,121.45630359649658],[31.201386048198486,121.45437240600586]]]]);
-            // map.addLayer(hollow);
-            //hollow.editing.enable();
 		}
 	});
