@@ -89,8 +89,8 @@
         resizeHeight();
         $(window).on('resize', resizeHeight);
 
-        var sorting = new Sorting.Main(),
-                paras = Sorting.paras();
+        var sorting = {},map = Sorting.map(),paras = Sorting.paras();
+        sorting.map = map;
         var polygonCode = paras.polygonCode, clientKey = paras.clientKey, latlng = paras.latlng;
         if (latlng){
             latlng = latlng.split(',');
@@ -100,9 +100,9 @@
             sorting.map.panTo(latlng);
         }
         if (!!polygonCode) {
-            sorting.editOneData(polygonCode, clientKey);
+            Sorting.editOneData(map, polygonCode, clientKey);
         } else {
-            sorting.createOneData(clientKey);
+            Sorting.createOneData(map, clientKey);
         }
     });
 </script>
