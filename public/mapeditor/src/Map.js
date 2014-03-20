@@ -1,22 +1,18 @@
 ;(function(ME){
     ME.Map = L.Map.extend({
-        initialize : function(id, options){
-
-            var tileOptions = options.tileOptions || {};
+        initialize : function(id, options, tileOptions){
+            tileOptions = tileOptions || {};
+            options = options || {};
             tileOptions = L.extend({
                 minZoom: 1,
                 maxZoom: 18,
                 subdomains: '123'
-
             }, tileOptions);
 
-
-            var config = ME.Config,
-                _this = this,
+            var config = ME.Config, _this = this,
             // 绘图工具
                 tileLayerTemplate = config.map.tileUrlTemplate,
-                tileLayer = new L.TileLayer(tileLayerTemplate,
-                    {minZoom: 1, maxZoom: 18, subdomains: '123'});
+                tileLayer = new L.TileLayer(tileLayerTemplate,tileOptions);
             // 初始化地图
             options.layers || (options.layers = [tileLayer]);
             L.Map.prototype.initialize.call(this,id, options);
@@ -28,20 +24,33 @@
 
             this.on('dragend zoomend', function(){
                 _this.openedGroup.each(function(group){
-                    if (group.geoType !== 'undefined'){
+                    if (group.openning){
                         group.loadLayers.call(group);
                     }
                 });
             });
-            
         },
-        addDataGroup : function(group){
+        addGroup : function(group){
             L.Map.prototype.addLayer.call(this, group);
-            this.openedGroup.add(group._leaflet_id, group);
+            if (group instanceof ME.Group){
+                this.openedGroup.add(group._leaflet_id, group);
+            }
+            this.fire('groupadd', {group : group});
         },
-        removeDataGroup : function(group){
+        removeGroup : function(group){
+            if (group instanceof ME.Group){
+                this.openedGroup.remove(group._leaflet_id);
+            }
+            this.fire('groupremove', {group : group});
             L.Map.prototype.removeLayer.call(this, group);
-            this.openedGroup.remove(group._leaflet_id);
+        },
+        removeAllGroups : function(){
+            var _this = this;
+            this.openedGroup.each(function(group, id){
+                group.editDisable();
+                _this.removeGroup(group);
+                _this.openedGroup.remove(id);
+            });
         },
         addToolbar : function(name, control){
             L.Map.prototype.addControl.call(this, control);
@@ -67,6 +76,17 @@
         },
         clearChanges : function(){
             this.changes.clear();
+            return this;
+        },
+
+        getMarkerByLatLng : function(latlng){
+            var rst = [];
+            this.eachLayer(function(layer){
+                if (layer.type === 'marker' && layer._latlng.equals(latlng)){
+                    rst.push(layer);
+                }
+            });
+            return rst[0];
         }
     });
 })(MapEditor);
