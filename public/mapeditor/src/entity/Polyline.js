@@ -19,8 +19,7 @@ ME.Polyline = L.Polyline.extend({
         contextmenu: true,
         textOptions: {
             stroke: true,
-            weight:1,
-            text:"测试测测试测试测试测试测试测试试"
+            weight:1
         }
     },
 
