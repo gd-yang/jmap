@@ -28,5 +28,6 @@ ME.Mode.DrawPolygon = ME.Mode.extend(
         L.setOptions(layer,{moveable : true, rotateable : true});
         this.group.addLayer(layer);
         layer.editEnable();
+        console.log(layer.getLatLngs());
     }
 });

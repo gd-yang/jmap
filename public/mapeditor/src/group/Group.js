@@ -63,10 +63,13 @@
             }
         },
         _fireLayerRemove : function(e){
-            var layer = e.layer;
+            var layer = e.layer,i;
             if (layer.isFireEdit){
                 layer.editDisable();
             }
+            // should remove it from selected array when layer deleted
+            if((i = this.selectedLayers.indexOf(layer._leaflet_id))>-1)
+                this.selectedLayers.splice(i, 1);
         },
         open: function () {
             if (this.openning || !this._map) {

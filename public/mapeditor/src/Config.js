@@ -9,6 +9,8 @@
             selectRoadUrl : 'http://119.90.32.30/gbox/gate?sid=9001',
             getPolygonFromRoadsUrl: "http://119.90.32.30/gbox/gate?sid=8002",
             areaSelectRoadNameUrl:"http://192.168.1.210:8090/sorting_web/gate?sid=3001&encode=utf-8",
+            getDistrictBoundsUrl: "http://192.168.1.210:8090/sorting_web/gate?sid=2012",
+            getCityRingUrl:"http://192.168.1.210:8090/sorting_web/gate?sid=2010",
             loadParas : {
                 sid : '2006',
                 encode : 'utf-8',

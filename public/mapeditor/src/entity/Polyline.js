@@ -20,7 +20,7 @@ ME.Polyline = L.Polyline.extend({
         textOptions: {
             stroke: true,
             weight:1,
-            text:"asdfasdfasdfasdf"
+            text:"测试测测试测试测试测试测试测试试"
         }
     },
 
@@ -164,8 +164,8 @@ ME.Polyline = L.Polyline.extend({
             }
             textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", '#'+pathid);
             textNode.appendChild(textPath);
-            textNode.setAttribute("text-anchor", "middle");
-            textPath.setAttribute("startOffset", "50%");
+            //textNode.setAttribute("text-anchor", "middle");
+            //textPath.setAttribute("startOffset", "50%");
             this._container.appendChild(textNode);
         }
         //vml

@@ -68,7 +68,7 @@
 	background-position: -2px -2px;
 }
 .mapeditor-toolbar-draw-polygon{
-	background-position: -31px -2px;
+	background-position: -32px -2px;
 }
 .mapeditor-toolbar-draw-circle{
 	background-position: -92px -2px;
@@ -80,36 +80,39 @@
 	background-position: -122px -2px;
 }
 .mapeditor-toolbar-draw-assistline{
-    background-position: -449px -2px;
+    background-position: -392px -2px;
 }
 .mapeditor-toolbar-draw-assistpolygon{
-    background-position: -482px -2px;
+    background-position: -422px -2px;
 }
 .mapeditor-toolbar-draw-assistmarker{
-    background-position: -515px -2px;
+    background-position: -452px -2px;
+}
+.mapeditor-toolbar-draw-hollowpolygon{
+    background-position: -482px -2px;
 }
 
 .mapeditor-toolbar-actions-save{
-	background-position: -418px -4px;
+	background-position: -362px -4px;
 }
 .mapeditor-toolbar-actions-delete{
 	background-position: -182px -2px;
 }
 .mapeditor-toolbar-actions-cancel{
-	background-position: -362px -2px;
+	background-position: -302px -2px;
 }
 
 .mapeditor-toolbar-road-pointroad{
-	background-position: -272px -2px;
+	background-position: -212px -2px;
 }
 .mapeditor-toolbar-road-arearoad{
-	background-position: -332px -2px;
+	background-position: -272px -2px;
 }
 .mapeditor-toolbar-road-roadstoarea{
-	background-position: -302px -2px;
+	background-position: -242px -2px;
 }
 .mapeditor-toolbar-pan-map{
-	background-position: -392px -2px;
+	background-position: -332px -2px;
 }
 .mapeditor-areaselectlayer-mask{
 	position:absolute;
