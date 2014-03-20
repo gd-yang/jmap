@@ -1,59 +1,80 @@
 ;(function (ME) {
-    var Group = L.FeatureGroup.extend({
+    ME.Group = L.FeatureGroup.extend({
         initialize: function (options) {
+            L.setOptions(this, options);
             options = options || {};
             var layers = options.layers;
             L.LayerGroup.prototype.initialize.call(this, layers);
-            this.editing = false;
-            this.openning = false;
+            this.editing = options.editing === true;
+            this.opening = options.opening === true;
             this.selectedLayers = [];
-            this.connect = options.connect || {
-                loadData : function(){},
-                saveData : function(){}
-            };
+            this.connect = options.connect;
 
             this.on('click', function (e) {
                 console.log('click:', e.layer);
             });
         },
-        editAble: function () {
+        onAdd : function(map){
+            L.FeatureGroup.prototype.onAdd.call(this, map);
+            if (!!this.editing){
+                this.editEnable();
+            }
+            if (!!this.opening && !!this.connect){
+                this.loadLayers();
+            }
+        },
+        onRemove : function(map){
+            this.close();
+            this.editDisable();
+            L.FeatureGroup.prototype.onRemove.call(this, map);
+        },
+        addTo : function(map){
+            L.FeatureGroup.prototype.addTo.call(this, map);
+            map.openedGroup.add(this._leaflet_id, this);
+            return this;
+        },
+        editEnable: function () {
             var _this = this, map = this._map;
-            if (this.editing || !this.openning) {
+            if (this.editing && !!map && map.editingGroup === this) {
                 return this;
             }
-
             this.editing = true;
-            map.editingGroup = this;
-            this.on('datalayer:add datalayer:remove', this._fireChanges, this);
-            this.on('layeradd', this._fireLayerAdd, this);
-            this.on('layerremove', this._fireLayerRemove, this);
-            // 处理选中层
-            this.on('click', this._fireSelect, this);
-            this.eachLayer(function (layer) {
-                layer.editEnable();
-            });
-            // 触发后添加层的编辑状态
 
-            this.fire('editAble', {group: this});
+            if (!!map){
+                map.editingGroup = this;
+                this.on('datalayer:add datalayer:remove', this._fireChanges, this);
+                this.on('layeradd', this._fireLayerAdd, this);
+                this.on('layerremove', this._fireLayerRemove, this);
+                // 处理选中层
+                this.on('click', this._fireSelect, this);
+                this.eachLayer(function (layer) {
+                    layer.editEnable();
+                });
+                // 触发后添加层的编辑状态
+                this.fire('editEnable', {group: this});
+            }
             return this;
         },
         editDisable: function () {
-            var _this = this, map = this._map;
+            var _this = this, map;
             if (!this.editing) {
                 return this;
             }
+            map = this._map;
             this.editing = false;
-            map.editingGroup = null;
-            this.off('click', this._fireSelect, this);
+            if (map){
+                map.editingGroup = null;
+                this.off('click', this._fireSelect, this);
 
-            this.eachLayer(function (layer) {
-                layer.editDisable();
-            });
-            this.off('datalayer:add datalayer:remove', this._fireChanges, this);
-            this.off('layeradd', this._fireLayerAdd, this);
-            this.off('layerremove', this._fireLayerRemove, this);
-            this._offSelect.call(this);
-            this.fire('editDisable', {group: this});
+                this.eachLayer(function (layer) {
+                    layer.editDisable();
+                });
+                this.off('datalayer:add datalayer:remove', this._fireChanges, this);
+                this.off('layeradd', this._fireLayerAdd, this);
+                this.off('layerremove', this._fireLayerRemove, this);
+                this._offSelect.call(this);
+                this.fire('editDisable', {group: this});
+            }
             return this;
         },
         _fireLayerAdd : function(e){
@@ -69,25 +90,21 @@
             }
         },
         open: function () {
-            if (this.openning || !this._map) {
+            if (this.opening || !this._map) {
                 return this;
             }
-            this.openning = true;
+            this.opening = true;
             this.fire('open', {group: this});
             return this;
         },
-        close: function () {
+        close : function () {
             var map = this._map;
-            if (!this.openning || !map) {
+            if (!this.opening || !map) {
                 return this;
             }
-            if (this.editing){
-                this.editDisable();
-            }
-            this.openning = false;
-            this.fire('close', {group: this});
-            map.removeDataGroup(this);
-            map.changes.clear();
+
+            this.opening = false;
+            this.fire('close', {group : this});
             return this;
         },
         _fireSelect: function (e) {
@@ -95,8 +112,7 @@
                 targetLayer = e.layer,
                 _leaflet_id = targetLayer._leaflet_id,
                 index;
-            // 使下面的layer可点击
-            targetLayer.bringToBack();
+
             if (!e.originalEvent.shiftKey) {
                 if (this.selectedLayers.indexOf(_leaflet_id) == -1){
                     this.selectedLayers.forEach(function(_leaflet_id){
@@ -147,7 +163,12 @@
             this.fire('clearSelectedLayers');
             this.selectedLayers = [];
         },
-
+        addLayers : function(layers){
+            var _this = this;
+            layers.forEach(function(layer){
+                _this.addLayer(layer);
+            })
+        },
         addDataLayer: function (layer) {
             if (!this.editing) {
                 return;
@@ -181,20 +202,23 @@
             var _this = this;
             // 清除掉不在范围的图
             this.filterLayer.call(this);
-            this.connect.loadData(function(dataSet){
-                _this._renderLayers.call(_this, dataSet);
-            });
+            if (this.connect) {
+                this.connect.loadData(function (dataSet) {
+                    _this._renderLayers.call(_this, dataSet);
+                });
+            }
             return this;
         },
         saveLayers : function(){
             var _this = this;
-            this.connect.saveData(function(data){
-                console.log('保存执行回调！！')
-                _this._map.clearChanges();
-                _this.clearSelectedLayers();
-                _this.clearLayers();
-                _this.loadLayers();
-            });
+            if (this.connect) {
+                this.connect.saveData(function () {
+                    _this._map.clearChanges();
+                    _this.clearSelectedLayers();
+                    _this.clearLayers();
+                    _this.loadLayers();
+                });
+            }
             return this;
         },
         _renderLayers : function (dataSet) {
@@ -252,5 +276,7 @@
         }
     });
 
-    ME.Group = Group;
+    ME.group = function(options){
+        return new ME.Group(options);
+    }
 })(MapEditor);
