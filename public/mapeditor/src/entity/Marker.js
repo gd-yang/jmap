@@ -33,6 +33,9 @@ ME.Marker = L.Marker.extend({
             data = options.data;
             isFireEdit = options.isFireEdit;
         }
+        if (Object.prototype.toString.call(latlng) == '[object Array]'){
+            latlng = L.latLng(latlng[0], latlng[1]);
+        }
         L.Marker.prototype.initialize.call(this, latlng, styleOptions);
 
         this._leaflet_id = id || L.stamp(this);

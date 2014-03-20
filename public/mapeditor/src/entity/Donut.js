@@ -103,7 +103,11 @@ ME.HollowPolygon = L.Polyline.extend({
 	_getPathPartStr: function (points) {
 		var str = L.Polyline.prototype._getPathPartStr.call(this, points);
 		return str + (L.Browser.svg ? 'z' : 'x');
-	}
+	},
+
+    toXML : function(){
+
+    }
 });
 
 ME.Donut = L.FeatureGroup.extend({
@@ -121,5 +125,10 @@ ME.Donut = L.FeatureGroup.extend({
 
     onAdd: function(map){
         L.FeatureGroup.prototype.onAdd.call(this,map);
+    },
+    toXML : function(){
+        this.hollowPolygons.forEach(function(hollowPolygon){
+            console.log(hollowPolygon);
+        })
     }
 });

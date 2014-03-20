@@ -1,77 +1,78 @@
-;(function(ME){
-    var Connect = L.Class.extend({
-        includes: L.Mixin.Events,
-        initialize: function (map, datasetId) {
-            this._map = map;
-            this.datasetId = datasetId;
+(function (ME) {
+    /**
+     * 内置Connect加载上传数据
+     * @type {*}
+     */
+    ME.Connect= L.Class.extend({
+        includes : L.Mixin.Events,
+        initialize : function(map, options){
+            options = options || {};
+            var _ladUrl = options.loadUrl || '', _loadParas = options.loadParas || null,
+                _saveUrl = options.saveUrl || '', _saveParas = options.saveParas || null;
             this.http = new XHR({
-                cross : true,
-                fla : true
+                cross : true
             });
+            this.map = map;
+
+            if (!!_ladUrl && !!_loadParas){
+                this.createLoad(_ladUrl, _loadParas);
+            }
+
+            if (!!_saveUrl && !!_saveParas){
+                this.createSave(_saveUrl, _saveParas);
+            }
         },
-        loadData: function (callback) {
-            var _this = this,
-                map = this._map,
-                config = ME.Config,
-                bounds = this._map.getBounds(),
-                ary = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
-                url = config.data.loadUrl,
-                // 初始化加载参数
-                paras = config.data.loadParas;
-                paras.zoom = map.getZoom();
-                paras.bbox = ary.join(',');
-                paras.dataSetId = this.datasetId;
+        /**
+         * @method 创建加载通道
+         * @param url
+         * @param paras
+         */
+        createLoad : function(url, paras){
+            var _this =this, _url = url, _paras = paras;
+            this.loadData = function(callback){
+                _this.http.get(_url, {
+                    paras : _paras
+                }, function(result){
+                    var data;
+                    result = JSON.parse(result);
+                    data = result.data;
 
-            //this.abort();
-            // 开始加载
-            this.http.get(url, {
-                paras : paras
-            }, function (result) {
-                var data, status, dataSet;
-                result = JSON.parse(result);
-                status = result.status;
-                data = result.data;
-
-                if (!data) {
-                    _this.fire('dataload:error',{data:data});
-                    return;
-                }
-                dataSet = data.dataSet;
-                if (!!callback && typeof callback === 'function') {
-                    callback(dataSet);
-                }
-            });
-        },
-        saveData: function (callback) {
-            var _this = this,
-                config = ME.Config,
-                url = config.data.saveUrl,
-                xhr = new XHR({
-                    cross : true,
-                    fla : true
-                }),
-                paras = config.data.saveParas;
-
-            paras.dataSetId = this.datasetId;
-            paras.xml = this._map.changes.toXML();
-            xhr.post(url, {
-                    paras : paras
-                }, function(rst){
-                    rst = JSON.parse(rst);
-                    var status = rst.status,
-                        data = rst.data;
-                    if (!data){
-                        _this.fire('datasave:error', {rst : rst}, _this);
+                    if (!data) {
+                        _this.fire('dataload:error',{data:data});
                         return;
                     }
-                    if (!!callback && typeof callback === 'function') {
-                        callback(data);
+
+                    _this.fire('dataload:success',{data : data});
+                    if (!!callback && typeof callback == 'function'){
+                        callback(data.data.dataSet);
                     }
-                });
+                })
+            }
         },
-        abort : function(){
-            this.http.abort();
+        /**
+         * @method 创建保存通道
+         * @param url
+         * @param paras
+         */
+        createSave : function(url, paras){
+            var _this=this, _url = url, _paras = paras;
+            this.saveData = function(callback){
+                this.http.post(_url, {
+                    paras : _paras
+                }, function(result){
+                    result = JSON.parse(result);
+                    var data = result.data;
+
+                    if (!data){
+                        _this.fire('datasave:error', {data : data}, _this);
+                        return;
+                    }
+                    _this.fire('datasave:success', {data:data});
+                    if (!!callback && typeof callback == 'function'){
+                        callback(data.gds.data);
+                    }
+                })
+            }
         }
     });
-    ME.Connect = Connect;
 })(MapEditor);

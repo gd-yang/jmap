@@ -1,78 +1,96 @@
+
 var Sorting={};
 (function(ST) {
     var buttons = ["browserMap","drawAssistLine","drawPolyline","drawMarker",
             "drawPolygon","hollowPolygon","hollowPolygon2","pointSelectRoad",
             "areaSelectRoad","getPolygonFromRoads","deleteShape","save"],
         toolbar = new ME.Control.Toolbar();
-        buttons.forEach(function(button){
+        buttons.forEach(function (button) {
             toolbar.addButton(ME.Control.Button[button]);
         });
+    ST.map = function(){
+        return new ME.Map('map', {
+            center: new L.LatLng(31.20410238002499, 121.43068313598633),
+            zoom: 15
+        });
+    };
 
-    ST.Main = L.Class.extend({
-        initialize: function () {
-            console.log(ST);
-            var _this = this;
-            this.map = new ME.Map('map', {
-                center: new L.LatLng(31.20410238002499, 121.43068313598633),
-                zoom: 15,
-                contextmenu: true,
-                contextmenuWidth: 100
-            });
+    ST.editOneData = function (map, polygonCode, clientKey) {
+        var connect = new ME.Connect(map), group;
+        connect.on('dataload:success', function () {});
+        polygonCode = polygonCode || $('.polygonCode').text();
+        clientKey = clientKey || $('.clientKey').text();
 
-            this.connect = new ST.Connect(this.map);
-        },
-        editOneData: function (polygonCode, clientKey) {
-            console.log(polygonCode)
-            var map = this.map;
-            polygonCode = polygonCode || $('.polygonCode').text();
-            clientKey = clientKey || $('.clientKey').text();
-
-            if (polygonCode === '') {
-                alert('请输入要编辑的区域码！');
-                return;
-            }
-
-            if (!!this.group) {
-                this.clearOldGroup.call(this);
-            }
-            this.connect.polygonCode = polygonCode;
-            this.connect.clientKey = clientKey;
-            this.createNewGroup.call(this);
-            this.group.loadLayers()
-        },
-        createOneData: function (clientKey) {
-            console.log(this)
-            clientKey = clientKey || $('.clientKey').text();
-            if (!!this.group) {
-                this.clearOldGroup.call(this);
-            }
-            this.connect.polygonCode = '';
-            this.connect.clientKey = clientKey;
-            this.createNewGroup.call(this);
-        },
-        saveData : function(){
-            this.group.saveLayers.call(this.group);
-        },
-        clearOldGroup : function(){
-            this.group.close();
-            this.group.off('editAble', this._fireEdit, this)
-                .off('editDisable', this._offEdit, this);
-            delete this.group;
-        },
-        createNewGroup : function(){
-            var map = this.map;
-            this.group = new ME.Group();
-            this.group.on('editAble', this._fireEdit, this)
-                .on('editDisable', this._offEdit, this);
-            map.editingGroup = this.group;
-            map.addDataGroup(this.group);
-            this.group.setConnect(this.connect).open().editAble();
-        },
-        _fireEdit : function(){
-            this.map.addToolbar('EditToolbar', toolbar);
-        },
-        _offEdit : function(){
-            this.map.removeToolbar('EditToolbar');
+        if (polygonCode === '') {
+            alert('请输入要编辑的区域码！');
+            return;
         }
-    });
-})(Sorting || (Sorting={}));
+        map.removeAllGroups();
+        connect.createLoad('http://192.168.1.210:8090/sorting_web/gate', {
+            sid: '2005',
+            polygonCode: polygonCode,
+            clientKey: clientKey,
+            now: (new Date()).getTime()
+        });
+
+        connect.createSave('http://192.168.1.210:8090/sorting_web/gate', {
+            sid: '2004',
+            polygonCode: polygonCode,
+            clientKey: clientKey,
+            xml: map.changes.toXML()
+        });
+
+        group = new ME.Group({
+            opening: true
+        });
+        group.setConnect(connect);
+        map.addGroup(group);
+        group.on('editEnable', _fireEdit).on('editDisable', _offEdit);
+        group.editEnable();
+    };
+
+    ST.createOneData = function (map, clientKey) {
+        var connect = new ME.Connect(map), group;
+        connect.on('dataload:success', function () {});
+        clientKey = clientKey || $('.clientKey').text();
+        map.removeAllGroups();
+        connect.createSave('http://192.168.1.210:8090/sorting_web/gate', {
+            sid: '2004',
+            polygonCode: '',
+            clientKey: clientKey,
+            xml: map.changes.toXML()
+        });
+
+        connect.on('datasave:success', function (result) {
+            var polygonCode = result.data.polygonCode;
+            if (!connect.loadData){
+                connect.createLoad('http://192.168.1.210:8090/sorting_web/gate', {
+                    sid: '2005',
+                    polygonCode: polygonCode,
+                    clientKey: clientKey,
+                    now: (new Date()).getTime()
+                });
+            }
+        });
+
+        group = new ME.Group();
+        group.setConnect(connect);
+        map.addGroup(group);
+        group.on('editEnable', _fireEdit).on('editDisable', _offEdit);
+        group.editEnable();
+    };
+
+    ST.saveData = function (map) {
+        map.editingGroup.saveLayers.call(this.group);
+    };
+
+    function _fireEdit(e) {
+        var group = e.group;
+        group._map.addToolbar('EditToolbar', toolbar);
+    }
+    function _offEdit(e) {
+        var group = e.group;
+        group._map.removeToolbar('EditToolbar');
+    }
+
+})(Sorting || (Sorting = {}));

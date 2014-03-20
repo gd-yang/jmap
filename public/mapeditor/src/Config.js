@@ -1,7 +1,8 @@
 ;(function(ME){
-    var Config = {
+    ME.Config = {
         map : {
-            tileUrlTemplate : 'http://emap{s}.mapabc.com/mapabc/maptile?x={x}&y={y}&z={z}'
+            //tileUrlTemplate : 'http://emap{s}.mapabc.com/mapabc/maptile?x={x}&y={y}&z={z}'
+            tileUrlTemplate :'http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}'
         },
         data :  {
             loadUrl : 'http://119.90.32.30/gbox/gate',
@@ -58,6 +59,4 @@
             }
         }
     }
-
-    ME.Config = Config;
 })(MapEditor);

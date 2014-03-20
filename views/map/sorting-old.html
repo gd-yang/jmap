@@ -165,7 +165,42 @@
          * 操作
          * @type {Sorting.Main}
          */
-        var sorting = new Sorting.Main();
+        var sorting = {}, map = Sorting.map();
+
+        var latlngs = [
+            [31.209351286734226,121.43351554870604],
+            [31.207956500782714,121.44025325775145],
+            [31.2055706350222,121.43347263336182]
+        ];
+
+        latlngs = latlngs.map(function(latlng){
+            return  L.latLng(latlng[0], latlng[1]);
+        });
+
+        var latlngs1 = [
+            [31.211002980336275, 121.4425277709961],
+            [31.207956500782714,121.44025325775145],
+            [31.208176731511045, 121.44441604614258]
+        ];
+
+        latlngs1 = latlngs1.map(function(latlng){
+            return  L.latLng(latlng[0], latlng[1]);
+        });
+
+        var group = ME.group().addTo(map).editEnable();
+
+        var polyline = new ME.Polyline({
+            latlngs :latlngs
+        });
+
+        var polyline1 = new ME.Polyline({
+            latlngs :latlngs1
+        });
+
+        group.addDataLayer(polyline);
+        group.addDataLayer(polyline1);
+
+        sorting.map = map;
         var innerring = new ME.Polygon({latlngs:[],options:{noClip:true}});
         var middlering = new ME.Donut([[[], []]],{fillColor:"#f00",noClip:true});
         var outerring = new ME.Donut([[[], []]],{fillColor:"#0f0",noClip:true});
@@ -187,25 +222,30 @@
                 deferred.resolve(latlngs);
             };
 
-            if(name == "内环" && innerlatlngs) deferred.resolve(innerlatlngs);
-            else if(name == "中环" && middlelatlngs) deferred.resolve(middlelatlngs);
-            else if(name == "外环" && outerlatlngs) deferred.resolve(outerlatlngs);
-            else if(name == "绕城高速" && surroundlatlngs) deferred.resolve(surroundlatlngs);
-            else ME.Util.getCityRing(config,cb);
+            if(name == "内环" && innerlatlngs) {
+                deferred.resolve(innerlatlngs);
+            }else if(name == "中环" && middlelatlngs) {
+                deferred.resolve(middlelatlngs);
+            }else if(name == "外环" && outerlatlngs) {
+                deferred.resolve(outerlatlngs);
+            } else if(name == "绕城高速" && surroundlatlngs) {
+                deferred.resolve(surroundlatlngs);
+            } else {
+                ME.Util.getCityRing(config,cb);
+            }
 
             return deferred;
-
         };
 
         $('.editor').click(function(){
-            sorting.editOneData.call(sorting);
+            Sorting.editOneData(map);
         });
-
         $('.create').click(function(){
-            sorting.createOneData.call(sorting);
+            Sorting.createOneData(map);
         });
-
-        $('.save').click($.proxy(sorting.saveData, sorting));
+        $('.save').click(function(){
+            Sorting.saveData(map)
+        });
 
         $(".innerring").click(function(){
             ringfn("内环").done(function(latlngs){
@@ -221,7 +261,7 @@
                 return ringfn("内环");
             }).done(function(latlngs){
                 innerlatlngs = latlngs;
-                        middlering.hollowPolygons[0].setLatLngs([middlelatlngs, innerlatlngs]);
+                middlering.hollowPolygons[0].setLatLngs([middlelatlngs, innerlatlngs]);
                 sorting.map.addLayer(middlering);
             });
         });
@@ -231,8 +271,9 @@
                 return ringfn("中环");
             }).done(function(latlngs){
                 middlelatlngs = latlngs;
-                        outerring.hollowPolygons[0].setLatLngs([outerlatlngs, middlelatlngs]);
+                outerring.hollowPolygons[0].setLatLngs([outerlatlngs, middlelatlngs]);
                 sorting.map.addLayer(outerring);
+                console.log(outerring.toXML())
             });
         });
         $(".surroundcity").click(function(){
@@ -241,7 +282,7 @@
                 return ringfn("外环");
             }).done(function(latlngs){
                 outerlatlngs = latlngs;
-                        surroundcity.hollowPolygons[0].setLatLngs([surroundlatlngs, outerlatlngs]);
+                surroundcity.hollowPolygons[0].setLatLngs([surroundlatlngs, outerlatlngs]);
                 sorting.map.addLayer(surroundcity);
             });
         });
@@ -249,7 +290,7 @@
 </script>
 <div class="header">
     <span class="label">polygonCode</span>
-    <p class="input polygonCode" contenteditable="true">ce29aead-f120-4ac9-a632-497aa95673d8</p>
+    <p class="input polygonCode" contenteditable="true">8366390c-d6f0-4089-81e0-a8095e8a7954</p>
     <span class="label">clientKey</span>
     <p class="input clientKey" contenteditable="true">aa1352ff-e2c3-490f-9dad-ec85a2255565</p>
     <span class="editor button">编辑</span>
