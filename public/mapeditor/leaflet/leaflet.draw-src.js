@@ -39,22 +39,22 @@ L.drawLocal = {
 			},
 			marker: {
 				tooltip: {
-					start: 'Click map to place marker.'
+					start: '点击地图画标记点'
 				}
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: '点击开始画多边形',
+					cont: '点击地图继续画多边形',
+					end: '点击第一个点结束画多边形'
 				}
 			},
 			polyline: {
 				error: '<strong>Error:</strong> shape edges cannot cross!',
 				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
+					start: '点击开始画曲线.',
+					cont: '点击继续画曲线.',
+					end: '点击最后一个点结束画曲线.'
 				}
 			},
 			rectangle: {
@@ -104,9 +104,7 @@ L.drawLocal = {
 	}
 };
 
-
 L.Draw = {};
-
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
@@ -290,6 +288,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseMarker
 			.off('mousedown', this._onMouseDown, this)
 			.off('mouseup', this._onMouseUp, this);
+
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -325,8 +324,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
-		}
-		else if (this._errorShown) {
+		}else if (this._errorShown) {
 			this._hideErrorTooltip();
 		}
 
@@ -1074,11 +1072,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		var latlngs = this._poly._latlngs,
 			i, j, len, marker;
-
-		// TODO refactor holes implementation in Polygon to support it here
-
 		for (i = 0, len = latlngs.length; i < len; i++) {
-
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
 			this._markers.push(marker);
