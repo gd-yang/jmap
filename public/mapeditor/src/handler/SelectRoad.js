@@ -12,7 +12,6 @@ ME.Handler.SelectRoad = L.Handler.extend(
     {
         includes: L.Mixin.Events,
         options: {
-            url: 'http://119.90.32.30/gbox/gate?sid=9001',
             repeatMode: true
         },
 
@@ -63,7 +62,7 @@ ME.Handler.SelectRoad = L.Handler.extend(
             };
 
             ME.Util.pointSelectRoad({
-                url: this.options.url,
+                url: ME.Config.data.selectRoadUrl,
                 lng: e.latlng.lng,
                 lat: e.latlng.lat
             }, cb, this);

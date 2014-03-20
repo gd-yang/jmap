@@ -16,8 +16,14 @@ ME.Polyline = L.Polyline.extend({
         fillColor: null, //same as color by default
         fillOpacity: 0.2,
         clickable: true,
-        contextmenu: true
+        contextmenu: true,
+        textOptions: {
+            stroke: true,
+            weight:1,
+            text:"asdfasdfasdfasdf"
+        }
     },
+
     initialize: function (options) {
         var id, latlngs, styleOptions, data, nd = [], isFireEdit;
         if (options) {
@@ -29,6 +35,7 @@ ME.Polyline = L.Polyline.extend({
         }
         styleOptions = L.extend({}, this.options, styleOptions);
         L.Polyline.prototype.initialize.call(this, latlngs, styleOptions);
+        this.textOptions = L.extend({},this.options.textOptions);
         this._initContextMenuItems();
         this._leaflet_id = id || L.stamp(this);
         this.states = new ME.State();
@@ -60,6 +67,14 @@ ME.Polyline = L.Polyline.extend({
 
         this.type = 'polyline';
     },
+
+    onRemove: function(map){
+        if(L.Browser.vml){
+           this._map.removeLayer(this._text);
+        }
+        L.Polyline.prototype.onRemove.call(this,map);
+    },
+
     toXML: function () {
         var data = this.data, _line,
             nds = data.nd[0][0], tags = data.tag, tagstr;
@@ -115,7 +130,7 @@ ME.Polyline = L.Polyline.extend({
 
     setText: function(text){
         var textPath;
-        text = this.options.text = text || this.options.text;
+        text = this.textOptions.text = text || this.textOptions.text;
         if(!this._text){
             this._initTextElement();
         }
@@ -124,12 +139,13 @@ ME.Polyline = L.Polyline.extend({
             textPath = this._text.firstChild;
             if(textPath && textPath.firstChild)
                 textPath.removeChild(textPath.firstChild);
-            if(text){            
+            if(text){
                 textPath.appendChild(document.createTextNode(text));
             }
         }
         else{
-            this._text.setAttribute("string", text);
+            this._text._textPath.string = text;
+            this._text.setLatLngs(this.getLatLngs());
         }
 
         
@@ -142,28 +158,25 @@ ME.Polyline = L.Polyline.extend({
             this._text = textNode = this._createElement("text");
             textPath = this._createElement("textPath");
             if(!pathid)
-            {
+            {   
                 pathid = "leaflet-pathid" + L.stamp(this);
                 this._path.setAttribute("id",pathid);
             }
             textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", '#'+pathid);
             textNode.appendChild(textPath);
-            textNode.setAttribute("text-anchor", "middle");            
+            textNode.setAttribute("text-anchor", "middle");
             textPath.setAttribute("startOffset", "50%");
             this._container.appendChild(textNode);
         }
         //vml
-        else{
-            this._text = textPath = this._createElement("textpath");
-            this._path.setAttribute("textpathok", "t");
-            textPath.setAttribute("style","v-text-align:left;color:black;font-size:30pt;");
-            this._container.appendChild(textPath);
-            this._container.setAttribute("allowoverlap","true");
-            textPath.setAttribute("on","t");
-            textPath.setAttribute("width","200pt");
-            textPath.setAttribute("height","100pt");
-            // this._container.filled =  true;
 
+        else{
+            this._text = L.polyline(this.getLatLngs(),this.textOptions).addTo(this._map);
+            this._text._textPath = textPath = this._createElement("textpath");
+            textPath.setAttribute("style","v-text-align:left;");
+            this._text._container.appendChild(textPath);
+            this._text._path.textpathok = true;
+            textPath.on = true;
         }
     },
 
