@@ -1,1 +1,1 @@
-ME.Util = {};
+ME.Util = ME.Util || {};
