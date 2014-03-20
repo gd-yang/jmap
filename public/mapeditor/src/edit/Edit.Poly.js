@@ -67,7 +67,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
     },
 
     _initMarkers : function () {
-        var poly = this._poly,map = poly._map;
+        var poly = this._poly, map = poly._map;
         if (!this._markerGroup) {
             this._markerGroup = new L.LayerGroup();
         }
@@ -88,6 +88,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
         for (i = 0, len = latlngs.length; i < len; i++) {
             marker = this._createMarker(latlngs[i], i, nd[i] && nd[i].ref || null);
             marker.on('click', this._onMarkerClick, this);
+
             this._markers.push(marker);
             if (!initFlag){
                 nd.push({
@@ -113,6 +114,7 @@ ME.Edit.Poly = L.Edit.Poly.extend({
     },
 
     _createMarker: function (latlng, index, id) {
+        var map = this._poly._map;
         var marker = new ME.Marker({
             latlng : latlng,
             id: id,
