@@ -48,7 +48,9 @@
                 // 处理选中层
                 this.on('click', this._fireSelect, this);
                 this.eachLayer(function (layer) {
-                    layer.editEnable();
+                    if (layer.editEnable) {
+                        layer.editEnable();
+                    }
                 });
                 // 触发后添加层的编辑状态
                 this.fire('editEnable', {group: this});
@@ -67,7 +69,9 @@
                 this.off('click', this._fireSelect, this);
 
                 this.eachLayer(function (layer) {
-                    layer.editDisable();
+                    if (layer.editDisable){
+                        layer.editDisable();
+                    }
                 });
                 this.off('datalayer:add datalayer:remove', this._fireChanges, this);
                 this.off('layeradd', this._fireLayerAdd, this);
