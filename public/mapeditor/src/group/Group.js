@@ -116,16 +116,16 @@
             if (!e.originalEvent.shiftKey) {
                 if (this.selectedLayers.indexOf(_leaflet_id) == -1){
                     this.selectedLayers.forEach(function(_leaflet_id){
-                        _this.getLayer(_leaflet_id).fire('selectOut');
+                        _this.getLayer(_leaflet_id).fire('selectout');
                     });
                     this.selectedLayers.length = 0;
                     this.selectedLayers.push(_leaflet_id);
-                    targetLayer.fire('selectIn');
+                    targetLayer.fire('selectin');
                 }else{
                     this.selectedLayers.forEach(function(_leaflet_id){
                         var layer = _this.getLayer(_leaflet_id);
                         if (layer !== targetLayer){
-                            layer.fire('selectOut');
+                            layer.fire('selectout');
                         }
                     });
                     this.selectedLayers = [_leaflet_id];
@@ -133,11 +133,11 @@
             }else{
                 if (this.selectedLayers.indexOf(_leaflet_id) == -1){
                     this.selectedLayers.push(_leaflet_id);
-                    targetLayer.fire('selectIn');
+                    targetLayer.fire('selectin');
                 }else{
                     index = this.selectedLayers.indexOf(_leaflet_id);
                     this.selectedLayers.splice(index, 1);
-                    targetLayer.fire('selectOut');
+                    targetLayer.fire('selectout');
                 }
             }
         },
@@ -145,7 +145,7 @@
             var _this = this;
             this.selectedLayers.forEach(function (_leaflet_id) {
                 var layer = _this.getLayer(_leaflet_id);
-                layer.fire('selectOut');
+                layer.fire('selectout');
             });
             //this.selectedLayers = [];
         },
@@ -155,7 +155,7 @@
                 _this = this;
             this.selectedLayers.forEach(function(_leaflet_id){
                 var layer = _this.getLayer(_leaflet_id);
-                layer.fire('selectOut');
+                layer.fire('selectout');
                 if (!!remove){
                     _this.removeDataLayer(layer);
                 }
