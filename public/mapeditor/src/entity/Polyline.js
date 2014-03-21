@@ -146,8 +146,7 @@ ME.Polyline = L.Polyline.extend({
             this._text._textPath.string = text;
             this._text.setLatLngs(this.getLatLngs());
         }
-
-        
+        return this;
     },
 
     _initTextElement: function(){

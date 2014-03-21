@@ -7,7 +7,7 @@
 ME.Entity.EditBind = {
     editEnable: function () {
         if (this.edited){
-            return;
+            return this;
         }
         this.edited = true;
         this.on('click', function () {
@@ -21,10 +21,11 @@ ME.Entity.EditBind = {
             .on('mouseover', this._fireOver, this)
             .on('mouseout', this._fireOut, this)
             .on('selectout', this._fireSelectOut, this);
+        return this;
     },
     editDisable: function () {
         if (!this.edited){
-            return;
+            return this;
         }
         this.edited = false;
         if (this.editing) {
@@ -35,9 +36,12 @@ ME.Entity.EditBind = {
             .off('mouseover', this._fireOver, this)
             .off('mouseout', this._fireOut, this)
             .off('selectout', this._fireSelectOut, this);
+
+        return this;
     },
     setState: function (stateName) {
         this.setStyle(this.states[stateName]);
+        return this;
     },
     _fireOut: function () {
         if (!this.selected) {

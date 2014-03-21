@@ -56,6 +56,7 @@ ME.Text = L.Class.extend({
     },
     setPosition : function(){
         this._updatePosition();
+        return this;
     },
     setStyle: function (style) {
         L.setOptions(this, style);
@@ -98,6 +99,7 @@ ME.Text = L.Class.extend({
         this._text = document.createTextNode(text);
         this._updateText();
         this._updateStyle();
+        return this;
     },
     _redraw : function(){
         this._updateText();

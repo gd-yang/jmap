@@ -5,13 +5,14 @@
 ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
     setData: function (data) {
         this.data = data;
+        return this;
     },
     getData: function () {
         return this.data;
     },
     editEnable: function () {
         if (this.edited){
-            return;
+            return this;
         }
         this.edited = true;
 
@@ -27,10 +28,11 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         this.dragging.enable();
         // 暂时，以后转移到菜单触发
         this.on('dragend', this._fireDragEnd, this);
+        return this;
     },
     editDisable: function () {
         if (!this.edited){
-            return;
+            return this;
         }
         this.edited = false;
         if (this.editing) {
@@ -45,6 +47,7 @@ ME.Entity.DataEditBind = L.extend({}, ME.Entity.EditBind, {
         this.dragging.disable();
         // 暂时，以后转移到菜单触发
         this.off('dragend', this._fireDragEnd, this);
+        return this;
     },
     _fireChanges: function (e) {
         var _this = this;

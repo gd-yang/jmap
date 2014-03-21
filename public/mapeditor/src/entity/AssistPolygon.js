@@ -17,6 +17,6 @@ ME.Entity.AssistPolygon = L.Polygon.extend({
         this.isFireEdit = isFireEdit !== false;
     },
     toPolygon: function () {
-
+        return this;
     }
 });

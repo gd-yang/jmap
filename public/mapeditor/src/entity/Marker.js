@@ -73,6 +73,7 @@ ME.Marker = L.Marker.extend({
         options = L.extend({}, this.options, options);
         this.setIcon(options.icon);
         this.setOpacity(options.opacity);
+        return this;
     },
     _fireDragEnd: function () {
         this._map.changes.fire(/^-\d+$/.test(this._leaflet_id)

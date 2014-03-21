@@ -165,25 +165,28 @@
             });
             this.fire('clearSelectedLayers');
             this.selectedLayers = [];
+            return this;
         },
         addLayers : function(layers){
             var _this = this;
             layers.forEach(function(layer){
                 _this.addLayer(layer);
-            })
+            });
+            return this;
         },
         addDataLayer: function (layer) {
             if (!this.editing) {
-                return;
+                return this;
             }
 
             L.FeatureGroup.prototype.addLayer.call(this, layer);
             this.fire('datalayer:add', {layer: layer});
+            return this;
         },
         removeDataLayer: function (layer) {
             var _this = this, markers, type;
             if (!this.editing) {
-                return;
+                return this;
             }
 
             if (typeof layer === 'string') {
@@ -200,6 +203,7 @@
             layer.editDisable();
             this.fire('datalayer:remove', {layer: layer});
             L.FeatureGroup.prototype.removeLayer.call(this, layer);
+            return this;
         },
         loadLayers: function () {
             var _this = this;
@@ -239,6 +243,7 @@
         },
         updateDataSet: function (dataSet) {
             this.dataSet = dataSet;
+            return this;
         },
         filterLayer: function () {
             var bounds, layers, _this = this;
@@ -255,6 +260,7 @@
                     }
                 });
             }
+            return this;
         },
         setConnect : function(connect){
             this.connect = connect;

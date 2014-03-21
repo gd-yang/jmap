@@ -22,6 +22,6 @@ ME.Entity.AssistMarker = L.Marker.extend({
         this.setOpacity(options.opacity);
     },
     toMarker : function () {
-
+        return this;
     }
 });

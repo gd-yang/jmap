@@ -90,9 +90,11 @@ ME.Polygon = L.Polygon.extend({
 
     removeText : function(){
         this.textNode.onRemove(this);
+        return this;
     },
     addText : function(){
         this.textNode.onAdd(this);
+        return this;
     },
 
     _onMouseClick: function (e) {
@@ -133,6 +135,7 @@ ME.Polygon = L.Polygon.extend({
     },
     setText : function(text){
         this.textNode.setText(text);
+        return this;
     },
     _initContextMenuItems: function(){
         var contextmenuItems = [

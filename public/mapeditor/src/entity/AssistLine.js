@@ -17,6 +17,6 @@ ME.Entity.AssistLine = L.Polyline.extend({
         this.isFireEdit = isFireEdit !== false;
     },
     toPolyline: function () {
-
+        return this;
     }
 });
