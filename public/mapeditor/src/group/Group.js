@@ -88,6 +88,9 @@
             if (layer.isFireEdit){
                 layer.editDisable();
             }
+            if((i = this.selectedLayers.indexOf(layer._leaflet_id))>-1){
+                this.selectedLayers.splice(i, 1);
+            }
         },
         open: function () {
             if (this.opening || !this._map) {
