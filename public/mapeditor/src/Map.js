@@ -20,7 +20,7 @@
             this.toolbars = new ME.Hash();
             this.openedGroup = new ME.Hash();
             
-            this.addControl(L.control.scale());
+            // this.addControl(L.control.scale());
 
             this.on('dragend zoomend', function(){
                 _this.openedGroup.each(function(group){

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="http://api.bmap.amap.com/map/css/bmap.me.css"/>
+    <script src="http://api.bmap.amap.com/map/jquery-1.8.3.min.js"></script>
+    <script src="http://api.bmap.amap.com/map/bmap.min.js"></script>
+    <script src="http://api.bmap.amap.com/map/bmap.me.min.js"></script>
+    <script src="http://api.bmap.amap.com/map/bmap.config.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript">
+	var map = new ME.Map('map', {
+                center: new ME.LatLng(31.20410238002499, 121.43068313598633),
+                zoom: 10,
+                contextmenu: true,
+                zoomControl: false,
+                contextmenuWidth: 100
+            });
+
+    ME.Util.getCityRing({city:"上海",name:"外环"},function(data){
+        var nds = data.data.dataSet.node,
+            latlngs = [];
+        nds.map(function(nd,i){
+            latlngs.push(new ME.LatLng(nd.lat,nd.lon));
+        });
+        var ring = new ME.Polygon({latlngs:latlngs,options:{noClip:true}});
+        map.addLayer(ring);
+    });
+</script>
+</body>
+</html>

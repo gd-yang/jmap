@@ -26,10 +26,11 @@ ME.Mode.AreaSelectRoad = ME.Mode.extend(
     _finish: function(data){
         var layer = data.layer,
             layerType = data.layerType,
-            latlngs = layer.getLatLngs(),
+            latlngs,
             flatlatlngs = [];
 
         if(layerType != "polygon") return;
+        latlngs = layer.getLatLngs(),
 
         latlngs.forEach(function(latlng){
             flatlatlngs.push(latlng.lng+","+latlng.lat);

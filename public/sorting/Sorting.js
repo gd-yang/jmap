@@ -1,7 +1,9 @@
-var Sorting = {};
-(function (ST) {
-    var buttons = ["browserMap", "drawAssistLine", "drawMarker", "drawPolygon",
-                   "pointSelectRoad","areaSelectRoad", "getPolygonFromRoads", "deleteShape", "save"],
+
+var Sorting={};
+(function(ST) {
+    var buttons = ["browserMap","drawAssistLine","drawPolyline","drawMarker",
+            "drawPolygon","hollowPolygon","hollowPolygon2","pointSelectRoad",
+            "areaSelectRoad","getPolygonFromRoads","deleteShape","save"],
         toolbar = new ME.Control.Toolbar();
         buttons.forEach(function (button) {
             toolbar.addButton(ME.Control.Button[button]);

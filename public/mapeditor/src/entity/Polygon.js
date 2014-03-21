@@ -38,8 +38,11 @@ ME.Polygon = L.Polygon.extend({
             this.data = data;
             nd = data.nd[0][0];
         } else {
-            latlngLen = latlngs.length;
-            if (latlngLen > 0 && latlngs[0].equals(latlngs[latlngLen - 1])) {
+            // latlngLen = latlngs.length;
+            // if (latlngLen > 0 && latlngs[0].equals(latlngs[latlngLen - 1])) {
+            //     latlngs.pop();
+            // }
+            if (this._latlngs.length > 0 && this._latlngs[0].equals(this._latlngs[this._latlngs.length - 1])) {
                 latlngs.pop();
             }
 

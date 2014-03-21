@@ -1,4 +1,5 @@
-ME.Control = ME.Control || {};
+
+ME.Control = L.extend({},L.Control,ME.Control);
 ME.Control.Button = L.Class.extend({
 	options:{
 		tagName: "a",
@@ -130,6 +131,38 @@ ME.Control.Button.browserMap = new ME.Control.Button({
 		title: "移动地图",
 		className: "mapeditor-toolbar-pan-map",
 		mode: ME.Mode.BrowserMap
+	});
+
+ME.Control.Button.hollowPolygon = new ME.Control.Button({
+		name: "hollowPolygon",
+		title: "生成镂空面",
+		className: "mapeditor-toolbar-draw-hollowpolygon",
+		mode: ME.Mode.HollowPolygon
+	});
+
+
+ME.Control.Button.hollowPolygon2 = new ME.Control.Button({
+		name: "hollowPolygon2",
+		title: "选面生成镂空面",
+		className: "mapeditor-toolbar-draw-hollowpolygon",
+		handler: function(){
+			var map = this._map;
+			var group = map.editingGroup;
+			var polygons = [];
+			group.selectedLayers.forEach(function(layerid){
+				var layer = group.getLayer(layerid), type;
+				if(!layer) return;
+                type = layer.type;
+                if (type == 'polygon' && polygons.length!=2){
+                    polygons.push(layer);
+                }
+			});
+			var donut = new ME.Donut([[polygons[0].getLatLngs(),polygons[1].getLatLngs()]]);
+			group.addLayer(donut);
+			polygons.forEach(function(layer){
+				group.removeLayer(layer);
+			});
+		}
 	});
 
 ME.Control.Button.drawPolyline = new ME.Control.Button({

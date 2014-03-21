@@ -68,7 +68,7 @@ ME.Util.getCityRing = function(config,cb,context){
         cross : true,
         fla : true
     });
-    xhr.getJSON(config.url,{
+    xhr.getJSON(ME.Config.data.getCityRingUrl,{
         paras:{
             city : encodeURI(config.city),
             name : encodeURI(config.name)

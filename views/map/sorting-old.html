@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="/mapeditor/css/leaflet/leaflet.contextmenu.css"/>
     <link rel="stylesheet" href="/mapeditor/css/mapeditor.css"/>
     <script src="/js/lib/jquery-1.8.3.min.js"></script>
-
-    <script src="/mapeditor/lib/es5-shim.js"></script>
-    <script src="/mapeditor/lib/es5-sham.js"></script>
-
-    <script src="/mapeditor/lib/xhrRequest.js"></script>
-    <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/leaflet/leaflet-src.js"></script>
     <script src="/mapeditor/leaflet/leaflet.draw-src.js"></script>
     <script src="/mapeditor/leaflet/leaflet.contextmenu-src.js"></script>
+
+
+    <script src="/mapeditor/lib/es5-shim.js"></script>
+    <script src="/mapeditor/lib/es5-sham.js"></script>
+    <script src="/mapeditor/lib/xhrRequest.js"></script>
+    <script src="/mapeditor/lib/sylvester.js"></script>
     <script src="/mapeditor/src/MapEditor.js"></script>
     <script src="/mapeditor/src/Util.js"></script>
     <script src="/mapeditor/src/util/Hash.js"></script>
@@ -32,6 +32,7 @@
     <script src="/mapeditor/src/draw/Draw.Polygon.js"></script>
     <script src="/mapeditor/src/draw/Draw.Marker.js"></script>
     <script src="/mapeditor/src/Map.js"></script>
+    <script src="/mapeditor/src/FitDistrict.js"></script>
     <script src="/mapeditor/src/Handler.js"></script>
     <script src="/mapeditor/src/handler/SelectRoad.js"></script>
     <script src="/mapeditor/src/handler/Delete.js"></script>
@@ -40,7 +41,6 @@
     <script src="/mapeditor/src/handler/PolylineRotateable.js"></script>
     <script src="/mapeditor/src/handler/CircleMoveable.js"></script>
     <script src="/mapeditor/src/handler/AreaSelectLayers.js"></script>
-    <script src="/mapeditor/src/Config.js"></script>
     <script src="/mapeditor/src/data/Connect.js"></script>
     <script src="/mapeditor/src/data/Changes.js"></script>
     <script src="/mapeditor/src/util/State.js"></script>
@@ -70,12 +70,17 @@
     <script src="/mapeditor/src/mode/AreaSelectRoad.js"></script>
     <script src="/mapeditor/src/mode/AreaSelectLayers.js"></script>
     <script src="/mapeditor/src/mode/BrowserMap.js"></script>
+    <script src="/mapeditor/src/mode/HollowPolygon.js"></script>
     <script src="/mapeditor/src/control/Button.js"></script>
     <script src="/mapeditor/src/control/Toolbar.js"></script>
     <script src="/mapeditor/src/util/SelectRoad.js"></script>
     <script src="/sorting/Sorting.js"></script>
     <script src="/sorting/data/Connect.js"></script>
     <script src="/sorting/lib/paras.js"></script>
+
+
+    <script src="/mapeditor/src/Config.js"></script>
+    
     <style>
         html, body {
             padding: 0;

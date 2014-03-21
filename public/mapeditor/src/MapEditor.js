@@ -33,3 +33,4 @@ ME.PosAnimation = L.PosAnimation;
 ME.Draggable = L.Draggable;
 ME.TileLayer = L.TileLayer;
 ME.Handler = L.Handler;
+L.Icon.Default.imagePath = "../images"
